@@ -1,0 +1,45 @@
+{
+    "name": "zachwatkins/infer-data-schema",
+    "description": "Infers the SQL column schema of a data source (CSV, JSON, XML, Excel, HTTP).",
+    "type": "library",
+    "license": "MIT",
+    "minimum-stability": "stable",
+    "require": {
+        "php": "^8.3",
+        "flow-php/etl": "^0.43.0",
+        "flow-php/etl-adapter-csv": "^0.43.0",
+        "flow-php/etl-adapter-excel": "^0.43.0",
+        "flow-php/etl-adapter-http": "^0.43.0",
+        "flow-php/etl-adapter-json": "^0.43.0",
+        "flow-php/etl-adapter-xml": "^0.43.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "ZachWatkins\\InferDataSchema\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "bin": [
+        "bin/infer-data-schema"
+    ],
+    "scripts": {
+        "test": "pest",
+        "lint": "phpcs",
+        "build": "php src/Build.php"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "require-dev": {
+        "pestphp/pest": "^4.7",
+        "phpacker/phpacker": "^0.6.4",
+        "squizlabs/php_codesniffer": "^4.0"
+    }
+}

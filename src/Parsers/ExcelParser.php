@@ -17,13 +17,16 @@ final class ExcelParser implements ParserInterface
 {
     public function __construct(
         private readonly ColumnTypeInferrerInterface $inferrer = new ColumnTypeInferrer(),
-    ) {
-    }
+    ) {}
 
     public function parse(
         string $source,
-        DatabaseType $databaseType = DatabaseType::Sqlite,
+        string $databaseType = 'sqlite',
     ): SqlColumnCollectionInterface {
+        if (!in_array($databaseType, array_map(fn($case) => $case->value, DatabaseType::cases()), true)) {
+            throw new \InvalidArgumentException("Invalid database type: $databaseType, accepts: " . implode(', ', array_map(fn($case) => $case->value, DatabaseType::cases())));
+        }
+        $databaseType = DatabaseType::from($databaseType);
         $rows = data_frame()->read(from_excel($source))->getEachAsArray();
 
         return $this->inferrer->infer($rows, $databaseType);

@@ -12,11 +12,11 @@ it('infers the expected MySQL schema from JSON fixtures', function (string $data
     $parser = new JsonParser();
     $normalizeColumns = static function (SqlColumnCollectionInterface $columns): array {
         return array_map(
-            static fn (SqlColumnInterface $column): array => [
+            static fn(SqlColumnInterface $column): array => [
                 'name' => $column->getName(),
                 'type' => $column->getType(),
                 'modifiers' => array_map(
-                    static fn (ColumnModifier $modifier): string => $modifier->value,
+                    static fn(ColumnModifier $modifier): string => $modifier->value,
                     $column->getModifiers(),
                 ),
             ],
@@ -24,7 +24,7 @@ it('infers the expected MySQL schema from JSON fixtures', function (string $data
         );
     };
 
-    $actual = $parser->parse(__DIR__ . '\\..\\fixtures\\data\\' . $dataFixture, DatabaseType::MySql);
+    $actual = $parser->parse(__DIR__ . '\\..\\fixtures\\data\\' . $dataFixture, 'mysql');
 
     /** @var SqlColumnCollectionInterface $expected */
     $expected = require __DIR__ . '\\..\\fixtures\\schema\\' . $schemaFixture;

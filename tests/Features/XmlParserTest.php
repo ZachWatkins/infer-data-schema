@@ -38,10 +38,10 @@ $assertXmlColumnCollectionMatches = static function (
 it('parses flat xml rows into an inferred mysql schema', function () use ($assertXmlColumnCollectionMatches) {
     $parser = new XmlParser();
     $actual = $parser->parse(
-        dirname(__DIR__) . '\fixtures\data\xml_basic.xml',
-        DatabaseType::MySql,
+        dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/data/xml_basic.xml'),
+        'mysql',
     );
-    $expected = require dirname(__DIR__) . '\fixtures\schema\xml_basic_mysql.php';
+    $expected = require dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/schema/xml_basic_mysql.php');
 
     $assertXmlColumnCollectionMatches($actual, $expected);
 });
@@ -49,10 +49,10 @@ it('parses flat xml rows into an inferred mysql schema', function () use ($asser
 it('parses nested xml rows when a node path is configured', function () use ($assertXmlColumnCollectionMatches) {
     $parser = new XmlParser('root/items/item');
     $actual = $parser->parse(
-        dirname(__DIR__) . '\fixtures\data\xml_nested.xml',
-        DatabaseType::MySql,
+        dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/data/xml_nested.xml'),
+        'mysql',
     );
-    $expected = require dirname(__DIR__) . '\fixtures\schema\xml_basic_mysql.php';
+    $expected = require dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/schema/xml_basic_mysql.php');
 
     $assertXmlColumnCollectionMatches($actual, $expected);
 });

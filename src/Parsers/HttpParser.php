@@ -21,13 +21,16 @@ final class HttpParser implements ParserInterface
     public function __construct(
         private readonly ClientInterface $client,
         private readonly ColumnTypeInferrerInterface $inferrer = new ColumnTypeInferrer(),
-    ) {
-    }
+    ) {}
 
     public function parse(
         string $source,
-        DatabaseType $databaseType = DatabaseType::Sqlite,
+        string $databaseType = 'sqlite',
     ): SqlColumnCollectionInterface {
+        if (!in_array($databaseType, array_map(fn($case) => $case->value, DatabaseType::cases()), true)) {
+            throw new \InvalidArgumentException("Invalid database type: $databaseType, accepts: " . implode(', ', array_map(fn($case) => $case->value, DatabaseType::cases())));
+        }
+        $databaseType = DatabaseType::from($databaseType);
         $request = (new Psr17Factory())
             ->createRequest('GET', $source)
             ->withHeader('Accept', 'application/json');

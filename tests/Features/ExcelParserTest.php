@@ -10,7 +10,7 @@ use ZachWatkins\InferDataSchema\Parsers\ExcelParser;
 
 $modifierValuesForExcel = static function (SqlColumnInterface $column): array {
     return \array_map(
-        static fn (ColumnModifier $modifier): string => $modifier->value,
+        static fn(ColumnModifier $modifier): string => $modifier->value,
         $column->getModifiers(),
     );
 };
@@ -39,7 +39,7 @@ it('parses an excel workbook into an inferred mysql schema', function () use ($a
     $parser = new ExcelParser();
     $actual = $parser->parse(
         dirname(__DIR__) . '\fixtures\data\excel_basic.xlsx',
-        DatabaseType::MySql,
+        'mysql',
     );
     $expected = require dirname(__DIR__) . '\fixtures\schema\excel_basic_mysql.php';
 

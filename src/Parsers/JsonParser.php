@@ -22,8 +22,12 @@ final class JsonParser implements ParserInterface
 
     public function parse(
         string $source,
-        DatabaseType $databaseType = DatabaseType::Sqlite,
+        string $databaseType = 'sqlite',
     ): SqlColumnCollectionInterface {
+        if (!in_array($databaseType, array_map(fn($case) => $case->value, DatabaseType::cases()), true)) {
+            throw new \InvalidArgumentException("Invalid database type: $databaseType, accepts: " . implode(', ', array_map(fn($case) => $case->value, DatabaseType::cases())));
+        }
+        $databaseType = DatabaseType::from($databaseType);
         $rows = data_frame()
             ->read(from_json($source))
             ->getEachAsArray();

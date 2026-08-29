@@ -56,7 +56,7 @@ it('parses a bare top-level json array response', function () use ($assertSchema
         }
     };
 
-    $actual = (new HttpParser($client))->parse('https://example.com/users', DatabaseType::MySql);
+    $actual = (new HttpParser($client))->parse('https://example.com/users', 'mysql');
 
     expect($client->lastRequest)->not->toBeNull();
     expect($client->lastRequest->getMethod())->toBe('GET');
@@ -88,7 +88,7 @@ it('parses a wrapped json array response', function () use ($assertSchemaMatches
         }
     };
 
-    $actual = (new HttpParser($client))->parse('https://example.com/users', DatabaseType::MySql);
+    $actual = (new HttpParser($client))->parse('https://example.com/users', 'mysql');
 
     expect($client->lastRequest)->not->toBeNull();
     expect($client->lastRequest->getMethod())->toBe('GET');

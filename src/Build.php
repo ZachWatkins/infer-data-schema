@@ -106,104 +106,20 @@ $buildPhar = static function (
         'bin/infer-data-schema'
     );
     $addDirectoryToPhar($phar, $projectRoot, 'src');
-    $addDirectoryToPhar($phar, $projectRoot, 'vendor');
+    $addDirectoryToPhar($phar, $projectRoot, 'vendor/composer');
+    $addDirectoryToPhar($phar, $projectRoot, 'vendor/flow-php');
+    $addDirectoryToPhar($phar, $projectRoot, 'vendor/nyholm/psr7');
 
     $phar->setStub($buildPharStub());
     $phar->stopBuffering();
-};
-
-$runPhpacker = static function (string $projectRoot): ?array {
-    $phpacker = $projectRoot
-        . \DIRECTORY_SEPARATOR
-        . 'vendor'
-        . \DIRECTORY_SEPARATOR
-        . 'bin'
-        . \DIRECTORY_SEPARATOR
-        . 'phpacker';
-
-    if (!\is_file($phpacker)) {
-        return [
-            'success' => false,
-            'message' => 'Warning: Native binary packaging was skipped because '
-                . 'vendor/bin/phpacker was not found.'
-                . \PHP_EOL,
-        ];
-    }
-
-    if (!\function_exists('proc_open')) {
-        return [
-            'success' => false,
-            'message' => 'Warning: Native binary packaging was skipped because '
-                . 'proc_open is unavailable.'
-                . \PHP_EOL,
-        ];
-    }
-
-    $command = \sprintf(
-        '%s %s build --config=phpacker.json',
-        \escapeshellarg(\PHP_BINARY),
-        \escapeshellarg($phpacker)
-    );
-
-    $descriptorSpecification = [
-        1 => ['pipe', 'w'],
-        2 => ['pipe', 'w'],
-    ];
-
-    $process = \proc_open($command, $descriptorSpecification, $pipes, $projectRoot);
-
-    if (!\is_resource($process)) {
-        return [
-            'success' => false,
-            'message' => 'Warning: Native binary packaging was skipped because '
-                . 'the PHPacker process could not be started.'
-                . \PHP_EOL,
-        ];
-    }
-
-    $stdout = isset($pipes[1]) ? (string) \stream_get_contents($pipes[1]) : '';
-    $stderr = isset($pipes[2]) ? (string) \stream_get_contents($pipes[2]) : '';
-
-    if (isset($pipes[1]) && \is_resource($pipes[1])) {
-        \fclose($pipes[1]);
-    }
-
-    if (isset($pipes[2]) && \is_resource($pipes[2])) {
-        \fclose($pipes[2]);
-    }
-
-    $exitCode = \proc_close($process);
-    $output = \trim($stdout . \PHP_EOL . $stderr);
-
-    if ($exitCode !== 0) {
-        $message = 'Warning: Native binary packaging failed and was skipped.';
-
-        if ($output !== '') {
-            $message .= \PHP_EOL . $output;
-        }
-
-        return [
-            'success' => false,
-            'message' => $message . \PHP_EOL,
-        ];
-    }
-
-    if ($output === '') {
-        return null;
-    }
-
-    return [
-        'success' => true,
-        'message' => $output . \PHP_EOL,
-    ];
 };
 
 if ($isPharReadonly()) {
     \fwrite(
         \STDERR,
         'Error: PHAR creation is disabled. Set phar.readonly=0 in php.ini or '
-        . 'run with "-d phar.readonly=0" to build the PHAR.'
-        . \PHP_EOL
+            . 'run with "-d phar.readonly=0" to build the PHAR.'
+            . \PHP_EOL
     );
 
     exit(1);
@@ -224,14 +140,6 @@ try {
     \fwrite(\STDERR, \sprintf('Error: %s', $throwable->getMessage()) . \PHP_EOL);
 
     exit(1);
-}
-
-$phpackerResult = $runPhpacker($projectRoot);
-
-if ($phpackerResult !== null) {
-    $outputStream = $phpackerResult['success'] ? \STDOUT : \STDERR;
-
-    \fwrite($outputStream, $phpackerResult['message']);
 }
 
 \fwrite(\STDOUT, \sprintf('PHAR built successfully at %s', $pharPath) . \PHP_EOL);

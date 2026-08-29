@@ -9,8 +9,8 @@ It reads a given data source, evaluates all values of all columns for the safest
 1. `src/` - Contains the main PHP source code.  
    - `src/Interfaces` - Contains the interface definitions for the library's class files.  
    - `src/Enums` - Contains the enum definitions for the library.  
-     - `src/Enums/DatabaseType.php` - The enum definition for supported database types.
-     - `src/Enums/ColumnModifier.php` - The enum definition for SQL column modifiers (unique, nullable, signed or unsigned, auto-incrementing).
+     - `src/Enums/DatabaseType.php` - The enum definition for supported database types.  
+     - `src/Enums/ColumnModifier.php` - The enum definition for SQL column modifiers (unique, nullable, signed or unsigned, auto-incrementing).  
      - `src/Enums/SqliteColumnType.php` - The enum definition for SQLite column types.  
      - `src/Enums/MySqlColumnType.php` - The enum definition for MySQL column types.  
      - `src/Enums/SqlServerColumnType.php` - The enum definition for SQL Server column types.  
@@ -20,13 +20,57 @@ It reads a given data source, evaluates all values of all columns for the safest
      - `src/Parsers/XmlParser` - The XML data source parser class.  
      - `src/Parsers/ExcelParser` - The Excel data source parser class.  
      - `src/Parsers/HttpParser` - The HTTP data source parser class.  
-   - `src/Models` - Contains the model classes for the library.
+   - `src/Models` - Contains the model classes for the library.  
      - `src/Models/SqlColumn.php` - The model class representing a database column.  
      - `src/Models/SqlColumnCollection.php` - The model class representing a collection of database columns.  
-   - `src/Console` - Contains the console command class for the library.  
+   - `src/Console.php` - The console class for the library.  
+   - `src/Build.php` - The class responsible for building the PHAR archive for the library, which PHPacker uses to package the library into a single distributable file.
 2. `tests/` - Contains the test cases for the library.
-3. `README.md` - This file, containing an overview and documentation for the library.
+3. `AGENTS.md` - The file containing information for coding agents when generating code for the library.
 4. `composer.json` - The Composer configuration file for managing dependencies and autoloading.
+5. `phpacker.json` - The PHPacker configuration file for packaging the library into a CLI binary application.
+6. `README.md` - This file, containing an overview and documentation for the library.
+
+## Example usage
+
+```php
+require 'vendor/autoload.php';
+
+use ZachWatkins\InferDataSchema\Parsers\CsvParser;
+
+$parser = new CsvParser();
+$sqlColumnCollection = $parser->parse('path/to/your/file.csv');
+var_dump($sqlColumnCollection);
+// SqlColumnCollection Object
+// (
+//     [columns:protected] => Array
+//         (
+//             [0] => SqlColumn Object
+//                 (
+//                     [name:protected] => id
+//                     [type:protected] => int
+//                     [modifiers:protected] => Array
+//                         (
+//                             [0] => auto_increment
+//                             [1] => unsigned
+//                             [2] => unique
+//                         )
+//                 )
+//             [1] => SqlColumn Object
+//                 (
+//                     [name:protected] => name
+//                     [type:protected] => varchar
+//                     [modifiers:protected] => Array
+//                         (
+//                             [0] => nullable
+//                         )
+//                 )
+//         )
+// )
+foreach ($sqlColumnCollection->getColumns() as $column) {
+    echo $column->getName() . ' ' . $column->getType() . ' ' . implode(', ', $column->getModifiers()) . PHP_EOL;
+}
+```
 
 ## Dependencies
 
@@ -41,6 +85,7 @@ This library uses the following dependencies:
 - `flow-php/etl-adapter-xml` - The Flow PHP ETL XML adapter, required for parsing XML data sources.
 - `flow-php/etl-adapter-excel` - The Flow PHP ETL Excel adapter, required for parsing Excel data sources.
 - `flow-php/etl-adapter-http` - The Flow PHP ETL HTTP adapter, required for parsing HTTP data sources.
+- `pestphp/pest` - The Pest PHP testing framework, required for running the test cases.
 
 ## Dependency Documentation Websites
 
@@ -53,3 +98,4 @@ This library uses the following dependencies:
 - [Flow PHP ETL XML Adapter](https://flow-php.com/documentation/components/adapters/xml/)
 - [Flow PHP ETL Excel Adapter](https://flow-php.com/documentation/components/adapters/excel/)
 - [Flow PHP ETL HTTP Adapter](https://flow-php.com/documentation/components/adapters/http/)
+- [Pest PHP](https://pestphp.com/docs/introduction)

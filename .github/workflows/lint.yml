@@ -8,12 +8,8 @@ on:
 
 jobs:
   lint:
-    name: Code Style (PHP ${{ matrix.php-version }})
+    name: Code Style (PHP 8.5)
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        php-version: ['8.3', '8.4', '8.5']
 
     steps:
       - name: Checkout code
@@ -22,7 +18,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-version }}
+          php-version: 8.5
           coverage: none
 
       - name: Validate composer.json and composer.lock
@@ -32,8 +28,8 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.composer/cache
-          key: php-${{ matrix.php-version }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: php-${{ matrix.php-version }}-composer-
+          key: php-8.5-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: php-8.5-composer-
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress

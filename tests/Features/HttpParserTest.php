@@ -7,13 +7,12 @@ use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use ZachWatkins\InferDataSchema\Enums\ColumnModifier;
-use ZachWatkins\InferDataSchema\Enums\DatabaseType;
 use ZachWatkins\InferDataSchema\Interfaces\SqlColumnCollectionInterface;
 use ZachWatkins\InferDataSchema\Interfaces\SqlColumnInterface;
 use ZachWatkins\InferDataSchema\Parsers\HttpParser;
 
-$modifierValues = static fn (SqlColumnInterface $column): array => \array_map(
-    static fn (ColumnModifier $modifier): string => $modifier->value,
+$modifierValues = static fn(SqlColumnInterface $column): array => \array_map(
+    static fn(ColumnModifier $modifier): string => $modifier->value,
     $column->getModifiers(),
 );
 

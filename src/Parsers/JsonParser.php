@@ -17,8 +17,7 @@ final class JsonParser implements ParserInterface
 {
     public function __construct(
         private readonly ColumnTypeInferrerInterface $inferrer = new ColumnTypeInferrer(),
-    ) {
-    }
+    ) {}
 
     public function parse(
         string $source,

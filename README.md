@@ -24,7 +24,7 @@ It reads a given data source, evaluates all values of all columns for the safest
      - `src/Models/SqlColumn.php` - The model class representing a database column.  
      - `src/Models/SqlColumnCollection.php` - The model class representing a collection of database columns.  
    - `src/Console.php` - The console class for the library.  
-   - `src/Build.php` - The class responsible for building the PHAR archive for the library, which PHPacker uses to package the library into a single distributable file.
+   - `src/Build.php` - The class responsible for building the PHAR archive for the library, which PHPacker uses to package the library into a single distributable file.  
 2. `tests/` - Contains the test cases for the library.
 3. `AGENTS.md` - The file containing information for coding agents when generating code for the library.
 4. `composer.json` - The Composer configuration file for managing dependencies and autoloading.

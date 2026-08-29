@@ -136,3 +136,15 @@ it('defaults a fully-null column to a nullable text/varchar type', function () {
     expect($note->hasModifier(ColumnModifier::Nullable))->toBeTrue();
     expect($note->hasModifier(ColumnModifier::Unique))->toBeFalse();
 });
+
+it('treats a column missing entirely from a row the same as an explicit null', function () {
+    $columns = infer([
+        ['id' => 1, 'name' => 'Norb'],
+        ['name' => 'Tomek'],
+    ], DatabaseType::MySql);
+
+    $id = $columns->get('id');
+
+    expect($id->hasModifier(ColumnModifier::Nullable))->toBeTrue();
+    expect($id->hasModifier(ColumnModifier::AutoIncrement))->toBeFalse();
+});

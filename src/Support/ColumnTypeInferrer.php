@@ -33,8 +33,11 @@ final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
         $stats = [];
         /** @var array<int, string> $order */
         $order = [];
+        $totalRows = 0;
 
         foreach ($rows as $row) {
+            $totalRows++;
+
             foreach ($row as $column => $value) {
                 if (!isset($stats[$column])) {
                     $stats[$column] = new ColumnStats();
@@ -48,10 +51,19 @@ final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
         $collection = new SqlColumnCollection();
 
         foreach ($order as $column) {
+            $columnStats = $stats[$column];
+
+            // A row that never mentioned this column is treated exactly like an
+            // explicit null value, so parsers do not need to pre-normalize rows to a
+            // consistent superset of keys (e.g. optional fields in JSON/XML documents).
+            for ($missing = $totalRows - $columnStats->totalCount; $missing > 0; $missing--) {
+                $columnStats->record(null);
+            }
+
             $collection->add(new SqlColumn(
                 $column,
-                $this->resolveType($stats[$column], $databaseType),
-                $this->resolveModifiers($stats[$column]),
+                $this->resolveType($columnStats, $databaseType),
+                $this->resolveModifiers($columnStats),
             ));
         }
 

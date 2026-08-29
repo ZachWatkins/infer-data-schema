@@ -29,7 +29,6 @@ It reads a given data source, evaluates all values of all columns for the safest
      - `src/Models/SqlColumn.php` - The model class representing a database column.  
      - `src/Models/SqlColumnCollection.php` - The model class representing a collection of database columns.  
    - `src/Console.php` - The console class for the library.  
-   - `src/Build.php` - The class responsible for building the PHAR archive for the library, which PHPacker uses to package the library into a single distributable file.  
 3. `tests/` - Contains the test cases for the library.  
    - `tests/fixtures/` - Contains test fixture files used for testing the library's parsers and schema inference logic.  
    - `tests/fixtures/data/` - Contains the actual data files used as test fixtures for the library's parsers and schema inference logic.
@@ -37,8 +36,7 @@ It reads a given data source, evaluates all values of all columns for the safest
    - `tests/Features/` - Contains the feature test cases for the library, typically testing the integration of parsers and schema inference logic.
 4. `AGENTS.md` - The file containing information for coding agents when generating code for the library.
 5. `composer.json` - The Composer configuration file for managing dependencies and autoloading.
-6. `phpacker.json` - The PHPacker configuration file for packaging the library into a CLI binary application.
-7. `README.md` - This file, containing an overview and documentation for the library.
+6. `README.md` - This file, containing an overview and documentation for the library.
 
 ## Example usage
 
@@ -86,8 +84,6 @@ foreach ($sqlColumnCollection->getColumns() as $column) {
 This library uses the following dependencies:
 
 - `php` - The PHP programming language, required to run the library.
-- `php-phar` - PHP phar extension for creating and running PHP archive (PHAR) files, required for packaging the library into a CLI binary application.
-- `phpacker/phpacker` - The PHPacker library, required for packing the library into a CLI binary application.
 - `flow-php/etl` - The Flow PHP ETL library, required for data extraction, transformation, and loading operations.
 - `flow-php/etl-adapter-csv` - The Flow PHP ETL CSV adapter, required for parsing CSV data sources.
 - `flow-php/etl-adapter-json` - The Flow PHP ETL JSON adapter, required for parsing JSON data sources.
@@ -99,8 +95,6 @@ This library uses the following dependencies:
 ## Dependency Documentation Websites
 
 - [PHP](https://www.php.net/)
-- [PHP Phar](https://www.php.net/manual/en/book.phar.php)
-- [PHPacker](https://phpacker.dev/docs/getting-started/)
 - [Flow PHP ETL](https://flow-php.com/documentation/quick-start/)
 - [Flow PHP ETL CSV Adapter](https://flow-php.com/documentation/components/adapters/csv/)
 - [Flow PHP ETL JSON Adapter](https://flow-php.com/documentation/components/adapters/json/)

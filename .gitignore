@@ -1,7 +1,5 @@
 /vendor/
-/build/
 /.phpunit.cache/
-/.phpacker/
 composer.phar
 .phpunit.result.cache
 .DS_Store

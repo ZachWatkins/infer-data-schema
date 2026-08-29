@@ -21,7 +21,6 @@ See [README.md](README.md) for full project details, usage examples, and depende
 - `src/Parsers/` - Data source parser implementations leveraging Flow PHP ETL adapters.
 - `src/Models/` - Data models representing SQL columns (`SqlColumn`) and column collections (`SqlColumnCollection`).
 - `src/Console.php` - CLI application entry point.
-- `src/Build.php` - PHAR packaging build script using PHPacker.
 - `tests/` - Test suite written with Pest PHP.
 
 ## Build & Test Commands

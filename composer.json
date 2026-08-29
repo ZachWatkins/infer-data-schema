@@ -11,7 +11,8 @@
         "flow-php/etl-adapter-excel": "^0.43.0",
         "flow-php/etl-adapter-http": "^0.43.0",
         "flow-php/etl-adapter-json": "^0.43.0",
-        "flow-php/etl-adapter-xml": "^0.43.0"
+        "flow-php/etl-adapter-xml": "^0.43.0",
+        "nyholm/psr7": "^1.8"
     },
     "autoload": {
         "psr-4": {

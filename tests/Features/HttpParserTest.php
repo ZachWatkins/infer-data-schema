@@ -35,7 +35,7 @@ $assertSchemaMatchesExpected = static function (
 };
 
 it('parses a bare top-level json array response', function () use ($assertSchemaMatchesExpected) {
-    $expected = require __DIR__ . '/../fixtures/schema/http_basic_mysql.php';
+    $expected = require dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/schema/http_basic_mysql.php');
 
     $client = new class implements ClientInterface {
         public ?RequestInterface $lastRequest = null;
@@ -65,7 +65,7 @@ it('parses a bare top-level json array response', function () use ($assertSchema
 });
 
 it('parses a wrapped json array response', function () use ($assertSchemaMatchesExpected) {
-    $expected = require __DIR__ . '/../fixtures/schema/http_basic_mysql.php';
+    $expected = require dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/schema/http_basic_mysql.php');
 
     $client = new class implements ClientInterface {
         public ?RequestInterface $lastRequest = null;

@@ -37,10 +37,10 @@ $assertExcelColumnCollectionMatches = static function (
 it('parses an excel workbook into an inferred mysql schema', function () use ($assertExcelColumnCollectionMatches) {
     $parser = new ExcelParser();
     $actual = $parser->parse(
-        dirname(__DIR__) . '\fixtures\data\excel_basic.xlsx',
+        dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/data/excel_basic.xlsx'),
         'mysql',
     );
-    $expected = require dirname(__DIR__) . '\fixtures\schema\excel_basic_mysql.php';
+    $expected = require dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/schema/excel_basic_mysql.php');
 
     $assertExcelColumnCollectionMatches($actual, $expected);
 });

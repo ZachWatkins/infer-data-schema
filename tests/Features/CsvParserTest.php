@@ -23,10 +23,10 @@ it('infers the expected MySQL schema from CSV fixtures', function (string $dataF
         );
     };
 
-    $actual = $parser->parse(__DIR__ . '\\..\\fixtures\\data\\' . $dataFixture, 'mysql');
+    $actual = $parser->parse(dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/data/' . $dataFixture));
 
     /** @var SqlColumnCollectionInterface $expected */
-    $expected = require __DIR__ . '\\..\\fixtures\\schema\\' . $schemaFixture;
+    $expected = require dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/schema/' . $schemaFixture);
 
     expect($normalizeColumns($actual))->toBe($normalizeColumns($expected));
 })->with([

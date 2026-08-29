@@ -1,0 +1,12 @@
+<root>
+    <items>
+        <item>
+            <id>1</id>
+            <name>Norbert</name>
+        </item>
+        <item>
+            <id>2</id>
+            <name>Tomek</name>
+        </item>
+    </items>
+</root>

@@ -30,7 +30,12 @@
     "scripts": {
         "test": "pest",
         "lint": "phpcs",
-        "build": "php src/Build.php"
+        "build:phar": "php -d phar.readonly=0 src/Build.php",
+        "build": [
+            "@build:phar",
+            "phpacker build mac arm --php=8.3",
+            "phpacker build windows x64 --php=8.3"
+        ]
     },
     "config": {
         "sort-packages": true,

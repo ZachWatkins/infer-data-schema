@@ -6,7 +6,12 @@ It reads a given data source, evaluates all values of all columns for the safest
 
 ## Folder structure
 
-1. `src/` - Contains the main PHP source code.  
+1. `.github/` - Contains GitHub-specific configuration files, such as workflows for CI/CD.  
+   - `workflows/` - Contains the GitHub Actions workflow files for CI/CD.  
+   - `workflows/lint.yml` - The GitHub Actions workflow file for running code style checks.  
+   - `workflows/build.yml` - The GitHub Actions workflow file for building and running the binary using a list of PHP versions.  
+   - `workflows/test.yml` - The GitHub Actions workflow file for running tests using a list of PHP versions.  
+2. `src/` - Contains the main PHP source code.  
    - `src/Interfaces` - Contains the interface definitions for the library's class files.  
    - `src/Enums` - Contains the enum definitions for the library.  
      - `src/Enums/DatabaseType.php` - The enum definition for supported database types.  
@@ -25,11 +30,15 @@ It reads a given data source, evaluates all values of all columns for the safest
      - `src/Models/SqlColumnCollection.php` - The model class representing a collection of database columns.  
    - `src/Console.php` - The console class for the library.  
    - `src/Build.php` - The class responsible for building the PHAR archive for the library, which PHPacker uses to package the library into a single distributable file.  
-2. `tests/` - Contains the test cases for the library.
-3. `AGENTS.md` - The file containing information for coding agents when generating code for the library.
-4. `composer.json` - The Composer configuration file for managing dependencies and autoloading.
-5. `phpacker.json` - The PHPacker configuration file for packaging the library into a CLI binary application.
-6. `README.md` - This file, containing an overview and documentation for the library.
+3. `tests/` - Contains the test cases for the library.  
+   - `tests/fixtures/` - Contains test fixture files used for testing the library's parsers and schema inference logic.  
+   - `tests/fixtures/data/` - Contains the actual data files used as test fixtures for the library's parsers and schema inference logic.
+   - `tests/fixtures/schema/` - Contains the expected schema objects corresponding to the data files, used for validating the library's schema inference logic.
+   - `tests/Features/` - Contains the feature test cases for the library, typically testing the integration of parsers and schema inference logic.
+4. `AGENTS.md` - The file containing information for coding agents when generating code for the library.
+5. `composer.json` - The Composer configuration file for managing dependencies and autoloading.
+6. `phpacker.json` - The PHPacker configuration file for packaging the library into a CLI binary application.
+7. `README.md` - This file, containing an overview and documentation for the library.
 
 ## Example usage
 

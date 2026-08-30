@@ -63,7 +63,7 @@ final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
             $collection->add(new SqlColumn(
                 $column,
                 $this->resolveType($columnStats, $databaseType),
-                $this->resolveModifiers($columnStats),
+                $this->resolveModifiers($columnStats, $databaseType),
             ));
         }
 
@@ -73,7 +73,7 @@ final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
     /**
      * @return array<int, ColumnModifier>
      */
-    private function resolveModifiers(ColumnStats $stats): array
+    private function resolveModifiers(ColumnStats $stats, DatabaseType $databaseType): array
     {
         $modifiers = [];
 
@@ -86,7 +86,10 @@ final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
         }
 
         if ($stats->isUnsigned()) {
-            $modifiers[] = ColumnModifier::Unsigned;
+            $type = $this->resolveType($stats, $databaseType);
+            if (!\in_array($type, [MySqlColumnType::Boolean, SqliteColumnType::Boolean, SqlServerColumnType::Bit])) {
+                $modifiers[] = ColumnModifier::Unsigned;
+            }
         }
 
         if ($stats->isAutoIncrement()) {

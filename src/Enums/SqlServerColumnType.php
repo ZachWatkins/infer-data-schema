@@ -11,10 +11,30 @@ namespace ZachWatkins\InferDataSchema\Enums;
  */
 enum SqlServerColumnType: string
 {
+    /**
+     * The bit data type is used for storing Boolean values as 0, 1, or NULL.
+     * @see https://learn.microsoft.com/en-us/sql/t-sql/data-types/bit-transact-sql
+     */
     case Bit = 'BIT';
+    /**
+     * Range: 0 to 255
+     * @see https://learn.microsoft.com/en-us/sql/t-sql/data-types/int-bigint-smallint-and-tinyint-transact-sql
+     */
     case TinyInt = 'TINYINT';
+    /**
+     * Range: -32,768 to 32,767
+     * @see https://learn.microsoft.com/en-us/sql/t-sql/data-types/int-bigint-smallint-and-tinyint-transact-sql
+     */
     case SmallInt = 'SMALLINT';
+    /**
+     * Range: -2,147,483,648 to 2,147,483,647
+     * @see https://learn.microsoft.com/en-us/sql/t-sql/data-types/int-bigint-smallint-and-tinyint-transact-sql
+     */
     case Int = 'INT';
+    /**
+     * Range: -9,223,372,036,854,775,808 to 9,223,372,036,854,775,807
+     * @see https://learn.microsoft.com/en-us/sql/t-sql/data-types/int-bigint-smallint-and-tinyint-transact-sql
+     */
     case BigInt = 'BIGINT';
     /**
      * Decimal values in SQL Server.
@@ -135,9 +155,49 @@ enum SqlServerColumnType: string
      * @see https://learn.microsoft.com/en-us/sql/t-sql/data-types/datetime-transact-sql
      */
     case DateTime = 'DATETIME';
+    /**
+     * "A common misconception is to think that with char(n) and varchar(n), the n defines the number of characters. However, in char(n) and varchar(n), the n defines the string length in bytes (0 to 8,000). n never defines numbers of characters that can be stored. This concept is similar to the definition of nchar and nvarchar. [...] Use char when the sizes of the column data entries are consistent."
+     * @see https://learn.microsoft.com/en-us/sql/t-sql/data-types/char-transact-sql
+     */
+    case Char = 'CHAR';
+    /**
+     * "A common misconception is to think that with char(n) and varchar(n), the n defines the number of characters. However, in char(n) and varchar(n), the n defines the string length in bytes (0 to 8,000). n never defines numbers of characters that can be stored. This concept is similar to the definition of nchar and nvarchar. [...] Use varchar when the sizes of the column data entries vary considerably. Use varchar(max) when the sizes of the column data entries vary considerably, and the string length might exceed 8,000 bytes."
+     * @see https://learn.microsoft.com/en-us/sql/t-sql/data-types/varchar-transact-sql
+     */
     case Varchar = 'VARCHAR';
+    /**
+     * @see https://learn.microsoft.com/en-us/sql/t-sql/data-types/nchar-and-nvarchar-transact-sql
+     */
+    case NChar = 'NCHAR';
+    /**
+     * @see https://learn.microsoft.com/en-us/sql/t-sql/data-types/nchar-and-nvarchar-transact-sql
+     */
     case NVarchar = 'NVARCHAR';
-    case Text = 'TEXT';
+    /**
+     * @see https://learn.microsoft.com/en-us/sql/t-sql/data-types/varbinary-transact-sql
+     */
     case VarBinary = 'VARBINARY';
-    case UniqueIdentifier = 'UNIQUEIDENTIFIER';
+    /**
+     * @see https://learn.microsoft.com/en-us/sql/t-sql/data-types/json-data-type
+     */
+    case Json = 'JSON';
+    /**
+     * @see https://learn.microsoft.com/en-us/sql/t-sql/xml/xml-transact-sql
+     */
+    case XML = 'XML';
+    /**
+     * @deprecated The ntext, text, and image data types will be removed in a future version of SQL Server. Avoid using these data types in new development work, and plan to modify applications that currently use them. Use nvarchar(max), varchar(max), and varbinary(max) instead.
+     * @see https://learn.microsoft.com/en-us/sql/t-sql/data-types/ntext-text-and-image-transact-sql
+     */
+    case Text = 'TEXT';
+    /**
+     * @deprecated The ntext, text, and image data types will be removed in a future version of SQL Server. Avoid using these data types in new development work, and plan to modify applications that currently use them. Use nvarchar(max), varchar(max), and varbinary(max) instead.
+     * @see https://learn.microsoft.com/en-us/sql/t-sql/data-types/ntext-text-and-image-transact-sql
+     */
+    case NText = 'NTEXT';
+    /**
+     * @deprecated The ntext, text, and image data types will be removed in a future version of SQL Server. Avoid using these data types in new development work, and plan to modify applications that currently use them. Use nvarchar(max), varchar(max), and varbinary(max) instead.
+     * @see https://learn.microsoft.com/en-us/sql/t-sql/data-types/ntext-text-and-image-transact-sql
+     */
+    case Image = 'IMAGE';
 }

@@ -92,7 +92,7 @@ This library uses the following dependencies:
 - `flow-php/etl-adapter-http` - The Flow PHP ETL HTTP adapter, required for parsing HTTP data sources.
 - `pestphp/pest` - The Pest PHP testing framework, required for running the test cases.
 
-## Dependency Documentation Websites
+## Additional Resources
 
 - [PHP](https://www.php.net/)
 - [Flow PHP ETL](https://flow-php.com/documentation/quick-start/)
@@ -102,3 +102,4 @@ This library uses the following dependencies:
 - [Flow PHP ETL Excel Adapter](https://flow-php.com/documentation/components/adapters/excel/)
 - [Flow PHP ETL HTTP Adapter](https://flow-php.com/documentation/components/adapters/http/)
 - [Pest PHP](https://pestphp.com/docs/introduction)
+- [SQL Server Data Types](https://learn.microsoft.com/en-us/sql/t-sql/data-types/data-types-transact-sql)

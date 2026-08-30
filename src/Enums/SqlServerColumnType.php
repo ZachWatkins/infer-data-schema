@@ -16,6 +16,15 @@ enum SqlServerColumnType: string
     case SmallInt = 'SMALLINT';
     case Int = 'INT';
     case BigInt = 'BIGINT';
+    /**
+     * Decimal values in SQL Server.
+     * Min value: -10^38 + 1
+     * Max value: 10^38 - 1
+     * Min precision: 1
+     * Max precision: 38
+     * Min scale: 0
+     * Max scale: 38 (must be less than or equal to the precision)
+     */
     case Decimal = 'DECIMAL';
     case Float = 'FLOAT';
     case Date = 'DATE';

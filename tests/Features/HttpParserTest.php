@@ -7,34 +7,9 @@ use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use ZachWatkins\InferDataSchema\Enums\ColumnModifier;
-use ZachWatkins\InferDataSchema\Interfaces\SqlColumnCollectionInterface;
-use ZachWatkins\InferDataSchema\Interfaces\SqlColumnInterface;
 use ZachWatkins\InferDataSchema\Parsers\HttpParser;
 
-$modifierValues = static fn(SqlColumnInterface $column): array => \array_map(
-    static fn(ColumnModifier $modifier): string => $modifier->value,
-    $column->getModifiers(),
-);
-
-$assertSchemaMatchesExpected = static function (
-    SqlColumnCollectionInterface $actual,
-    SqlColumnCollectionInterface $expected,
-) use ($modifierValues): void {
-    $actualColumns = $actual->getColumns();
-    $expectedColumns = $expected->getColumns();
-
-    expect($actualColumns)->toHaveCount(\count($expectedColumns));
-
-    foreach ($expectedColumns as $index => $expectedColumn) {
-        $actualColumn = $actualColumns[$index];
-
-        expect($actualColumn->getName())->toBe($expectedColumn->getName());
-        expect($actualColumn->getType())->toBe($expectedColumn->getType());
-        expect($modifierValues($actualColumn))->toBe($modifierValues($expectedColumn));
-    }
-};
-
-it('parses a bare top-level json array response', function () use ($assertSchemaMatchesExpected) {
+it('parses a bare top-level json array response', function () {
     $expected = require dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/schema/http_basic_mysql.php');
 
     $client = new class implements ClientInterface {
@@ -61,10 +36,25 @@ it('parses a bare top-level json array response', function () use ($assertSchema
     expect($client->lastRequest->getMethod())->toBe('GET');
     expect($client->lastRequest->getHeaderLine('Accept'))->toBe('application/json');
 
-    $assertSchemaMatchesExpected($actual, $expected);
+    $actualColumns = $actual->getColumns();
+    $expectedColumns = $expected->getColumns();
+
+    expect($actualColumns)->toHaveCount(\count($expectedColumns));
+
+    foreach ($expectedColumns as $index => $expectedColumn) {
+        $actualColumn = $actualColumns[$index];
+
+        expect($actualColumn->getName())->toBe($expectedColumn->getName());
+        expect($actualColumn->getType())->toBe($expectedColumn->getType());
+        expect(
+            \array_map(static fn(ColumnModifier $modifier): string => $modifier->value, $actualColumn->getModifiers())
+        )->toBe(
+            \array_map(static fn(ColumnModifier $modifier): string => $modifier->value, $expectedColumn->getModifiers())
+        );
+    }
 });
 
-it('parses a wrapped json array response', function () use ($assertSchemaMatchesExpected) {
+it('parses a wrapped json array response', function () {
     $expected = require dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/schema/http_basic_mysql.php');
 
     $client = new class implements ClientInterface {
@@ -93,5 +83,20 @@ it('parses a wrapped json array response', function () use ($assertSchemaMatches
     expect($client->lastRequest->getMethod())->toBe('GET');
     expect($client->lastRequest->getHeaderLine('Accept'))->toBe('application/json');
 
-    $assertSchemaMatchesExpected($actual, $expected);
+    $actualColumns = $actual->getColumns();
+    $expectedColumns = $expected->getColumns();
+
+    expect($actualColumns)->toHaveCount(\count($expectedColumns));
+
+    foreach ($expectedColumns as $index => $expectedColumn) {
+        $actualColumn = $actualColumns[$index];
+
+        expect($actualColumn->getName())->toBe($expectedColumn->getName());
+        expect($actualColumn->getType())->toBe($expectedColumn->getType());
+        expect(
+            \array_map(static fn(ColumnModifier $modifier): string => $modifier->value, $actualColumn->getModifiers())
+        )->toBe(
+            \array_map(static fn(ColumnModifier $modifier): string => $modifier->value, $expectedColumn->getModifiers())
+        );
+    }
 });

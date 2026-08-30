@@ -3,21 +3,17 @@
 declare(strict_types=1);
 
 use ZachWatkins\InferDataSchema\Enums\ColumnModifier;
-use ZachWatkins\InferDataSchema\Interfaces\SqlColumnCollectionInterface;
 use ZachWatkins\InferDataSchema\Interfaces\SqlColumnInterface;
 use ZachWatkins\InferDataSchema\Parsers\XmlParser;
 
-$modifierValuesForXml = static function (SqlColumnInterface $column): array {
-    return \array_map(
-        static fn (ColumnModifier $modifier): string => $modifier->value,
-        $column->getModifiers(),
+it('parses flat xml rows into an inferred mysql schema', function () {
+    $parser = new XmlParser();
+    $actual = $parser->parse(
+        dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/data/xml_basic.xml'),
+        'mysql',
     );
-};
+    $expected = require dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/schema/xml_basic_mysql.php');
 
-$assertXmlColumnCollectionMatches = static function (
-    SqlColumnCollectionInterface $actual,
-    SqlColumnCollectionInterface $expected,
-) use ($modifierValuesForXml): void {
     expect($actual->count())->toBe($expected->count());
 
     $actualColumns = $actual->getColumns();
@@ -30,22 +26,15 @@ $assertXmlColumnCollectionMatches = static function (
         expect($actualColumn)->not->toBeNull();
         expect($actualColumn->getName())->toBe($expectedColumn->getName());
         expect($actualColumn->getType())->toBe($expectedColumn->getType());
-        expect($modifierValuesForXml($actualColumn))->toBe($modifierValuesForXml($expectedColumn));
+        expect(
+            \array_map(static fn(ColumnModifier $modifier): string => $modifier->value, $actualColumn->getModifiers())
+        )->toBe(
+            \array_map(static fn(ColumnModifier $modifier): string => $modifier->value, $expectedColumn->getModifiers())
+        );
     }
-};
-
-it('parses flat xml rows into an inferred mysql schema', function () use ($assertXmlColumnCollectionMatches) {
-    $parser = new XmlParser();
-    $actual = $parser->parse(
-        dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/data/xml_basic.xml'),
-        'mysql',
-    );
-    $expected = require dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/schema/xml_basic_mysql.php');
-
-    $assertXmlColumnCollectionMatches($actual, $expected);
 });
 
-it('parses nested xml rows when a node path is configured', function () use ($assertXmlColumnCollectionMatches) {
+it('parses nested xml rows when a node path is configured', function () {
     $parser = new XmlParser('root/items/item');
     $actual = $parser->parse(
         dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/data/xml_nested.xml'),
@@ -53,5 +42,22 @@ it('parses nested xml rows when a node path is configured', function () use ($as
     );
     $expected = require dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/schema/xml_basic_mysql.php');
 
-    $assertXmlColumnCollectionMatches($actual, $expected);
+    expect($actual->count())->toBe($expected->count());
+
+    $actualColumns = $actual->getColumns();
+    $expectedColumns = $expected->getColumns();
+
+    foreach ($expectedColumns as $index => $expectedColumn) {
+        /** @var SqlColumnInterface|null $actualColumn */
+        $actualColumn = $actualColumns[$index] ?? null;
+
+        expect($actualColumn)->not->toBeNull();
+        expect($actualColumn->getName())->toBe($expectedColumn->getName());
+        expect($actualColumn->getType())->toBe($expectedColumn->getType());
+        expect(
+            \array_map(static fn(ColumnModifier $modifier): string => $modifier->value, $actualColumn->getModifiers())
+        )->toBe(
+            \array_map(static fn(ColumnModifier $modifier): string => $modifier->value, $expectedColumn->getModifiers())
+        );
+    }
 });

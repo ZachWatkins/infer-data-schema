@@ -47,16 +47,6 @@ enum SqlServerColumnType: string
      */
     case Decimal = 'DECIMAL';
     /**
-     * Approximate floating-point values in SQL Server.
-     * Range: -1.79E+308 to -2.23E-308, 0 and 2.23E-308 to 1.79E+308
-     */
-    case Float = 'FLOAT';
-    /**
-     * Approximate floating-point values in SQL Server with lower precision than FLOAT.
-     * Range: -3.40E+38 to -1.18E-38, 0 and 1.18E-38 to 3.40E+38
-     */
-    case Real = 'REAL';
-    /**
      * Range: 0001-01-01 to 9999-12-31.
      * The current language setting determines the default date format. You can change the date format by using the SET LANGUAGE and SET DATEFORMAT statements.
      * Default format: yyyy-MM-dd
@@ -116,31 +106,6 @@ enum SqlServerColumnType: string
      */
     case Time = 'TIME';
     /**
-     * Date range:
-     * 0001-01-01 through 9999-12-31
-     * Time range:
-     * 00:00:00 through 23:59:59.9999999
-     * Accepted formats:
-     * yyyy-MM-dd HH:mm:ss[.nnnnnnn]
-     * yyyy-MM-ddTHH:mm:ss[.nnnnnnn]
-     * @see https://learn.microsoft.com/en-us/sql/t-sql/data-types/datetime2-transact-sql
-     */
-    case DateTime2 = 'DATETIME2';
-    /**
-     * Date range:
-     * 0001-01-01 through 9999-12-31
-     * Time range:
-     * 00:00:00 through 23:59:59.9999999
-     * Time zone offset range:
-     * -14:00 through +14:00
-     * Accepted formats:
-     * yyyy-MM-dd HH:mm:ss[.nnnnnnn] [{+|-}hh:mm]
-     * yyyy-MM-ddTHH:mm:ss[.nnnnnnn][{+|-}hh:mm] (These two formats aren't affected by the SET LANGUAGE and SET DATEFORMAT session locale settings. Spaces aren't allowed between the datetimeoffset and the datetime parts.)
-     * yyyy-MM-ddTHH:mm:ss[.nnnnnnn]Z (This format by ISO definition indicates the datetime portion should be expressed in Coordinated Universal Time (UTC). For example, 1999-12-12 12:30:30.12345 -07:00 should be represented as 1999-12-12 19:30:30.12345Z.)
-     * @see https://learn.microsoft.com/en-us/sql/t-sql/data-types/datetimeoffset-transact-sql
-     */
-    case DateTimeOffset = 'DATETIMEOFFSET';
-    /**
      * The setting for SET DATEFORMAT determines how date values are interpreted by SQL Server.
      * Date range:
      * 1753-01-01 (January 1, 1753) through 9999-12-31 (December 31, 9999)
@@ -185,19 +150,4 @@ enum SqlServerColumnType: string
      * @see https://learn.microsoft.com/en-us/sql/t-sql/xml/xml-transact-sql
      */
     case XML = 'XML';
-    /**
-     * @deprecated The ntext, text, and image data types will be removed in a future version of SQL Server. Avoid using these data types in new development work, and plan to modify applications that currently use them. Use nvarchar(max), varchar(max), and varbinary(max) instead.
-     * @see https://learn.microsoft.com/en-us/sql/t-sql/data-types/ntext-text-and-image-transact-sql
-     */
-    case Text = 'TEXT';
-    /**
-     * @deprecated The ntext, text, and image data types will be removed in a future version of SQL Server. Avoid using these data types in new development work, and plan to modify applications that currently use them. Use nvarchar(max), varchar(max), and varbinary(max) instead.
-     * @see https://learn.microsoft.com/en-us/sql/t-sql/data-types/ntext-text-and-image-transact-sql
-     */
-    case NText = 'NTEXT';
-    /**
-     * @deprecated The ntext, text, and image data types will be removed in a future version of SQL Server. Avoid using these data types in new development work, and plan to modify applications that currently use them. Use nvarchar(max), varchar(max), and varbinary(max) instead.
-     * @see https://learn.microsoft.com/en-us/sql/t-sql/data-types/ntext-text-and-image-transact-sql
-     */
-    case Image = 'IMAGE';
 }

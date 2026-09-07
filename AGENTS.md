@@ -15,13 +15,39 @@ See [README.md](README.md) for full project details, usage examples, and depende
 
 ## Project Architecture
 
-- `.github/` - Contains GitHub-specific configuration files, such as workflows for CI/CD.
-- `src/Interfaces/` - Interface definitions for parsers, schema builders, and models.
-- `src/Enums/` - Enums for supported database types, SQL column types, and column modifiers.
-- `src/Parsers/` - Data source parser implementations leveraging Flow PHP ETL adapters.
-- `src/Models/` - Data models representing SQL columns (`SqlColumn`) and column collections (`SqlColumnCollection`).
-- `src/Console.php` - CLI application entry point.
-- `tests/` - Test suite written with Pest PHP.
+1. `.github/` - Contains GitHub-specific configuration files, such as workflows for CI/CD.  
+   - `workflows/` - Contains the GitHub Actions workflow files for CI/CD.  
+   - `workflows/lint.yml` - The GitHub Actions workflow file for running code style checks.  
+   - `workflows/build.yml` - The GitHub Actions workflow file for building and running the binary using a list of PHP versions.  
+   - `workflows/test.yml` - The GitHub Actions workflow file for running tests using a list of PHP versions.  
+2. `documentation/` - Contains the documentation files for the library, including ADRs and other relevant documentation.
+   - `documentation/adrs/` - Contains the Architecture Decision Records (ADRs) for the library.
+3. `src/` - Contains the main PHP source code.  
+   - `src/Interfaces` - Contains the interface definitions for the library's class files.  
+   - `src/Enums` - Contains the enum definitions for the library.  
+     - `src/Enums/DatabaseType.php` - The enum definition for supported database types.  
+     - `src/Enums/ColumnModifier.php` - The enum definition for SQL column modifiers (unique, nullable, signed or unsigned, auto-incrementing).  
+     - `src/Enums/SqliteColumnType.php` - The enum definition for SQLite column types.  
+     - `src/Enums/MySqlColumnType.php` - The enum definition for MySQL column types.  
+     - `src/Enums/SqlServerColumnType.php` - The enum definition for SQL Server column types.  
+   - `src/Parsers` - Contains the data source parser classes for the library.  
+     - `src/Parsers/CsvParser` - The CSV data source parser class.  
+     - `src/Parsers/JsonParser` - The JSON data source parser class.  
+     - `src/Parsers/XmlParser` - The XML data source parser class.  
+     - `src/Parsers/ExcelParser` - The Excel data source parser class.  
+     - `src/Parsers/HttpParser` - The HTTP data source parser class.  
+   - `src/Models` - Contains the model classes for the library.  
+     - `src/Models/SqlColumn.php` - The model class representing a database column.  
+     - `src/Models/SqlColumnCollection.php` - The model class representing a collection of database columns.  
+   - `src/Console.php` - The console class for the library.  
+3. `tests/` - Contains the test cases for the library.  
+   - `tests/fixtures/` - Contains test fixture files used for testing the library's parsers and schema inference logic.  
+   - `tests/fixtures/data/` - Contains the actual data files used as test fixtures for the library's parsers and schema inference logic.
+   - `tests/fixtures/schema/` - Contains the expected schema objects corresponding to the data files, used for validating the library's schema inference logic.
+   - `tests/Features/` - Contains the feature test cases for the library, typically testing the integration of parsers and schema inference logic.
+4. `AGENTS.md` - The file containing information for coding agents when generating code for the library.
+5. `composer.json` - The Composer configuration file for managing dependencies and autoloading.
+6. `README.md` - The readme file, containing an overview and documentation for the library.
 
 ## Build & Test Commands
 

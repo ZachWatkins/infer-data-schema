@@ -13,7 +13,9 @@ It reads a given data source, evaluates all values of all columns for the safest
    - `workflows/lint.yml` - The GitHub Actions workflow file for running code style checks.  
    - `workflows/build.yml` - The GitHub Actions workflow file for building and running the binary using a list of PHP versions.  
    - `workflows/test.yml` - The GitHub Actions workflow file for running tests using a list of PHP versions.  
-2. `src/` - Contains the main PHP source code.  
+2. `documentation/` - Contains the documentation files for the library, including ADRs and other relevant documentation.
+   - `documentation/adrs/` - Contains the Architecture Decision Records (ADRs) for the library.
+3. `src/` - Contains the main PHP source code.  
    - `src/Interfaces` - Contains the interface definitions for the library's class files.  
    - `src/Enums` - Contains the enum definitions for the library.  
      - `src/Enums/DatabaseType.php` - The enum definition for supported database types.  

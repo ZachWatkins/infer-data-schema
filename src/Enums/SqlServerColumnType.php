@@ -122,12 +122,12 @@ enum SqlServerColumnType: string
     case DateTime = 'DATETIME';
     /**
      * "A common misconception is to think that with char(n) and varchar(n), the n defines the number of characters. However, in char(n) and varchar(n), the n defines the string length in bytes (0 to 8,000). n never defines numbers of characters that can be stored. This concept is similar to the definition of nchar and nvarchar. [...] Use char when the sizes of the column data entries are consistent."
-     * @see https://learn.microsoft.com/en-us/sql/t-sql/data-types/char-transact-sql
+     * @see https://learn.microsoft.com/en-us/sql/t-sql/data-types/char-and-varchar-transact-sql
      */
     case Char = 'CHAR';
     /**
      * "A common misconception is to think that with char(n) and varchar(n), the n defines the number of characters. However, in char(n) and varchar(n), the n defines the string length in bytes (0 to 8,000). n never defines numbers of characters that can be stored. This concept is similar to the definition of nchar and nvarchar. [...] Use varchar when the sizes of the column data entries vary considerably. Use varchar(max) when the sizes of the column data entries vary considerably, and the string length might exceed 8,000 bytes."
-     * @see https://learn.microsoft.com/en-us/sql/t-sql/data-types/varchar-transact-sql
+     * @see https://learn.microsoft.com/en-us/sql/t-sql/data-types/char-and-varchar-transact-sql
      */
     case Varchar = 'VARCHAR';
     /**

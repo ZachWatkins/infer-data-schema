@@ -65,10 +65,12 @@ enum MySqlColumnType: string
      */
     case DateTime = 'DATETIME';
     /**
+     * "The length of a CHAR column is fixed to the length that you declare when you create the table. The length can be any value from 0 to 255. When CHAR values are stored, they are right-padded with spaces to the specified length. When CHAR values are retrieved, trailing spaces are removed unless the PAD_CHAR_TO_FULL_LENGTH SQL mode is enabled."
      * @see https://dev.mysql.com/doc/refman/8.0/en/char.html
      */
     case Char = 'CHAR';
     /**
+     * "Values in VARCHAR columns are variable-length strings. The length can be specified as a value from 0 to 65,535. The effective maximum length of a VARCHAR is subject to the maximum row size (65,535 bytes, which is shared among all columns) and the character set used. See Section 10.4.7, “Limits on Table Column Count and Row Size”."
      * @see https://dev.mysql.com/doc/refman/8.0/en/char.html
      */
     case Varchar = 'VARCHAR';

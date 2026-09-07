@@ -6,7 +6,7 @@
 
 namespace Tests\Fixtures\Build;
 
-require_once __DIR__ . '../vendor/autoload.php';
+require_once __DIR__ . '/../../../vendor/autoload.php';
 
 class TestDataGenerator
 {
@@ -22,34 +22,115 @@ class TestDataGenerator
      */
     public function generate(int $length = 10): array
     {
-        return [
-            'negative_one' => -1,
-            'zero' => 0,
-            'one' => 1,
-            'tinyint_unsigned_random' => $this->faker->numberBetween(0, 255),
-            'tinyint_unsigned_max' => 255,
-            'tinyint_unsigned_max_plus_one' => 256,
-            'tinyint_signed_random' => $this->faker->numberBetween(-128, 127),
-            'tinyint_signed_min' => -128,
-            'tinyint_signed_min_minus_one' => -129,
-            'tinyint_signed_max' => 127,
-            'tinyint_signed_max_plus_one' => 128,
-            'smallint_unsigned_random' => $this->faker->numberBetween(256, 65535),
-            'smallint_unsigned_min' => 0,
-            'smallint_unsigned_max' => 65535,
-            'smallint_unsigned_max_plus_one' => 65536,
-            'smallint_signed_random' => $this->faker->numberBetween(-32768, -129),
-            'smallint_signed_min' => -32768,
-            'smallint_signed_min_minus_one' => -32769,
-            'smallint_signed_max' => 32767,
-            'smallint_signed_max_plus_one' => 32768,
+        $columns = [
+            'bit' => $this->generateBitColumn($length),
+            'bit_nullable' => $this->generateBitColumn($length, nullable: true),
+            'tinyint' => $this->generateTinyIntColumn($length),
+            'tinyint_nullable' => $this->generateTinyIntColumn($length, nullable: true),
+            'tinyint_unique' => $this->generateTinyIntColumn($length, unique: true),
+            'tinyint_nullable_unique' => $this->generateTinyIntColumn($length, nullable: true, unique: true),
+            'tinyint_unsigned' => $this->generateTinyIntColumn($length, unsigned: true),
+            'tinyint_unsigned_nullable' => $this->generateTinyIntColumn($length, unsigned: true, nullable: true),
+            'tinyint_unsigned_unique' => $this->generateTinyIntColumn($length, unsigned: true, unique: true),
+            'tinyint_unsigned_nullable_unique' => $this->generateTinyIntColumn($length, unsigned: true, nullable: true, unique: true),
+            'smallint' => $this->generateSmallIntColumn($length),
+            'smallint_nullable' => $this->generateSmallIntColumn($length, nullable: true),
+            'smallint_unique' => $this->generateSmallIntColumn($length, unique: true),
+            'smallint_nullable_unique' => $this->generateSmallIntColumn($length, nullable: true, unique: true),
+            'smallint_unsigned' => $this->generateSmallIntColumn($length, unsigned: true),
+            'smallint_unsigned_nullable' => $this->generateSmallIntColumn($length, unsigned: true, nullable: true),
+            'smallint_unsigned_unique' => $this->generateSmallIntColumn($length, unsigned: true, unique: true),
+            'smallint_unsigned_nullable_unique' => $this->generateSmallIntColumn($length, unsigned: true, nullable: true, unique: true),
+            'mediumint' => $this->generateMediumIntColumn($length),
+            'mediumint_nullable' => $this->generateMediumIntColumn($length, nullable: true),
+            'mediumint_unique' => $this->generateMediumIntColumn($length, unique: true),
+            'mediumint_nullable_unique' => $this->generateMediumIntColumn($length, nullable: true, unique: true),
+            'mediumint_unsigned' => $this->generateMediumIntColumn($length, unsigned: true),
+            'mediumint_unsigned_nullable' => $this->generateMediumIntColumn($length, unsigned: true, nullable: true),
+            'mediumint_unsigned_unique' => $this->generateMediumIntColumn($length, unsigned: true, unique: true),
+            'mediumint_unsigned_nullable_unique' => $this->generateMediumIntColumn($length, unsigned: true, nullable: true, unique: true),
+            'int' => $this->generateIntColumn($length),
+            'int_nullable' => $this->generateIntColumn($length, nullable: true),
+            'int_unique' => $this->generateIntColumn($length, unique: true),
+            'int_nullable_unique' => $this->generateIntColumn($length, nullable: true, unique: true),
+            'int_unsigned' => $this->generateIntColumn($length, unsigned: true),
+            'int_unsigned_nullable' => $this->generateIntColumn($length, unsigned: true, nullable: true),
+            'int_unsigned_unique' => $this->generateIntColumn($length, unsigned: true, unique: true),
+            'int_unsigned_nullable_unique' => $this->generateIntColumn($length, unsigned: true, nullable: true, unique: true),
+            'bigint' => $this->generateBigIntColumn($length),
+            'bigint_nullable' => $this->generateBigIntColumn($length, nullable: true),
+            'bigint_unique' => $this->generateBigIntColumn($length, unique: true),
+            'bigint_nullable_unique' => $this->generateBigIntColumn($length, nullable: true, unique: true),
+            'bigint_unsigned' => $this->generateBigIntColumn($length, unsigned: true),
+            'bigint_unsigned_nullable' => $this->generateBigIntColumn($length, unsigned: true, nullable: true),
+            'bigint_unsigned_unique' => $this->generateBigIntColumn($length, unsigned: true, unique: true),
+            'bigint_unsigned_nullable_unique' => $this->generateBigIntColumn($length, unsigned: true, nullable: true, unique: true),
+            'decimal' => $this->generateDecimalColumn($length),
+            'decimal_nullable' => $this->generateDecimalColumn($length, nullable: true),
+            'decimal_unique' => $this->generateDecimalColumn($length, unique: true),
+            'decimal_nullable_unique' => $this->generateDecimalColumn($length, nullable: true, unique: true),
+            'decimal_unsigned' => $this->generateDecimalColumn($length, unsigned: true),
+            'decimal_unsigned_nullable' => $this->generateDecimalColumn($length, unsigned: true, nullable: true),
+            'decimal_unsigned_unique' => $this->generateDecimalColumn($length, unsigned: true, unique: true),
+            'decimal_unsigned_nullable_unique' => $this->generateDecimalColumn($length, unsigned: true, nullable: true, unique: true),
+            'boolean' => $this->generateBooleanColumn($length),
+            'boolean_nullable' => $this->generateBooleanColumn($length, nullable: true),
+            'boolean_unique' => $this->generateBooleanColumn($length, unique: true),
+            'boolean_nullable_unique' => $this->generateBooleanColumn($length, nullable: true, unique: true),
+            'char' => $this->generateCharColumn($length, 2),
+            'char_nullable' => $this->generateCharColumn($length, 2, nullable: true),
+            'char_unique' => $this->generateCharColumn($length, 2, unique: true),
+            'char_nullable_unique' => $this->generateCharColumn($length, 2, nullable: true, unique: true),
+            'varchar' => $this->generateVarcharColumn($length, 255),
+            'varchar_nullable' => $this->generateVarcharColumn($length, 255, nullable: true),
+            'varchar_unique' => $this->generateVarcharColumn($length, 255, unique: true),
+            'varchar_nullable_unique' => $this->generateVarcharColumn($length, 255, nullable: true, unique: true),
+            'text' => $this->generateTextColumn($length),
+            'text_nullable' => $this->generateTextColumn($length, nullable: true),
+            'text_unique' => $this->generateTextColumn($length, unique: true),
+            'text_nullable_unique' => $this->generateTextColumn($length, nullable: true, unique: true),
+            'date' => $this->generateDateColumn($length),
+            'date_nullable' => $this->generateDateColumn($length, nullable: true),
+            'date_unique' => $this->generateDateColumn($length, unique: true),
+            'date_nullable_unique' => $this->generateDateColumn($length, nullable: true, unique: true),
+            'time' => $this->generateTimeColumn($length),
+            'time_nullable' => $this->generateTimeColumn($length, nullable: true),
+            'time_unique' => $this->generateTimeColumn($length, unique: true),
+            'time_nullable_unique' => $this->generateTimeColumn($length, nullable: true, unique: true),
+            'datetime' => $this->generateDateTimeColumn($length),
+            'datetime_nullable' => $this->generateDateTimeColumn($length, nullable: true),
+            'datetime_unique' => $this->generateDateTimeColumn($length, unique: true),
+            'datetime_nullable_unique' => $this->generateDateTimeColumn($length, nullable: true, unique: true),
+            'json' => $this->generateJsonColumn($length),
+            'json_nullable' => $this->generateJsonColumn($length, nullable: true),
+            'json_unique' => $this->generateJsonColumn($length, unique: true),
+            'json_nullable_unique' => $this->generateJsonColumn($length, nullable: true, unique: true),
+            'xml' => $this->generateXmlColumn($length),
+            'xml_nullable' => $this->generateXmlColumn($length, nullable: true),
+            'xml_unique' => $this->generateXmlColumn($length, unique: true),
+            'xml_nullable_unique' => $this->generateXmlColumn($length, nullable: true, unique: true),
         ];
+        $values = [];
+        for ($i = 0; $i < $length; $i++) {
+            $values[$i] = [];
+            foreach ($columns as $columnName => $columnValues) {
+                $values[$i][$columnName] = $columnValues[$i];
+            }
+        }
+        return $values;
     }
 
-    protected function generateBitColumn(int $length): array
+    protected function generateBitColumn(int $length, bool $nullable = false): array
     {
         $values = array_fill(0, $length, 0);
         $values[0] = 1;
+        if ($nullable) {
+            if ($length > 1) {
+                $values[1] = null;
+            } else {
+                $values[0] = null;
+            }
+        }
         return $values;
     }
 
@@ -93,7 +174,7 @@ class TestDataGenerator
         return $this->generateNumericColumn($length, -9223372036854775808, 9223372036854775807, $nullable, $unique);
     }
 
-    protected function generateNumericColumn(int $length, int $min, int $max, bool $nullable = false, bool $unique = false): array
+    protected function generateNumericColumn(int $length, $min, $max, bool $nullable = false, bool $unique = false): array
     {
         $values = [];
         $value = $max;
@@ -124,11 +205,10 @@ class TestDataGenerator
         return $values;
     }
 
-    protected function generateDecimalColumn(int $length, int $precision, bool $unsigned = false, bool $nullable = false, bool $unique = false): array
+    protected function generateDecimalColumn(int $length, int $precision = 2, bool $unsigned = false, bool $nullable = false, bool $unique = false): array
     {
         $values = [];
         $max = $unsigned ? pow(10, $length - $precision) - pow(10, -$precision) : pow(10, $length - $precision - 1) - pow(10, -$precision);
-        $min = $unsigned ? 0 : -$max;
         for ($i = 0; $i < $length; $i++) {
             $values[] = $max - $i * pow(10, -$precision);
         }
@@ -167,6 +247,22 @@ class TestDataGenerator
         return $values;
     }
 
+    protected function generateCharColumn(int $length, int $charLength = 2, bool $nullable = false, bool $unique = false): array
+    {
+        if ($charLength < 0 || $charLength > 255) {
+            throw new \InvalidArgumentException('CHAR length must be between 0 and 255.');
+        }
+        return $this->generateStringColumn($length, $charLength, $charLength, $nullable, $unique);
+    }
+
+    protected function generateVarcharColumn(int $length, int $varcharLength = 256, bool $nullable = false, bool $unique = false): array
+    {
+        if ($varcharLength < 0 || $varcharLength > 65535) {
+            throw new \InvalidArgumentException('VARCHAR length must be between 0 and 65535.');
+        }
+        return $this->generateStringColumn($length, 0, $varcharLength, $nullable, $unique);
+    }
+
     protected function generateStringColumn(int $length, int $minStrLength, int $maxStrLength, bool $nullable = false, bool $unique = false): array
     {
         $values = [];
@@ -174,6 +270,28 @@ class TestDataGenerator
         for ($i = 0; $i < $length; $i++) {
             $strLength = rand($minStrLength, $maxStrLength);
             $values[] = substr(str_shuffle($seed), 0, $strLength);
+        }
+        if ($nullable) {
+            $values[0] = null;
+            if (!$unique && $length > 2) {
+                $values[1] = $values[2];
+            }
+        } elseif (!$unique && $length > 1) {
+            $values[0] = $values[1];
+        }
+        return $values;
+    }
+
+    protected function generateTextColumn(int $length, bool $nullable = false, bool $unique = false): array
+    {
+        $values = [];
+        $textLengthThreshold = 65536;
+        $sample = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $repeatLength = ceil($textLengthThreshold / strlen($sample));
+        $seed = substr(str_repeat($sample, $repeatLength), 0, $textLengthThreshold);
+        echo strlen($seed) . PHP_EOL;
+        for ($i = 0; $i < $length; $i++) {
+            $values[] = str_shuffle($seed);
         }
         if ($nullable) {
             $values[0] = null;

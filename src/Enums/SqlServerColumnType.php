@@ -44,51 +44,12 @@ enum SqlServerColumnType: string
      * Max precision: 38
      * Min scale: 0
      * Max scale: 38 (must be less than or equal to the precision)
+     * @see https://learn.microsoft.com/en-us/sql/t-sql/data-types/decimal-and-numeric-transact-sql
      */
     case Decimal = 'DECIMAL';
     /**
      * Range: 0001-01-01 to 9999-12-31.
-     * The current language setting determines the default date format. You can change the date format by using the SET LANGUAGE and SET DATEFORMAT statements.
-     * Default format: yyyy-MM-dd
-     * Accepted formats:
-     * SET DATEFORMAT mdy;
-     * [m]m/dd/[yy]yy
-     * [m]m-dd-[yy]yy
-     * SET DATEFORMAT myd;
-     * [m]m/[yy]yy/dd
-     * [m]m-[yy]yy-dd
-     * [m]m.[yy]yy.dd
-     * SET DATEFORMAT dmy;
-     * dd/[m]m/[yy]yy
-     * dd-[m]m-[yy]yy
-     * dd.[m]m.[yy]yy
-     * SET DATEFORMAT dym;
-     * dd/[yy]yy/[m]m
-     * dd-[yy]yy-[m]m
-     * dd.[yy]yy.[m]m
-     * SET DATEFORMAT ymd;
-     * [yy]yy/[m]m/dd
-     * [yy]yy-[m]m-dd
-     * [yy]yy.[m]m.dd
-     * Alphabetical list of formats (mon represents the full month name, or the month abbreviation, given in the current language. Commas are optional and capitalization is ignored. If the day is missing, the first day of the month is supplied.)
-     * [dd] mon[,] yyyy
-     * dd mon[,][yy]yy
-     * dd [yy]yy mon
-     * [dd] yyyy mon
-     * mon [dd][,] yyyy
-     * mon dd[,] [yy]
-     * mon yyyy [dd]
-     * yyyy mon [dd]
-     * yyyy [dd] mon
-     * yyyy [dd] mon
-     * ISO 8601 list of formats
-     * yyyy-MM-dd
-     * yyyyMMdd
-     * Unseparated list of formats (The date data can be specified with four, six, or eight digits. A six-digit or eight-digit string is always interpreted as ymd. The month and day must always be two digits. A four-digit string is interpreted as the year.)
-     * [yy]yyMMdd
-     * yyyy[MMdd]
-     * W3C XML date format (Supported for XML/SOAP usage. TZD is the time zone designator (Z or +hh:mm or -hh:mm): (1) hh:mm represents the time zone offset. hh is two digits, ranging from 0 to 14, which represent the number of hours in the time zone offset. (2) mm is two digits, ranging from 0 to 59, which represent the number of additional minutes in the time zone offset. (3) + (plus) or - (minus) is the mandatory sign of the time zone offset. This sign indicates that, to obtain the local time, the time zone offset is added or subtracted from the Coordinated Universal Times (UTC) time. The valid range of time zone offset is from -14:00 to +14:00.)
-     * yyyy-MM-ddTZD
+     * Format: yyyy-MM-dd
      * @see https://learn.microsoft.com/en-us/sql/t-sql/data-types/date-transact-sql
      */
     case Date = 'DATE';
@@ -121,16 +82,20 @@ enum SqlServerColumnType: string
      */
     case DateTime = 'DATETIME';
     /**
-     * "A common misconception is to think that with char(n) and varchar(n), the n defines the number of characters. However, in char(n) and varchar(n), the n defines the string length in bytes (0 to 8,000). n never defines numbers of characters that can be stored. This concept is similar to the definition of nchar and nvarchar. [...] Use char when the sizes of the column data entries are consistent."
+     * "Fixed-size string data. n defines the string size in bytes and must be a value from 1 through 8,000. For single-byte encoding character sets such as Latin, the storage size is n bytes and the number of characters that can be stored is also n. For multibyte encoding character sets, the storage size is still n bytes but the number of characters that can be stored might be smaller than n. The ISO synonym for char is character. For more information on character sets, see Single-Byte and Multibyte Character Sets. [...] A common misconception is to think that with char(n) and varchar(n), the n defines the number of characters. However, in char(n) and varchar(n), the n defines the string length in bytes (0 to 8,000). n never defines numbers of characters that can be stored. This concept is similar to the definition of nchar and nvarchar. [...] Use char when the sizes of the column data entries are consistent."
+     * This means the amount of bytes will need to be calculated when inferring whether this column type should be used for a database column.
      * @see https://learn.microsoft.com/en-us/sql/t-sql/data-types/char-and-varchar-transact-sql
      */
     case Char = 'CHAR';
     /**
-     * "A common misconception is to think that with char(n) and varchar(n), the n defines the number of characters. However, in char(n) and varchar(n), the n defines the string length in bytes (0 to 8,000). n never defines numbers of characters that can be stored. This concept is similar to the definition of nchar and nvarchar. [...] Use varchar when the sizes of the column data entries vary considerably. Use varchar(max) when the sizes of the column data entries vary considerably, and the string length might exceed 8,000 bytes."
+     * "Variable-size string data. Use n to define the string size in bytes and can be a value from 1 through 8,000, or use max to indicate a column constraint size up to a maximum storage of 2^31-1 bytes (2 GB) or 1 MB in Fabric Data Warehouse. For single-byte encoding character sets such as Latin, the storage size is n bytes + 2 bytes and the number of characters that can be stored is also n. For multibyte encoding character sets, the storage size is still n bytes + 2 bytes but the number of characters that can be stored might be smaller than n. The ISO synonyms for varchar are char varying or character varying. For more information on character sets, see Single-Byte and Multibyte Character Sets. [...] A common misconception is to think that with char(n) and varchar(n), the n defines the number of characters. However, in char(n) and varchar(n), the n defines the string length in bytes (0 to 8,000). n never defines numbers of characters that can be stored. This concept is similar to the definition of nchar and nvarchar. [...] Use varchar when the sizes of the column data entries vary considerably. Use varchar(max) when the sizes of the column data entries vary considerably, and the string length might exceed 8,000 bytes."
+     * This means the amount of bytes will need to be calculated when inferring whether this column type should be used for a database column.
      * @see https://learn.microsoft.com/en-us/sql/t-sql/data-types/char-and-varchar-transact-sql
      */
     case Varchar = 'VARCHAR';
     /**
+     * nchar [ ( n ) ]
+     * "Fixed-size string data. n defines the string size in byte-pairs, and must be a value from 1 through 4,000. The storage size is two times n bytes. For UCS-2 encoding, the storage size is two times n bytes and the number of characters that can be stored is also n. For UTF-16 encoding, the storage size is still two times n bytes, but the number of characters that can be stored might be smaller than n, because Supplementary Characters use two byte-pairs (also called surrogate pairs). The ISO synonyms for nchar are national char and national character."
      * @see https://learn.microsoft.com/en-us/sql/t-sql/data-types/nchar-and-nvarchar-transact-sql
      */
     case NChar = 'NCHAR';

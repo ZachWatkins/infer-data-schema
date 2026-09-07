@@ -36,7 +36,7 @@ It reads a given data source, evaluates all values of all columns for the safest
 3. `tests/` - Contains the test cases for the library.  
    - `tests/fixtures/` - Contains test fixture files used for testing the library's parsers and schema inference logic.  
    - `tests/fixtures/data/` - Contains the actual data files used as test fixtures for the library's parsers and schema inference logic.
-   - `tests/fixtures/schema/` - Contains the expected schema objects corresponding to the data files, used for validating the library's schema inference logic.
+   - `tests/fixtures/schema/` - Contains the expected schema objects corresponding to the data files, used for validating the library's schema inference logic. For each test fixture data file in `tests/fixtures/data/`, there should be a corresponding schema file in this directory for each database supported by the library.
    - `tests/Features/` - Contains the feature test cases for the library, typically testing the integration of parsers and schema inference logic.
 4. `AGENTS.md` - The file containing information for coding agents when generating code for the library.
 5. `composer.json` - The Composer configuration file for managing dependencies and autoloading.

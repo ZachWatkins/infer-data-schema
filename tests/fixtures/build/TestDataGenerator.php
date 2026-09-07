@@ -6,8 +6,6 @@
 
 namespace Tests\Fixtures\Build;
 
-require_once __DIR__ . '/../../../vendor/autoload.php';
-
 class TestDataGenerator
 {
     protected \Faker\Generator $faker;
@@ -315,7 +313,6 @@ class TestDataGenerator
         $sample = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $repeatLength = ceil($textLengthThreshold / strlen($sample));
         $seed = substr(str_repeat($sample, $repeatLength), 0, $textLengthThreshold);
-        echo strlen($seed) . PHP_EOL;
         for ($i = 0; $i < $length; $i++) {
             $values[] = str_shuffle($seed);
         }

@@ -183,16 +183,29 @@ class TestDataGenerator
     protected function generateBigIntColumn(int $length, bool $unsigned = false, bool $nullable = false, bool $unique = false): array
     {
         if ($unsigned) {
-            $unsignedBigIntMin = 0;
-            $unsignedBigIntMax = 18446744073709551615;
+            // Minimize the generated numeric limit to avoid PHP's max int conversion issues.
+            $unsignedIntMax = 4294967295;
+            $unsignedBigIntMin = $unsignedIntMax + 1;
+            $unsignedBigIntMax = $unsignedIntMax + 1 + $length;
             return $this->generateNumericColumn($length, $unsignedBigIntMin, $unsignedBigIntMax, $nullable, $unique);
         }
-        $signedBigIntMin = -9223372036854775808;
-        $signedBigIntMax = 9223372036854775807;
-        return $this->generateNumericColumn($length, $signedBigIntMin, $signedBigIntMax, $nullable, $unique);
+        // Do two chunks of numbers - one chunk as negative values, and another chunk as positive values.
+        $signedIntMin = -2147483648;
+        $signedIntMax = 2147483647;
+        $negativeChunkMin = $signedIntMin - 1 - ceil($length / 2);
+        $negativeChunkMax = $signedIntMin - 1;
+        $positiveChunkMin = $signedIntMax + 1;
+        $positiveChunkMax = $signedIntMax + 1 + ceil($length / 2);
+        $negativeChunk = $this->generateNumericColumn(ceil($length / 2), $negativeChunkMin, $negativeChunkMax, $nullable, $unique);
+        $positiveChunk = $this->generateNumericColumn(ceil($length / 2), $positiveChunkMin, $positiveChunkMax, $nullable, $unique);
+        $merged = array_merge($negativeChunk, $positiveChunk);
+        if (count($merged) > $length) {
+            $merged = array_slice($merged, 0, $length);
+        }
+        return $merged;
     }
 
-    protected function generateNumericColumn(int $length, $min, $max, bool $nullable = false, bool $unique = false): array
+    protected function generateNumericColumn(int $length, int $min, int $max, bool $nullable = false, bool $unique = false): array
     {
         $values = [];
         $value = $max;

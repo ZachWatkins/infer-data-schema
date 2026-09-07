@@ -42,9 +42,21 @@ enum MySqlColumnType: string
      * @see https://dev.mysql.com/doc/refman/8.4/en/precision-math-decimal-characteristics.html
      */
     case Decimal = 'DECIMAL';
+    /**
+     * @see https://dev.mysql.com/doc/refman/8.0/en/boolean-literals.html
+     */
     case Boolean = 'BOOLEAN';
+    /**
+     * @see https://dev.mysql.com/doc/refman/8.0/en/date-and-time-literals.html
+     */
     case Date = 'DATE';
+    /**
+     * @see https://dev.mysql.com/doc/refman/8.0/en/date-and-time-literals.html
+     */
     case Time = 'TIME';
+    /**
+     * @see https://dev.mysql.com/doc/refman/8.0/en/date-and-time-literals.html
+     */
     case DateTime = 'DATETIME';
     /**
      * @see https://dev.mysql.com/doc/refman/8.0/en/char.html

@@ -104,10 +104,6 @@ enum SqlServerColumnType: string
      */
     case NVarchar = 'NVARCHAR';
     /**
-     * @see https://learn.microsoft.com/en-us/sql/t-sql/data-types/varbinary-transact-sql
-     */
-    case VarBinary = 'VARBINARY';
-    /**
      * @see https://learn.microsoft.com/en-us/sql/t-sql/data-types/json-data-type
      */
     case Json = 'JSON';

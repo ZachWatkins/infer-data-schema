@@ -16,5 +16,4 @@ enum SqliteColumnType: string
     case Text = 'TEXT';
     case Real = 'REAL';
     case Numeric = 'NUMERIC';
-    case Blob = 'BLOB';
 }

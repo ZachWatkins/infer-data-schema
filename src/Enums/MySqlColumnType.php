@@ -53,15 +53,15 @@ enum MySqlColumnType: string
      */
     case Boolean = 'BOOLEAN';
     /**
-     * @see https://dev.mysql.com/doc/refman/8.0/en/date-and-time-literals.html
+     * @see https://dev.mysql.com/doc/refman/8.0/en/datetime.html
      */
     case Date = 'DATE';
     /**
-     * @see https://dev.mysql.com/doc/refman/8.0/en/date-and-time-literals.html
+     * @see https://dev.mysql.com/doc/refman/8.0/en/datetime.html
      */
     case Time = 'TIME';
     /**
-     * @see https://dev.mysql.com/doc/refman/8.0/en/date-and-time-literals.html
+     * @see https://dev.mysql.com/doc/refman/8.0/en/datetime.html
      */
     case DateTime = 'DATETIME';
     /**

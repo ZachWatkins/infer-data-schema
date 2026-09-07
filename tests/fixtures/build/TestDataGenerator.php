@@ -137,41 +137,61 @@ class TestDataGenerator
     protected function generateTinyIntColumn(int $length, bool $unsigned = false, bool $nullable = false, bool $unique = false): array
     {
         if ($unsigned) {
-            return $this->generateNumericColumn($length, 0, 255, $nullable, $unique);
+            $unsignedTinyIntMin = 0;
+            $unsignedTinyIntMax = 255;
+            return $this->generateNumericColumn($length, $unsignedTinyIntMin, $unsignedTinyIntMax, $nullable, $unique);
         }
-        return $this->generateNumericColumn($length, -128, 127, $nullable, $unique);
+        $signedTinyIntMin = -128;
+        $signedTinyIntMax = 127;
+        return $this->generateNumericColumn($length, $signedTinyIntMin, $signedTinyIntMax, $nullable, $unique);
     }
 
     protected function generateSmallIntColumn(int $length, bool $unsigned = false, bool $nullable = false, bool $unique = false): array
     {
         if ($unsigned) {
-            return $this->generateNumericColumn($length, 0, 65535, $nullable, $unique);
+            $unsignedSmallIntMin = 0;
+            $unsignedSmallIntMax = 65535;
+            return $this->generateNumericColumn($length, $unsignedSmallIntMin, $unsignedSmallIntMax, $nullable, $unique);
         }
-        return $this->generateNumericColumn($length, -32768, 32767, $nullable, $unique);
+        $signedSmallIntMin = -32768;
+        $signedSmallIntMax = 32767;
+        return $this->generateNumericColumn($length, $signedSmallIntMin, $signedSmallIntMax, $nullable, $unique);
     }
 
     protected function generateMediumIntColumn(int $length, bool $unsigned = false, bool $nullable = false, bool $unique = false): array
     {
         if ($unsigned) {
-            return $this->generateNumericColumn($length, 0, 16777215, $nullable, $unique);
+            $unsignedMediumIntMin = 0;
+            $unsignedMediumIntMax = 16777215;
+            return $this->generateNumericColumn($length, $unsignedMediumIntMin, $unsignedMediumIntMax, $nullable, $unique);
         }
-        return $this->generateNumericColumn($length, -8388608, 8388607, $nullable, $unique);
+        $signedMediumIntMin = -8388608;
+        $signedMediumIntMax = 8388607;
+        return $this->generateNumericColumn($length, $signedMediumIntMin, $signedMediumIntMax, $nullable, $unique);
     }
 
     protected function generateIntColumn(int $length, bool $unsigned = false, bool $nullable = false, bool $unique = false): array
     {
         if ($unsigned) {
-            return $this->generateNumericColumn($length, 0, 4294967295, $nullable, $unique);
+            $unsignedIntMin = 0;
+            $unsignedIntMax = 4294967295;
+            return $this->generateNumericColumn($length, $unsignedIntMin, $unsignedIntMax, $nullable, $unique);
         }
-        return $this->generateNumericColumn($length, -2147483648, 2147483647, $nullable, $unique);
+        $signedIntMin = -2147483648;
+        $signedIntMax = 2147483647;
+        return $this->generateNumericColumn($length, $signedIntMin, $signedIntMax, $nullable, $unique);
     }
 
     protected function generateBigIntColumn(int $length, bool $unsigned = false, bool $nullable = false, bool $unique = false): array
     {
         if ($unsigned) {
-            return $this->generateNumericColumn($length, 0, 18446744073709551615, $nullable, $unique);
+            $unsignedBigIntMin = 0;
+            $unsignedBigIntMax = 18446744073709551615;
+            return $this->generateNumericColumn($length, $unsignedBigIntMin, $unsignedBigIntMax, $nullable, $unique);
         }
-        return $this->generateNumericColumn($length, -9223372036854775808, 9223372036854775807, $nullable, $unique);
+        $signedBigIntMin = -9223372036854775808;
+        $signedBigIntMax = 9223372036854775807;
+        return $this->generateNumericColumn($length, $signedBigIntMin, $signedBigIntMax, $nullable, $unique);
     }
 
     protected function generateNumericColumn(int $length, $min, $max, bool $nullable = false, bool $unique = false): array
@@ -249,16 +269,21 @@ class TestDataGenerator
 
     protected function generateCharColumn(int $length, int $charLength = 2, bool $nullable = false, bool $unique = false): array
     {
-        if ($charLength < 0 || $charLength > 255) {
-            throw new \InvalidArgumentException('CHAR length must be between 0 and 255.');
+        $charColumnMinLength = 0;
+        $charColumnMaxLength = 255;
+        if ($charLength < $charColumnMinLength || $charLength > $charColumnMaxLength) {
+            throw new \InvalidArgumentException('CHAR length must be between ' . $charColumnMinLength . ' and ' . $charColumnMaxLength . '.');
         }
         return $this->generateStringColumn($length, $charLength, $charLength, $nullable, $unique);
     }
 
     protected function generateVarcharColumn(int $length, int $varcharLength = 256, bool $nullable = false, bool $unique = false): array
     {
-        if ($varcharLength < 0 || $varcharLength > 65535) {
-            throw new \InvalidArgumentException('VARCHAR length must be between 0 and 65535.');
+        $varcharColumnMinLength = 0;
+        $varcharColumnMaxLength = 65535;
+
+        if ($varcharLength < $varcharColumnMinLength || $varcharLength > $varcharColumnMaxLength) {
+            throw new \InvalidArgumentException('VARCHAR length must be between ' . $varcharColumnMinLength . ' and ' . $varcharColumnMaxLength . '.');
         }
         return $this->generateStringColumn($length, 0, $varcharLength, $nullable, $unique);
     }
@@ -285,6 +310,7 @@ class TestDataGenerator
     protected function generateTextColumn(int $length, bool $nullable = false, bool $unique = false): array
     {
         $values = [];
+        // This is the number of characters for a MySQL text column that surpasses the limit of a VARCHAR column (65535) and therefore requires a TEXT column.
         $textLengthThreshold = 65536;
         $sample = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $repeatLength = ceil($textLengthThreshold / strlen($sample));

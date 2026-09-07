@@ -6,16 +6,11 @@
 
 namespace Tests\Fixtures\Build\File;
 
-use Tests\Fixtures\Build\TestDataGenerator;
-
 class TestCsvFileGenerator
 {
-    public function generate(string $fileName, int $length = 10): void
+    public function generate(string $fileName, array $data): void
     {
-        $generator = new TestDataGenerator();
-        $data = $generator->generate($length);
-
-        $directory = __DIR__ . '/../data/';
+        $directory = __DIR__ . '/../../data/';
         $filePath = $directory . $fileName;
         $fp = fopen($filePath, 'w');
         if ($fp === false) {
@@ -23,9 +18,9 @@ class TestCsvFileGenerator
         }
 
         if (!empty($data)) {
-            fputcsv($fp, array_keys($data[0]));
+            fputcsv($fp, array_keys($data[0]), escape: '\\');
             foreach ($data as $row) {
-                fputcsv($fp, $row);
+                fputcsv($fp, $row, escape: '\\');
             }
         }
 

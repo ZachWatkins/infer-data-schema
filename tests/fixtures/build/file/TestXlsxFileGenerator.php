@@ -5,15 +5,10 @@
 
 namespace Tests\Fixtures\Build\File;
 
-use Tests\Fixtures\Build\TestDataGenerator;
-
 class TestXlsxFileGenerator
 {
-    public function generate(string $fileName, int $length = 10): void
+    public function generate(string $fileName, array $data): void
     {
-        $generator = new TestDataGenerator();
-        $data = $generator->generate($length);
-
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
@@ -22,7 +17,7 @@ class TestXlsxFileGenerator
             $sheet->fromArray($data, null, 'A2');
         }
 
-        $directory = __DIR__ . '/../data/';
+        $directory = __DIR__ . '/../../data/';
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
         $writer->save($directory . $fileName);
     }

@@ -5,15 +5,10 @@
 
 namespace Tests\Fixtures\Build\File;
 
-use Tests\Fixtures\Build\TestDataGenerator;
-
 class TestXmlFileGenerator
 {
-    public function generate(string $fileName, int $length = 10): void
+    public function generate(string $fileName, array $data): void
     {
-        $generator = new TestDataGenerator();
-        $data = $generator->generate($length);
-
         $xml = new \SimpleXMLElement('<root/>');
         foreach ($data as $row) {
             $item = $xml->addChild('item');
@@ -22,7 +17,7 @@ class TestXmlFileGenerator
             }
         }
 
-        $directory = __DIR__ . '/../data/';
+        $directory = __DIR__ . '/../../data/';
         $xml->asXML($directory . $fileName);
     }
 }

@@ -1,6 +1,6 @@
 # Infer Data Schema
 
-This is not intended to be used in production environments. Do not use this as-is in production environments. It is intended for development and testing purposes only.
+**This is not intended to be used in production environments. Do not use this as-is in production environments. It is intended for development and testing purposes only.**
 
 This is a PHP library which infers the SQL column schema of a data source.
 

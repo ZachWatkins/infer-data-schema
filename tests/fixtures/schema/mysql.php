@@ -8,12 +8,9 @@ use ZachWatkins\InferDataSchema\Models\SqlColumn;
 use ZachWatkins\InferDataSchema\Models\SqlColumnCollection;
 
 return new SqlColumnCollection([
-    new SqlColumn('bit', MySqlColumnType::Boolean->value, [
-        ColumnModifier::Unsigned,
-    ]),
+    new SqlColumn('bit', MySqlColumnType::Boolean->value),
     new SqlColumn('bit_nullable', MySqlColumnType::Boolean->value, [
         ColumnModifier::Nullable,
-        ColumnModifier::Unsigned,
     ]),
     new SqlColumn('tinyint', MySqlColumnType::TinyInt->value, [
         ColumnModifier::Unsigned,

@@ -88,8 +88,20 @@ final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
 
         if ($stats->isUnsigned()) {
             $type = $this->resolveType($stats, $databaseType);
-            if (!\in_array($type, [MySqlColumnType::Boolean, SqlServerColumnType::Bit])) {
-                $modifiers[] = ColumnModifier::Unsigned;
+            switch ($databaseType) {
+                case DatabaseType::MySql:
+                    if (!\in_array($type, [MySqlColumnType::Boolean->value, MySqlColumnType::Bit->value])) {
+                        $modifiers[] = ColumnModifier::Unsigned;
+                    }
+                    break;
+                case DatabaseType::SqlServer:
+                    if ($type !== SqlServerColumnType::Bit->value) {
+                        $modifiers[] = ColumnModifier::Unsigned;
+                    }
+                    break;
+                default:
+                    $modifiers[] = ColumnModifier::Unsigned;
+                    break;
             }
         }
 

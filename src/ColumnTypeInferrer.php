@@ -156,7 +156,7 @@ final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
         $max = (int) \max(\abs($stats->minValue), \abs($stats->maxValue));
 
         return match (true) {
-            $unsigned && $max <= 1 => MySqlColumnType::Boolean,
+            $unsigned && $max <= 1 => MySqlColumnType::Bit,
             $unsigned && $max <= 255 => MySqlColumnType::TinyInt,
             !$unsigned && $max <= 127 => MySqlColumnType::TinyInt,
             $unsigned && $max <= 65_535 => MySqlColumnType::SmallInt,

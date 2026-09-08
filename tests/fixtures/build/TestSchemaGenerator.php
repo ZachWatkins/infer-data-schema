@@ -60,6 +60,7 @@ class TestSchemaGenerator
 
         foreach ($columns as $column) {
             $columnType = match ($column->getType()) {
+                MySqlColumnType::Bit->value => 'Bit',
                 MySqlColumnType::TinyInt->value => 'TinyInt',
                 MySqlColumnType::SmallInt->value => 'SmallInt',
                 MySqlColumnType::MediumInt->value => 'MediumInt',

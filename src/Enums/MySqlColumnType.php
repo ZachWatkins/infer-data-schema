@@ -12,6 +12,11 @@ namespace ZachWatkins\InferDataSchema\Enums;
 enum MySqlColumnType: string
 {
     /**
+     * Range: 0 to 1
+     * @see https://dev.mysql.com/doc/refman/8.4/en/bit-type.html
+     */
+    case Bit = 'BIT';
+    /**
      * Unsigned range: 0 to 255
      * Signed range: -128 to 127
      * @see https://dev.mysql.com/doc/refman/8.0/en/integer-types.html

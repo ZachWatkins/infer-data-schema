@@ -24,17 +24,17 @@ enum MySqlColumnType: string
      */
     case SmallInt = 'SMALLINT';
     /**
-     * Unsigned range: 0 to 4,294,967,295
-     * Signed range: -2,147,483,648 to 2,147,483,647
-     * @see https://dev.mysql.com/doc/refman/8.0/en/integer-types.html
-     */
-    case Int = 'INT';
-    /**
      * Unsigned range: 0 to 16,777,215
      * Signed range: -8,388,608 to 8,388,607
      * @see https://dev.mysql.com/doc/refman/8.0/en/integer-types.html
      */
     case MediumInt = 'MEDIUMINT';
+    /**
+     * Unsigned range: 0 to 4,294,967,295
+     * Signed range: -2,147,483,648 to 2,147,483,647
+     * @see https://dev.mysql.com/doc/refman/8.0/en/integer-types.html
+     */
+    case Int = 'INT';
     /**
      * Unsigned range: 0 to 18,446,744,073,709,551,615
      * Signed range: -9,223,372,036,854,775,808 to 9,223,372,036,854,775,807

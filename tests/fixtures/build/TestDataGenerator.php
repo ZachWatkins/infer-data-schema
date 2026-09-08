@@ -8,11 +8,9 @@ namespace Tests\Fixtures\Build;
 
 class TestDataGenerator
 {
-    protected \Faker\Generator $faker;
-    public function __construct(
-        ?\Faker\Generator $faker = null
-    ) {
-        $this->faker = $faker ?? \Faker\Factory::create();
+    const SEED = 12345;
+    public function __construct() {
+        srand(self::SEED);
     }
 
     /**

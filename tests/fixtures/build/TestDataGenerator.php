@@ -217,11 +217,11 @@ class TestDataGenerator
         }
         $nulledIndex = null;
         if ($nullable) {
-            $nulledIndex = array_rand($values);
+            $nulledIndex = 0;
             $values[$nulledIndex] = null;
         }
         if (!$unique && $length > 1) {
-            if (!$nulledIndex) {
+            if (null === $nulledIndex) {
                 $values[0] = $values[1];
             } elseif ($length > 2) {
                 if ($nulledIndex === 0) {
@@ -245,11 +245,11 @@ class TestDataGenerator
         }
         $nulledIndex = null;
         if ($nullable) {
-            $nulledIndex = array_rand($values);
+            $nulledIndex = 0;
             $values[$nulledIndex] = null;
         }
         if (!$unique && $length > 1) {
-            if (!$nulledIndex) {
+            if (null === $nulledIndex) {
                 $values[0] = $values[1];
             } elseif ($length > 2) {
                 if ($nulledIndex === 0) {

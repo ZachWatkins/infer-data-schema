@@ -8,7 +8,7 @@ use ZachWatkins\InferDataSchema\Enums\DatabaseType;
 use ZachWatkins\InferDataSchema\Interfaces\ColumnTypeInferrerInterface;
 use ZachWatkins\InferDataSchema\Interfaces\ParserInterface;
 use ZachWatkins\InferDataSchema\Interfaces\SqlColumnCollectionInterface;
-use ZachWatkins\InferDataSchema\Support\ColumnTypeInferrer;
+use ZachWatkins\InferDataSchema\ColumnTypeInferrer;
 
 use function Flow\ETL\Adapter\CSV\from_csv;
 use function Flow\ETL\DSL\data_frame;

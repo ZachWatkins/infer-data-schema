@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\Support;
+namespace ZachWatkins\InferDataSchema;
 
 use ZachWatkins\InferDataSchema\Enums\ColumnModifier;
 use ZachWatkins\InferDataSchema\Enums\DatabaseType;

@@ -8,7 +8,7 @@ use ZachWatkins\InferDataSchema\Enums\DatabaseType;
 use ZachWatkins\InferDataSchema\Interfaces\ColumnTypeInferrerInterface;
 use ZachWatkins\InferDataSchema\Interfaces\ParserInterface;
 use ZachWatkins\InferDataSchema\Interfaces\SqlColumnCollectionInterface;
-use ZachWatkins\InferDataSchema\Support\ColumnTypeInferrer;
+use ZachWatkins\InferDataSchema\ColumnTypeInferrer;
 
 use function Flow\ETL\Adapter\XML\from_xml;
 use function Flow\ETL\DSL\data_frame;
@@ -18,8 +18,7 @@ final class XmlParser implements ParserInterface
     public function __construct(
         private readonly string $xmlNodePath = '',
         private readonly ColumnTypeInferrerInterface $inferrer = new ColumnTypeInferrer(),
-    ) {
-    }
+    ) {}
 
     public function parse(
         string $source,
@@ -84,7 +83,7 @@ final class XmlParser implements ParserInterface
             }
 
             $messages = \array_map(
-                static fn (\LibXMLError $error): string => \trim($error->message),
+                static fn(\LibXMLError $error): string => \trim($error->message),
                 \libxml_get_errors(),
             );
 

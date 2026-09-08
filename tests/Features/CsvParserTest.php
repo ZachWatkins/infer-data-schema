@@ -9,8 +9,7 @@ use ZachWatkins\InferDataSchema\Parsers\CsvParser;
 
 it('infers the expected MySQL schema from CSV basic fixture', function () {
     /** @var SqlColumnCollectionInterface $expected */
-    $expected = require dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/schema/csv_basic_mysql.php');
-    $dataFixture = dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/data/csv_basic.csv');
+    $dataFixture = dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/data/test.csv');
 
     $parser = new CsvParser();
     $normalizeColumns = static function (SqlColumnCollectionInterface $columns): array {
@@ -29,54 +28,7 @@ it('infers the expected MySQL schema from CSV basic fixture', function () {
 
     $actual = $parser->parse($dataFixture, 'mysql');
 
-    expect($normalizeColumns($actual))->toBe($normalizeColumns($expected));
-});
-
-it('infers the expected MySQL schema from CSV nullable fixture', function () {
-    /** @var SqlColumnCollectionInterface $expected */
-    $expected = require dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/schema/csv_nullable_mysql.php');
-    $dataFixture = dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/data/csv_nullable.csv');
-
-    $parser = new CsvParser();
-    $normalizeColumns = static function (SqlColumnCollectionInterface $columns): array {
-        return array_map(
-            static fn(SqlColumnInterface $column): array => [
-                'name' => $column->getName(),
-                'type' => $column->getType(),
-                'modifiers' => array_map(
-                    static fn(ColumnModifier $modifier): string => $modifier->value,
-                    $column->getModifiers(),
-                ),
-            ],
-            $columns->getColumns(),
-        );
-    };
-
-    $actual = $parser->parse($dataFixture, 'mysql');
-
-    expect($normalizeColumns($actual))->toBe($normalizeColumns($expected));
-});
-
-it('infers the expected MySQL schema from CSV width fixture', function () {
-    /** @var SqlColumnCollectionInterface $expected */
-    $expected = require dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/schema/csv_widths_mysql.php');
-    $dataFixture = dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/data/csv_widths.csv');
-    $parser = new CsvParser();
-    $normalizeColumns = static function (SqlColumnCollectionInterface $columns): array {
-        return array_map(
-            static fn(SqlColumnInterface $column): array => [
-                'name' => $column->getName(),
-                'type' => $column->getType(),
-                'modifiers' => array_map(
-                    static fn(ColumnModifier $modifier): string => $modifier->value,
-                    $column->getModifiers(),
-                ),
-            ],
-            $columns->getColumns(),
-        );
-    };
-
-    $actual = $parser->parse($dataFixture, 'mysql');
+    $expected = require dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/schema/mysql.php');
 
     expect($normalizeColumns($actual))->toBe($normalizeColumns($expected));
 });

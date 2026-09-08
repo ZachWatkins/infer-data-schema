@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use ZachWatkins\InferDataSchema\Interfaces\SqlColumnCollectionInterface;
 use ZachWatkins\InferDataSchema\Enums\DatabaseType;
-use ZachWatkins\InferDataSchema\Support\ColumnTypeInferrer;
+use ZachWatkins\InferDataSchema\ColumnTypeInferrer;
 
 /*
 |--------------------------------------------------------------------------

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ZachWatkins\InferDataSchema;
 
+use ZachWatkins\InferDataSchema\Support\ColumnStats;
 use ZachWatkins\InferDataSchema\Enums\ColumnModifier;
 use ZachWatkins\InferDataSchema\Enums\DatabaseType;
 use ZachWatkins\InferDataSchema\Enums\MySqlColumnType;

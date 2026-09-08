@@ -61,3 +61,9 @@ See [README.md](README.md) for full project details, usage examples, and depende
 - **Parser Design**: Each parser in `src/Parsers/` must convert input datasets into an instance of `SqlColumnCollection`.
 - **Modifier Detection**: Ensure column modifiers (`nullable`, `unique`, `unsigned`, `auto_increment`) are evaluated accurately across all rows in the dataset.
 - **Testing**: Write Pest unit tests under `tests/` for all new parsers, models, and type inference logic using test datasets. Use test fixtures for data source files and the schema objects they are expected to produce.
+
+## Coding Agents
+
+This section provides guidelines and information for coding agents when generating code for the library.
+
+All inline comments must end with a period.

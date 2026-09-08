@@ -6,12 +6,20 @@
 
 namespace Tests\Fixtures\Build;
 
+use DateTime;
+use Random\Randomizer;
+use Random\Engine\Mt19937;
+
 class TestDataGenerator
 {
     const SEED = 12345;
+    private DateTime $dateTimeSeed;
+    private Randomizer $randomizer;
     public function __construct()
     {
-        srand(self::SEED);
+        $engine = new Mt19937(self::SEED);
+        $this->randomizer = new Randomizer($engine);
+        $this->dateTimeSeed = new DateTime('2026-01-01 00:00:00');
     }
 
     /**
@@ -301,10 +309,10 @@ class TestDataGenerator
     protected function generateStringColumn(int $length, int $minStrLength, int $maxStrLength, bool $nullable = false, bool $unique = false): array
     {
         $values = [];
-        $seed = str_repeat('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', $maxStrLength);
+        $base = mb_str_split(str_repeat('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', $maxStrLength));
         for ($i = 0; $i < $length; $i++) {
-            $strLength = rand($minStrLength, $maxStrLength);
-            $values[] = substr(str_shuffle($seed), 0, $strLength);
+            $strLength = $this->randomizer->getInt($minStrLength, $maxStrLength);
+            $values[] = substr(implode('', $this->randomizer->shuffleArray($base)), 0, $strLength);
         }
         if ($nullable) {
             $values[0] = null;
@@ -324,9 +332,9 @@ class TestDataGenerator
         $textLengthThreshold = 65536;
         $sample = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $repeatLength = ceil($textLengthThreshold / strlen($sample));
-        $seed = substr(str_repeat($sample, $repeatLength), 0, $textLengthThreshold);
+        $base = mb_str_split(substr(str_repeat($sample, $repeatLength), 0, $textLengthThreshold));
         for ($i = 0; $i < $length; $i++) {
-            $values[] = str_shuffle($seed);
+            $values[] = implode('', $this->randomizer->shuffleArray($base));
         }
         if ($nullable) {
             $values[0] = null;
@@ -343,7 +351,7 @@ class TestDataGenerator
     {
         $values = [];
         for ($i = 0; $i < $length; $i++) {
-            $values[] = date('Y-m-d', strtotime("-$i days"));
+            $values[] = date('Y-m-d', strtotime("-$i days", $this->dateTimeSeed->getTimestamp()));
         }
         if ($nullable) {
             $values[0] = null;
@@ -360,7 +368,7 @@ class TestDataGenerator
     {
         $values = [];
         for ($i = 0; $i < $length; $i++) {
-            $values[] = date('H:i:s', strtotime("-$i seconds"));
+            $values[] = date('H:i:s', strtotime("-$i seconds", $this->dateTimeSeed->getTimestamp()));
         }
         if ($nullable) {
             $values[0] = null;
@@ -377,7 +385,7 @@ class TestDataGenerator
     {
         $values = [];
         for ($i = 0; $i < $length; $i++) {
-            $values[] = date('Y-m-d H:i:s', strtotime("-$i days"));
+            $values[] = date('Y-m-d H:i:s', strtotime("-$i days", $this->dateTimeSeed->getTimestamp()));
         }
         if ($nullable) {
             $values[0] = null;

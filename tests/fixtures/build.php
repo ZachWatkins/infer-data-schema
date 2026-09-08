@@ -1,6 +1,7 @@
 <?php
 
 use Tests\Fixtures\Build\TestDataGenerator;
+use Tests\Fixtures\Build\TestSchemaGenerator;
 use Tests\Fixtures\Build\File\TestCsvFileGenerator;
 use Tests\Fixtures\Build\File\TestHttpFileGenerator;
 use Tests\Fixtures\Build\File\TestJsonFileGenerator;
@@ -26,3 +27,6 @@ $xlsxGenerator->generate('test.xlsx', $data);
 
 $xmlGenerator = new TestXmlFileGenerator();
 $xmlGenerator->generate('test.xml', $data);
+
+$schemaGenerator = new TestSchemaGenerator();
+$schemaGenerator->generateMySql('test.json', 'mysql.php');

@@ -9,7 +9,8 @@ namespace Tests\Fixtures\Build;
 class TestDataGenerator
 {
     const SEED = 12345;
-    public function __construct() {
+    public function __construct()
+    {
         srand(self::SEED);
     }
 

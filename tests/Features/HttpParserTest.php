@@ -10,7 +10,7 @@ use ZachWatkins\InferDataSchema\Enums\ColumnModifier;
 use ZachWatkins\InferDataSchema\Parsers\HttpParser;
 
 it('parses a bare top-level json array response', function () {
-    $expected = require dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/schema/http_basic_mysql.php');
+    $expected = require dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/schema/mysql.php');
 
     $client = new class implements ClientInterface {
         public ?RequestInterface $lastRequest = null;
@@ -18,14 +18,12 @@ it('parses a bare top-level json array response', function () {
         public function sendRequest(RequestInterface $request): ResponseInterface
         {
             $this->lastRequest = $request;
+            $contents = file_get_contents(__DIR__ . '/../fixtures/data/test.http');
 
             return new Response(
                 200,
                 ['Content-Type' => 'application/json'],
-                \json_encode([
-                    ['id' => 1, 'name' => 'Norbert'],
-                    ['id' => 2, 'name' => 'Norbert'],
-                ], JSON_THROW_ON_ERROR),
+                $contents
             );
         }
     };
@@ -55,7 +53,7 @@ it('parses a bare top-level json array response', function () {
 });
 
 it('parses a wrapped json array response', function () {
-    $expected = require dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/schema/http_basic_mysql.php');
+    $expected = require dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/schema/mysql.php');
 
     $client = new class implements ClientInterface {
         public ?RequestInterface $lastRequest = null;
@@ -63,16 +61,12 @@ it('parses a wrapped json array response', function () {
         public function sendRequest(RequestInterface $request): ResponseInterface
         {
             $this->lastRequest = $request;
+            $contents = file_get_contents(__DIR__ . '/../fixtures/data/test.http');
 
             return new Response(
                 200,
                 ['Content-Type' => 'application/json'],
-                \json_encode([
-                    'items' => [
-                        ['id' => 1, 'name' => 'Norbert'],
-                        ['id' => 2, 'name' => 'Norbert'],
-                    ],
-                ], JSON_THROW_ON_ERROR),
+                $contents
             );
         }
     };

@@ -20,7 +20,11 @@ class TestCsvFileGenerator
         if (!empty($data)) {
             fputcsv($fp, array_keys($data[0]), escape: '\\');
             foreach ($data as $row) {
-                fputcsv($fp, $row, escape: '\\');
+                $formattedRow = array_map(
+                    static fn(mixed $val): mixed => is_bool($val) ? ($val ? 'true' : 'false') : $val,
+                    $row,
+                );
+                fputcsv($fp, $formattedRow, escape: '\\');
             }
         }
 

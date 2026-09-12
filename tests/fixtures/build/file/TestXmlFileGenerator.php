@@ -13,7 +13,8 @@ class TestXmlFileGenerator
         foreach ($data as $row) {
             $item = $xml->addChild('item');
             foreach ($row as $key => $value) {
-                $item->addChild($key, (string)$value);
+                $formattedValue = is_bool($value) ? ($value ? 'true' : 'false') : (string) $value;
+                $item->addChild($key, $formattedValue);
             }
         }
 

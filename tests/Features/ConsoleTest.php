@@ -47,13 +47,13 @@ it('prints usage for an unsupported source extension', function () use ($runCons
 });
 
 it('rejects http and https sources from the cli', function (string $source) use ($runConsole) {
-    $result = $runConsole(['infer-data-schema', $source]);
+    $result = $runConsole(['infer-data-schema', $source, '--cwd=' . getcwd()]);
 
     expect($result['exitCode'])->toBe(1)
         ->and($result['stdout'])->toBe('')
         ->and($result['stderr'])->toContain(
             'HttpParser requires programmatic PSR-18 client injection and is not '
-            . 'supported directly from the CLI in this version.'
+                . 'supported directly from the CLI in this version.'
         );
 })->with([
     'http source' => 'http://example.com/data.csv',
@@ -62,7 +62,7 @@ it('rejects http and https sources from the cli', function (string $source) use 
 
 it('fails gracefully when the resolved parser class is unavailable', function () use ($runConsole) {
     $result = $runConsole(
-        ['infer-data-schema', 'dataset.csv'],
+        ['infer-data-schema', 'dataset.csv', '--cwd=' . getcwd()],
         [
             'csv' => '\Tests\Fixtures\MissingCsvParser',
         ]

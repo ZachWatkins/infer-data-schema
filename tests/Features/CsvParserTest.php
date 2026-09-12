@@ -6,6 +6,7 @@ use ZachWatkins\InferDataSchema\Enums\ColumnModifier;
 use ZachWatkins\InferDataSchema\Interfaces\SqlColumnCollectionInterface;
 use ZachWatkins\InferDataSchema\Interfaces\SqlColumnInterface;
 use ZachWatkins\InferDataSchema\Parsers\CsvParser;
+use ZachWatkins\InferDataSchema\Enums\DatabaseType;
 
 it('infers the expected MySQL schema from CSV basic fixture', function () {
     /** @var SqlColumnCollectionInterface $expected */
@@ -26,7 +27,7 @@ it('infers the expected MySQL schema from CSV basic fixture', function () {
         );
     };
 
-    $actual = $parser->parse($dataFixture, 'mysql');
+    $actual = $parser->parse($dataFixture, DatabaseType::MySql->value);
 
     $expected = require dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/schema/mysql.php');
 

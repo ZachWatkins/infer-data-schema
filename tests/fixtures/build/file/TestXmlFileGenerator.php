@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Generate test XML file.
  */

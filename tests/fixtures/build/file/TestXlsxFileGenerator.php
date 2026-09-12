@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Generate test XLSX file.
  */
@@ -19,7 +20,7 @@ class TestXlsxFileGenerator
 
         if (!empty($data)) {
             $sheet->fromArray(array_keys($data[0]), null, 'A1');
-            $sheet->fromArray($data, null, 'A2');
+            $sheet->fromArray($data, null, 'A2', true);
         }
 
         $directory = __DIR__ . '/../../data/';

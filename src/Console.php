@@ -100,10 +100,14 @@ final class Console
         if ($this->isHttpSource($source)) {
             $this->writeError(
                 'HttpParser requires programmatic PSR-18 client injection and is not '
-                . 'supported directly from the CLI in this version.'
+                    . 'supported directly from the CLI in this version.'
             );
 
             return 1;
+        }
+
+        if (!\str_starts_with($source, '/') && !\preg_match('/^[a-zA-Z]:\\\\/', $source)) {
+            $source = $currentWorkingDirectory . \DIRECTORY_SEPARATOR . $source;
         }
 
         $parserClass = $this->resolveParserClass($source);
@@ -179,7 +183,7 @@ final class Console
         $modifiers = \implode(
             ', ',
             \array_map(
-                static fn (ColumnModifier $modifier): string => $modifier->value,
+                static fn(ColumnModifier $modifier): string => $modifier->value,
                 $column->getModifiers(),
             )
         );

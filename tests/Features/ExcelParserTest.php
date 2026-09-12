@@ -12,7 +12,11 @@ it('parses an excel workbook into an inferred mysql schema', function () {
         dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/data/test.xlsx'),
         'mysql',
     );
-    $expected = require dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/schema/mysql.php');
+    $expected = require dirname(__DIR__) . str_replace(
+        '/',
+        DIRECTORY_SEPARATOR,
+        '/fixtures/schema/mysql.php'
+    );
 
     expect($actual->count())->toBe($expected->count());
 
@@ -34,6 +38,9 @@ it('parses an excel workbook into an inferred mysql schema', function () {
             static fn(ColumnModifier $modifier): string => $modifier->value,
             $actualColumn->getModifiers(),
         );
-        expect($actualModifiers)->toBe($expectedModifiers, "Mismatch in column modifiers for column: {$actualColumn->getName()}");
+        expect($actualModifiers)->toBe(
+            $expectedModifiers,
+            "Mismatch in column modifiers for column: {$actualColumn->getName()}"
+        );
     }
 });

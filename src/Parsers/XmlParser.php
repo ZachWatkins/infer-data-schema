@@ -25,7 +25,12 @@ final class XmlParser implements ParserInterface
         string $databaseType = 'sqlite',
     ): SqlColumnCollectionInterface {
         if (!in_array($databaseType, array_map(fn($case) => $case->value, DatabaseType::cases()), true)) {
-            throw new \InvalidArgumentException("Invalid database type: $databaseType, accepts: " . implode(', ', array_map(fn($case) => $case->value, DatabaseType::cases())));
+            throw new \InvalidArgumentException(
+                "Invalid database type: $databaseType, accepts: " . implode(', ', array_map(
+                    fn($case) => $case->value,
+                    DatabaseType::cases()
+                ))
+            );
         }
         $databaseType = DatabaseType::from($databaseType);
         $rawRows = data_frame()->read(from_xml($source, $this->xmlNodePath))->getEachAsArray();

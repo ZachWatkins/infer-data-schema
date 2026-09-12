@@ -44,7 +44,11 @@ it('parses nested xml rows when a node path is configured', function () {
         dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/data/xml_nested.xml'),
         'mysql',
     );
-    $expected = require dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/schema/xml_basic_mysql.php');
+    $expected = require dirname(__DIR__) . str_replace(
+        '/',
+        DIRECTORY_SEPARATOR,
+        '/fixtures/schema/xml_basic_mysql.php'
+    );
 
     expect($actual->count())->toBe($expected->count());
 

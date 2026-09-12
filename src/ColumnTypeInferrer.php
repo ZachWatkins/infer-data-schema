@@ -125,12 +125,11 @@ final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
     {
         return match (true) {
             $stats->nonNullSeenCount === 0 => SqliteColumnType::Text,
-            $stats->allBool => SqliteColumnType::Boolean,
+            $stats->allBool => SqliteColumnType::Integer,
             $stats->allInt => SqliteColumnType::Integer,
-            $stats->allNumeric => SqliteColumnType::Real,
-            $stats->allDate => SqliteColumnType::Date,
-            $stats->allDateTime => SqliteColumnType::DateTime,
-            $stats->allTime => SqliteColumnType::Time,
+            $stats->allDate => SqliteColumnType::Text,
+            $stats->allDateTime => SqliteColumnType::Text,
+            $stats->allTime => SqliteColumnType::Text,
             default => SqliteColumnType::Text,
         };
     }

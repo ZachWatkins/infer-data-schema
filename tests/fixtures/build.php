@@ -30,3 +30,6 @@ $xmlGenerator->generate('test.xml', $data);
 
 $schemaGenerator = new TestSchemaGenerator();
 $schemaGenerator->generateMySql('test.json', 'mysql.php');
+
+$schemaGenerator = new TestSchemaGenerator();
+$schemaGenerator->generateSqlite('test.json', 'sqlite.php');

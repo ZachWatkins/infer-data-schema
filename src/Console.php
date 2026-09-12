@@ -130,21 +130,15 @@ final class Console
             return 1;
         }
 
-        try {
-            /** @var ParserInterface $parser */
-            $parser = new $parserClass();
-            $columns = $parser->parse($source, $databaseType->value);
+        /** @var ParserInterface $parser */
+        $parser = new $parserClass();
+        $columns = $parser->parse($source, $databaseType->value);
 
-            if (!$dryRun) {
-                $this->writeColumns($columns);
-            }
-
-            return 0;
-        } catch (\Throwable $throwable) {
-            $this->writeError(\sprintf('Error: %s', $throwable->getMessage()));
-
-            return 1;
+        if (!$dryRun) {
+            $this->writeColumns($columns);
         }
+
+        return 0;
     }
 
     private function isHttpSource(string $source): bool

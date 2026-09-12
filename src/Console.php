@@ -161,7 +161,7 @@ final class Console
     {
         $this->writeToStream(
             $this->stderr,
-            'Usage: infer-data-schema <path-or-url> [--db=sqlite|mysql|sqlserver] [--cwd=<current-working-directory>] [--dry-run]' . \PHP_EOL
+            'Usage: index.php <path-or-url> [--db=sqlite|mysql|sqlserver] [--cwd=<current-working-directory>] [--dry-run]' . \PHP_EOL
         );
     }
 

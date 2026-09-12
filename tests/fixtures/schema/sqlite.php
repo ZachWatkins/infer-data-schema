@@ -170,34 +170,34 @@ return new SqlColumnCollection([
         ColumnModifier::Unique,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('decimal', SqliteColumnType::Text->value, [
+    new SqlColumn('decimal', SqliteColumnType::Real->value, [
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('decimal_nullable', SqliteColumnType::Text->value, [
+    new SqlColumn('decimal_nullable', SqliteColumnType::Real->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('decimal_unique', SqliteColumnType::Text->value, [
+    new SqlColumn('decimal_unique', SqliteColumnType::Real->value, [
         ColumnModifier::Unique,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('decimal_nullable_unique', SqliteColumnType::Text->value, [
+    new SqlColumn('decimal_nullable_unique', SqliteColumnType::Real->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unique,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('decimal_unsigned', SqliteColumnType::Text->value, [
+    new SqlColumn('decimal_unsigned', SqliteColumnType::Real->value, [
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('decimal_unsigned_nullable', SqliteColumnType::Text->value, [
+    new SqlColumn('decimal_unsigned_nullable', SqliteColumnType::Real->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('decimal_unsigned_unique', SqliteColumnType::Text->value, [
+    new SqlColumn('decimal_unsigned_unique', SqliteColumnType::Real->value, [
         ColumnModifier::Unique,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('decimal_unsigned_nullable_unique', SqliteColumnType::Text->value, [
+    new SqlColumn('decimal_unsigned_nullable_unique', SqliteColumnType::Real->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unique,
         ColumnModifier::Unsigned,

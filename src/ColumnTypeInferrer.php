@@ -127,6 +127,7 @@ final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
             $stats->nonNullSeenCount === 0 => SqliteColumnType::Text,
             $stats->allBool => SqliteColumnType::Integer,
             $stats->allInt => SqliteColumnType::Integer,
+            $stats->allNumeric => SqliteColumnType::Real,
             $stats->allDate => SqliteColumnType::Text,
             $stats->allDateTime => SqliteColumnType::Text,
             $stats->allTime => SqliteColumnType::Text,

@@ -158,3 +158,15 @@ it('treats a column missing entirely from a row the same as an explicit null', f
     expect($id->hasModifier(ColumnModifier::Nullable))->toBeTrue();
     expect($id->hasModifier(ColumnModifier::AutoIncrement))->toBeFalse();
 });
+
+it('infers real columns for numeric values with decimal points in SQLite', function () {
+    $columns = infer([
+        ['price' => 19.99],
+        ['price' => '4.50'],
+    ], DatabaseType::Sqlite);
+
+    $price = $columns->get('price');
+
+    expect($price->getType())->toBe(SqliteColumnType::Real->value);
+    expect($price->hasModifier(ColumnModifier::Unsigned))->toBeTrue();
+});

@@ -67,3 +67,5 @@ See [README.md](README.md) for full project details, usage examples, and depende
 This section provides guidelines and information for coding agents when generating code for the library.
 
 All inline comments must end with a period.
+
+When writing tests, do not create anonymous functions assigned to a variable in test cases. Prefer using the `it` function provided by Pest to define test cases directly so stack traces are easier to parse.

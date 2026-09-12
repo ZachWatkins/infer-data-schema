@@ -53,6 +53,8 @@ final class Console
     {
         $source = null;
         $databaseType = DatabaseType::Sqlite;
+        $currentWorkingDirectory = null;
+        $dryRun = false;
 
         foreach (\array_slice($argv, 1) as $argument) {
             if (\str_starts_with($argument, '--db=')) {
@@ -69,6 +71,17 @@ final class Console
                 continue;
             }
 
+            // Parse the cwd flag.
+            if (\str_starts_with($argument, '--cwd=')) {
+                $currentWorkingDirectory = \substr($argument, 6);
+                continue;
+            }
+
+            if (\str_starts_with($argument, '--dry-run')) {
+                $dryRun = true;
+                continue;
+            }
+
             if (\str_starts_with($argument, '--') || $source !== null) {
                 $this->writeUsage();
 
@@ -78,7 +91,7 @@ final class Console
             $source = $argument;
         }
 
-        if ($source === null) {
+        if ($source === null || $currentWorkingDirectory === null) {
             $this->writeUsage();
 
             return 1;
@@ -116,9 +129,11 @@ final class Console
         try {
             /** @var ParserInterface $parser */
             $parser = new $parserClass();
-            $columns = $parser->parse($source, $databaseType);
+            $columns = $parser->parse($source, $databaseType->value);
 
-            $this->writeColumns($columns);
+            if (!$dryRun) {
+                $this->writeColumns($columns);
+            }
 
             return 0;
         } catch (\Throwable $throwable) {
@@ -148,7 +163,7 @@ final class Console
     {
         $this->writeToStream(
             $this->stderr,
-            'Usage: infer-data-schema <path-or-url> [--db=sqlite|mysql|sqlserver]' . \PHP_EOL
+            'Usage: infer-data-schema <path-or-url> [--db=sqlite|mysql|sqlserver] [--cwd=<current-working-directory>] [--dry-run]' . \PHP_EOL
         );
     }
 

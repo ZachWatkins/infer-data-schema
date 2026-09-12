@@ -96,7 +96,7 @@ it('infers date, datetime and time columns from ISO-8601 strings', function () {
     ], DatabaseType::SqlServer);
 
     expect($columns->get('created_on')->getType())->toBe(SqlServerColumnType::Date->value);
-    expect($columns->get('created_at')->getType())->toBe(SqlServerColumnType::DateTime2->value);
+    expect($columns->get('created_at')->getType())->toBe(SqlServerColumnType::DateTime->value);
     expect($columns->get('opens_at')->getType())->toBe(SqlServerColumnType::Time->value);
 });
 
@@ -122,6 +122,16 @@ it('resolves a SQL Server tinyint for small unsigned integers and smallint for s
 
     expect($columns->get('age')->getType())->toBe(SqlServerColumnType::TinyInt->value);
     expect($signed->get('delta')->getType())->toBe(SqlServerColumnType::SmallInt->value);
+});
+
+it('distinguishes fixed-width SQL Server char columns from varchar columns', function () {
+    $columns = infer([
+        ['code' => 'AB', 'description' => 'short'],
+        ['code' => 'CD', 'description' => 'a longer value'],
+    ], DatabaseType::SqlServer);
+
+    expect($columns->get('code')->getType())->toBe(SqlServerColumnType::Char->value);
+    expect($columns->get('description')->getType())->toBe(SqlServerColumnType::Varchar->value);
 });
 
 it('defaults a fully-null column to a nullable text/varchar type', function () {

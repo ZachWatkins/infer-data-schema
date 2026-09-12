@@ -39,6 +39,8 @@ final class ColumnStats
 
     public int $maxStringLength = 0;
 
+    public bool $allStringLengthsSame = true;
+
     public bool $sequenceIntact = true;
 
     /**
@@ -49,6 +51,8 @@ final class ColumnStats
     private bool $sequenceBaseSet = false;
 
     private int $sequenceExpectedNext = 0;
+
+    private ?int $firstStringLength = null;
 
     public function record(mixed $value): void
     {
@@ -139,6 +143,16 @@ final class ColumnStats
         $stringValue = \is_bool($value) ? ($value ? 'true' : 'false') : (string) $value;
         $this->trackSeen($stringValue);
         $this->maxStringLength = \max($this->maxStringLength, \strlen($stringValue));
+
+        if (\is_string($value)) {
+            $stringLength = \strlen($value);
+
+            if ($this->firstStringLength === null) {
+                $this->firstStringLength = $stringLength;
+            } elseif ($this->firstStringLength !== $stringLength) {
+                $this->allStringLengthsSame = false;
+            }
+        }
 
         if (!self::isBoolLike($value)) {
             $this->allBool = false;

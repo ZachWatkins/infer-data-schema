@@ -172,14 +172,13 @@ final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
     private function resolveSqlServerType(ColumnStats $stats): SqlServerColumnType
     {
         return match (true) {
-            $stats->nonNullSeenCount === 0 => SqlServerColumnType::Varchar,
             $stats->allBool => SqlServerColumnType::Bit,
             $stats->allInt => $this->resolveSqlServerIntegerType($stats),
             $stats->allNumeric => SqlServerColumnType::Decimal,
             $stats->allDate => SqlServerColumnType::Date,
-            $stats->allDateTime => SqlServerColumnType::DateTime2,
+            $stats->allDateTime => SqlServerColumnType::DateTime,
             $stats->allTime => SqlServerColumnType::Time,
-            $stats->maxStringLength > 4_000 => SqlServerColumnType::Text,
+            $stats->allStringLengthsSame && $stats->maxStringLength > 0 => SqlServerColumnType::Char,
             default => SqlServerColumnType::Varchar,
         };
     }

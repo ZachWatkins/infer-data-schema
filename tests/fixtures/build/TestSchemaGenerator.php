@@ -10,6 +10,7 @@ use ZachWatkins\InferDataSchema\Parsers\JsonParser;
 use ZachWatkins\InferDataSchema\Enums\ColumnModifier;
 use ZachWatkins\InferDataSchema\Enums\MySqlColumnType;
 use ZachWatkins\InferDataSchema\Enums\SqliteColumnType;
+use ZachWatkins\InferDataSchema\Enums\SqlServerColumnType;
 
 class TestSchemaGenerator
 {
@@ -157,6 +158,95 @@ class TestSchemaGenerator
                 default => throw new \InvalidArgumentException('Unknown column type: ' . $column->getType()),
             };
             $output[] = '    new SqlColumn(\'' . $column->getName() . '\', SqliteColumnType::' . $columnType . '->value';
+            $modifiers = $column->getModifiers();
+            if (!empty($modifiers)) {
+                $output[array_key_last($output)] .= ', [';
+                foreach ($column->getModifiers() as $modifier) {
+                    $mod = match ($modifier) {
+                        ColumnModifier::Unique => 'Unique',
+                        ColumnModifier::Unsigned => 'Unsigned',
+                        ColumnModifier::AutoIncrement => 'AutoIncrement',
+                        ColumnModifier::Nullable => 'Nullable',
+                        default => throw new \InvalidArgumentException('Unknown modifier: ' . $modifier->value),
+                    };
+                    $output[] = '        ColumnModifier::' . $mod . ',';
+                }
+                $output[array_key_last($output)] .= "\n    ]";
+            }
+            $output[array_key_last($output)] .= '),';
+        }
+        $output[] = ']);';
+        $output[] = '';
+
+        file_put_contents(__DIR__ . '/../schema/' . $schemaFileName, implode("\n", $output));
+    }
+
+    public function generateSqlServer(string $dataFileName, string $schemaFileName): void
+    {
+        $parser = new JsonParser();
+        $directory = __DIR__ . '/../data/';
+        $filePath = $directory . $dataFileName;
+        $schema = $parser->parse($filePath, 'sqlserver');
+        $columns = $schema->getColumns();
+
+        // Example output:
+        // declare(strict_types=1);
+
+        // use ZachWatkins\InferDataSchema\Enums\ColumnModifier;
+        // use ZachWatkins\InferDataSchema\Enums\MySqlColumnType;
+        // use ZachWatkins\InferDataSchema\Models\SqlColumn;
+        // use ZachWatkins\InferDataSchema\Models\SqlColumnCollection;
+
+        // return new SqlColumnCollection([
+        //     new SqlColumn('id', SqlServerColumnType::TinyInt->value, [
+        //         ColumnModifier::Unique,
+        //         ColumnModifier::Unsigned,
+        //         ColumnModifier::AutoIncrement,
+        //     ]),
+        //     new SqlColumn('name', SqlServerColumnType::Varchar->value, [
+        //         ColumnModifier::Unique,
+        //     ]),
+        //     new SqlColumn('birthday', SqlServerColumnType::Date->value, []),
+        //     new SqlColumn('created_at', SqlServerColumnType::DateTime->value, []),
+        //     new SqlColumn('accept_terms', SqlServerColumnType::Boolean->value, []),
+        //     new SqlColumn('deleted_at', SqlServerColumnType::DateTime->value, [
+        //         ColumnModifier::Nullable,
+        //     ]),
+        // ]);
+
+        $output = [
+            '<?php',
+            '',
+            'declare(strict_types=1);',
+            '',
+            'use ZachWatkins\InferDataSchema\Enums\ColumnModifier;',
+            'use ZachWatkins\InferDataSchema\Enums\SqlServerColumnType;',
+            'use ZachWatkins\InferDataSchema\Models\SqlColumn;',
+            'use ZachWatkins\InferDataSchema\Models\SqlColumnCollection;',
+            '',
+            'return new SqlColumnCollection([',
+        ];
+
+        foreach ($columns as $column) {
+            $columnType = match ($column->getType()) {
+                SqlServerColumnType::Bit->value => 'Bit',
+                SqlServerColumnType::TinyInt->value => 'TinyInt',
+                SqlServerColumnType::SmallInt->value => 'SmallInt',
+                SqlServerColumnType::Int->value => 'Int',
+                SqlServerColumnType::BigInt->value => 'BigInt',
+                SqlServerColumnType::Decimal->value => 'Decimal',
+                SqlServerColumnType::Date->value => 'Date',
+                SqlServerColumnType::Time->value => 'Time',
+                SqlServerColumnType::DateTime->value => 'DateTime',
+                SqlServerColumnType::Char->value => 'Char',
+                SqlServerColumnType::Varchar->value => 'Varchar',
+                SqlServerColumnType::NChar->value => 'NChar',
+                SqlServerColumnType::NVarchar->value => 'NVarchar',
+                SqlServerColumnType::Json->value => 'Json',
+                SqlServerColumnType::XML->value => 'XML',
+                default => throw new \InvalidArgumentException('Unknown column type: ' . $column->getType()),
+            };
+            $output[] = '    new SqlColumn(\'' . $column->getName() . '\', SqlServerColumnType::' . $columnType . '->value';
             $modifiers = $column->getModifiers();
             if (!empty($modifiers)) {
                 $output[array_key_last($output)] .= ', [';

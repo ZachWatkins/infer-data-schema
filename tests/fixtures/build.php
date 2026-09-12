@@ -33,3 +33,6 @@ $schemaGenerator->generateMySql('test.json', 'mysql.php');
 
 $schemaGenerator = new TestSchemaGenerator();
 $schemaGenerator->generateSqlite('test.json', 'sqlite.php');
+
+$schemaGenerator = new TestSchemaGenerator();
+$schemaGenerator->generateSqlServer('test.json', 'sqlserver.php');

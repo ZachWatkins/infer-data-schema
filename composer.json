@@ -29,7 +29,12 @@
     ],
     "scripts": {
         "test": "pest",
-        "lint": "phpcs"
+        "lint": "phpcs",
+        "skill:install": [
+            "composer install --no-dev",
+            "@php install-skill.php",
+            "composer install"
+        ]
     },
     "config": {
         "sort-packages": true,

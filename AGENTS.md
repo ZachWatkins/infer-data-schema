@@ -68,4 +68,4 @@ This section provides guidelines and information for coding agents when generati
 
 All inline comments must end with a period.
 
-When writing tests, do not create anonymous functions assigned to a variable in test cases. Prefer using the `it` function provided by Pest to define test cases directly so stack traces are easier to parse.
+When writing tests, do not create anonymous functions assigned to a variable in test cases. Prefer using the `it` function provided by Pest to define test cases directly so stack traces are easier to parse. Prefer very clear test assertions with explicit expectations for each data value and aspect of the functionality being tested.

@@ -185,6 +185,10 @@ final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
 
     private function resolveSqlServerIntegerType(ColumnStats $stats): SqlServerColumnType
     {
+        if ($stats->minValue === 0 && $stats->maxValue === 1) {
+            return SqlServerColumnType::Bit;
+        }
+
         // SQL Server has no unsigned integer types; TINYINT is the sole 0-255 exception.
         if (!$stats->hasNegative && $stats->maxValue <= 255) {
             return SqlServerColumnType::TinyInt;

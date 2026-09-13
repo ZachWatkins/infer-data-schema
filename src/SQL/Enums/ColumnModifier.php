@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\Enums;
+namespace ZachWatkins\InferDataSchema\SQL\Enums;
 
 /**
  * Modifiers that describe additional constraints or attributes of a SQL column,

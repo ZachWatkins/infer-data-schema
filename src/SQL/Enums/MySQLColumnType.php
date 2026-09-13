@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\Enums;
+namespace ZachWatkins\InferDataSchema\SQL\Enums;
 
 /**
  * MySQL column types commonly used for schema inference.

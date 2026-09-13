@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\Interfaces;
+namespace ZachWatkins\InferDataSchema\SQL\Interfaces;
 
 /**
  * Reads a data source and infers its SQL column schema.

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\Interfaces;
+namespace ZachWatkins\InferDataSchema\SQL\Interfaces;
 
 /**
  * Represents an ordered collection of inferred SQL columns.

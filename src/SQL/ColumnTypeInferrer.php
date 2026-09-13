@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema;
+namespace ZachWatkins\InferDataSchema\SQL;
 
 use ZachWatkins\InferDataSchema\Support\ColumnStats;
-use ZachWatkins\InferDataSchema\Enums\ColumnModifier;
-use ZachWatkins\InferDataSchema\Enums\DatabaseType;
-use ZachWatkins\InferDataSchema\Enums\MySQLColumnType;
-use ZachWatkins\InferDataSchema\Enums\SQLiteColumnType;
-use ZachWatkins\InferDataSchema\Enums\SQLServerColumnType;
-use ZachWatkins\InferDataSchema\Interfaces\ColumnTypeInferrerInterface;
-use ZachWatkins\InferDataSchema\Interfaces\SQLColumnCollectionInterface;
-use ZachWatkins\InferDataSchema\Models\SQLColumn;
-use ZachWatkins\InferDataSchema\Models\SQLColumnCollection;
+use ZachWatkins\InferDataSchema\SQL\Enums\ColumnModifier;
+use ZachWatkins\InferDataSchema\SQL\Enums\DatabaseType;
+use ZachWatkins\InferDataSchema\SQL\Enums\MySQLColumnType;
+use ZachWatkins\InferDataSchema\SQL\Enums\SQLiteColumnType;
+use ZachWatkins\InferDataSchema\SQL\Enums\SQLServerColumnType;
+use ZachWatkins\InferDataSchema\SQL\Interfaces\ColumnTypeInferrerInterface;
+use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnCollectionInterface;
+use ZachWatkins\InferDataSchema\SQL\Models\SQLColumn;
+use ZachWatkins\InferDataSchema\SQL\Models\SQLColumnCollection;
 
 /**
  * Evaluates every value of every column in a stream of rows to infer the safest possible

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\Interfaces;
+namespace ZachWatkins\InferDataSchema\SQL\Interfaces;
 
-use ZachWatkins\InferDataSchema\Enums\ColumnModifier;
+use ZachWatkins\InferDataSchema\SQL\Enums\ColumnModifier;
 
 /**
  * Represents a single inferred SQL column definition.

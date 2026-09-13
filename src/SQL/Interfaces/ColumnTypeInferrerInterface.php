@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\Interfaces;
+namespace ZachWatkins\InferDataSchema\SQL\Interfaces;
 
-use ZachWatkins\InferDataSchema\Enums\DatabaseType;
+use ZachWatkins\InferDataSchema\SQL\Enums\DatabaseType;
 
 /**
  * Infers a {@see SQLColumnCollectionInterface} from a stream of data rows.

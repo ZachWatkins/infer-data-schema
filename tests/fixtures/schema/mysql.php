@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use ZachWatkins\InferDataSchema\Enums\ColumnModifier;
-use ZachWatkins\InferDataSchema\Enums\MySQLColumnType;
-use ZachWatkins\InferDataSchema\Models\SQLColumn;
-use ZachWatkins\InferDataSchema\Models\SQLColumnCollection;
+use ZachWatkins\InferDataSchema\SQL\Enums\ColumnModifier;
+use ZachWatkins\InferDataSchema\SQL\Enums\MySQLColumnType;
+use ZachWatkins\InferDataSchema\SQL\Models\SQLColumn;
+use ZachWatkins\InferDataSchema\SQL\Models\SQLColumnCollection;
 
 return new SQLColumnCollection([
     new SQLColumn('bit', MySQLColumnType::Bit->value),

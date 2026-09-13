@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace ZachWatkins\InferDataSchema;
 
-use ZachWatkins\InferDataSchema\Enums\ColumnModifier;
-use ZachWatkins\InferDataSchema\Enums\DatabaseType;
-use ZachWatkins\InferDataSchema\Interfaces\ParserInterface;
-use ZachWatkins\InferDataSchema\Interfaces\SQLColumnCollectionInterface;
-use ZachWatkins\InferDataSchema\Interfaces\SQLColumnInterface;
+use ZachWatkins\InferDataSchema\SQL\Enums\ColumnModifier;
+use ZachWatkins\InferDataSchema\SQL\Enums\DatabaseType;
+use ZachWatkins\InferDataSchema\SQL\Interfaces\ParserInterface;
+use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnCollectionInterface;
+use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnInterface;
 
 final class Console
 {
@@ -37,12 +37,12 @@ final class Console
         $this->stdout = $stdout ?? \STDOUT;
         $this->stderr = $stderr ?? \STDERR;
         $this->parserClasses = $parserClasses ?? [
-            'csv' => '\ZachWatkins\InferDataSchema\Parsers\CsvParser',
-            'json' => '\ZachWatkins\InferDataSchema\Parsers\JsonParser',
-            'xml' => '\ZachWatkins\InferDataSchema\Parsers\XmlParser',
-            'xlsx' => '\ZachWatkins\InferDataSchema\Parsers\ExcelParser',
-            'xls' => '\ZachWatkins\InferDataSchema\Parsers\ExcelParser',
-            'ods' => '\ZachWatkins\InferDataSchema\Parsers\ExcelParser',
+            'csv' => '\ZachWatkins\InferDataSchema\SQL\Parsers\CsvParser',
+            'json' => '\ZachWatkins\InferDataSchema\SQL\Parsers\JsonParser',
+            'xml' => '\ZachWatkins\InferDataSchema\SQL\Parsers\XmlParser',
+            'xlsx' => '\ZachWatkins\InferDataSchema\SQL\Parsers\ExcelParser',
+            'xls' => '\ZachWatkins\InferDataSchema\SQL\Parsers\ExcelParser',
+            'ods' => '\ZachWatkins\InferDataSchema\SQL\Parsers\ExcelParser',
         ];
     }
 

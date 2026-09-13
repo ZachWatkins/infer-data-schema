@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\Enums;
+namespace ZachWatkins\InferDataSchema\SQL\Enums;
 
 /**
  * SQL Server (Transact-SQL) column types commonly used for schema inference.

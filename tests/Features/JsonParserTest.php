@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use ZachWatkins\InferDataSchema\Enums\ColumnModifier;
-use ZachWatkins\InferDataSchema\Interfaces\SQLColumnCollectionInterface;
-use ZachWatkins\InferDataSchema\Interfaces\SQLColumnInterface;
-use ZachWatkins\InferDataSchema\Parsers\JsonParser;
+use ZachWatkins\InferDataSchema\SQL\Enums\ColumnModifier;
+use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnCollectionInterface;
+use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnInterface;
+use ZachWatkins\InferDataSchema\SQL\Parsers\JsonParser;
 
 it('infers the expected MySQL schema from JSON basic fixture', function () {
     /** @var SQLColumnCollectionInterface $expected */

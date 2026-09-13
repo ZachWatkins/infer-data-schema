@@ -1,6 +1,6 @@
 # Agent Instructions for Infer Data Schema
 
-This repository contains `infer-data-schema`, a PHP library that reads data sources (CSV, JSON, XML, Excel, HTTP) using Flow PHP ETL and infers SQL column types, modifiers, and schemas.
+This repository contains `infer-data-schema`, a PHP library that reads data sources (CSV, JSON, XML, Excel, HTTP) using Flow PHP ETL and infers SQL column types, modifiers, and schemas or optionally a Laravel Shift Blueprint YAML file.
 
 See [README.md](README.md) for full project details, usage examples, and dependency links.
 
@@ -23,22 +23,23 @@ See [README.md](README.md) for full project details, usage examples, and depende
 2. `documentation/` - Contains the documentation files for the library, including ADRs and other relevant documentation.
    - `documentation/adrs/` - Contains the Architecture Decision Records (ADRs) for the library.
 3. `src/` - Contains the main PHP source code.  
-   - `src/Interfaces` - Contains the interface definitions for the library's class files.  
-   - `src/Enums` - Contains the enum definitions for the library.  
-     - `src/Enums/DatabaseType.php` - The enum definition for supported database types.  
-     - `src/Enums/ColumnModifier.php` - The enum definition for SQL column modifiers (unique, nullable, signed or unsigned, auto-incrementing).  
-     - `src/Enums/SQLiteColumnType.php` - The enum definition for SQLite column types.  
-     - `src/Enums/MySQLColumnType.php` - The enum definition for MySQL column types.  
-     - `src/Enums/SQLServerColumnType.php` - The enum definition for SQL Server column types.  
-   - `src/Parsers` - Contains the data source parser classes for the library.  
-     - `src/Parsers/CsvParser` - The CSV data source parser class.  
-     - `src/Parsers/JsonParser` - The JSON data source parser class.  
-     - `src/Parsers/XmlParser` - The XML data source parser class.  
-     - `src/Parsers/ExcelParser` - The Excel data source parser class.  
-     - `src/Parsers/HttpParser` - The HTTP data source parser class.  
-   - `src/Models` - Contains the model classes for the library.  
-     - `src/Models/SQLColumn.php` - The model class representing a database column.  
-     - `src/Models/SQLColumnCollection.php` - The model class representing a collection of database columns.  
+   - `src/SQL/` - Contains the main SQL-related source code for the library.
+     - `src/SQL/Interfaces` - Contains the interface definitions for the library's class files.  
+     - `src/SQL/Enums` - Contains the SQL enum definitions for the library.  
+       - `src/SQL/Enums/DatabaseType.php` - The enum definition for supported database types.  
+       - `src/SQL/Enums/ColumnModifier.php` - The enum definition for SQL column modifiers (unique, nullable, signed or unsigned, auto-incrementing).  
+       - `src/SQL/Enums/SQLiteColumnType.php` - The enum definition for SQLite column types.  
+       - `src/SQL/Enums/MySQLColumnType.php` - The enum definition for MySQL column types.  
+       - `src/SQL/Enums/SQLServerColumnType.php` - The enum definition for SQL Server column types.  
+     - `src/SQL/Parsers` - Contains the data source parser classes for the SQL inference library features.  
+       - `src/SQL/Parsers/CsvParser.php` - The CSV data source parser class.  
+       - `src/SQL/Parsers/JsonParser.php` - The JSON data source parser class.  
+       - `src/SQL/Parsers/XmlParser.php` - The XML data source parser class.  
+       - `src/SQL/Parsers/ExcelParser.php` - The Excel data source parser class.  
+       - `src/SQL/Parsers/HttpParser.php` - The HTTP data source parser class.  
+     - `src/SQL/Models` - Contains the model classes for the library.  
+       - `src/SQL/Models/SQLColumn.php` - The model class representing a database column.  
+       - `src/SQL/Models/SQLColumnCollection.php` - The model class representing a collection of database columns.  
    - `src/Console.php` - The console class for the library.  
 3. `tests/` - Contains the test cases for the library.  
    - `tests/fixtures/` - Contains test fixture files used for testing the library's parsers and schema inference logic.  
@@ -58,7 +59,7 @@ See [README.md](README.md) for full project details, usage examples, and depende
 
 ## Key Conventions
 
-- **Parser Design**: Each parser in `src/Parsers/` must convert input datasets into an instance of `SQLColumnCollection`.
+- **Parser Design**: Each parser in `src/SQL/Parsers/` must convert input datasets into an instance of `SQLColumnCollection`.
 - **Modifier Detection**: Ensure column modifiers (`nullable`, `unique`, `unsigned`, `auto_increment`) are evaluated accurately across all rows in the dataset.
 - **Testing**: Write Pest unit tests under `tests/` for all new parsers, models, and type inference logic using test datasets. Use test fixtures for data source files and the schema objects they are expected to produce.
 

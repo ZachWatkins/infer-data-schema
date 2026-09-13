@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use ZachWatkins\InferDataSchema\Enums\ColumnModifier;
-use ZachWatkins\InferDataSchema\Interfaces\SQLColumnInterface;
-use ZachWatkins\InferDataSchema\Parsers\XmlParser;
+use ZachWatkins\InferDataSchema\SQL\Enums\ColumnModifier;
+use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnInterface;
+use ZachWatkins\InferDataSchema\SQL\Parsers\XmlParser;
 
 it('parses flat xml rows into an inferred mysql schema', function () {
     $parser = new XmlParser();

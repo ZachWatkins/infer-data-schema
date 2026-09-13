@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\Models;
+namespace ZachWatkins\InferDataSchema\SQL\Models;
 
-use ZachWatkins\InferDataSchema\Interfaces\SQLColumnCollectionInterface;
-use ZachWatkins\InferDataSchema\Interfaces\SQLColumnInterface;
+use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnCollectionInterface;
+use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnInterface;
 
 /**
  * An ordered collection of inferred SQL columns.

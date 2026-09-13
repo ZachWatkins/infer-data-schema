@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use ZachWatkins\InferDataSchema\Enums\ColumnModifier;
-use ZachWatkins\InferDataSchema\Interfaces\SQLColumnCollectionInterface;
-use ZachWatkins\InferDataSchema\Interfaces\SQLColumnInterface;
-use ZachWatkins\InferDataSchema\Parsers\CsvParser;
-use ZachWatkins\InferDataSchema\Enums\DatabaseType;
+use ZachWatkins\InferDataSchema\SQL\Enums\ColumnModifier;
+use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnCollectionInterface;
+use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnInterface;
+use ZachWatkins\InferDataSchema\SQL\Parsers\CsvParser;
+use ZachWatkins\InferDataSchema\SQL\Enums\DatabaseType;
 
 it('infers the expected MySQL schema from CSV basic fixture', function () {
     /** @var SQLColumnCollectionInterface $expected */

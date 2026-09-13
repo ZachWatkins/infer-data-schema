@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use ZachWatkins\InferDataSchema\Enums\ColumnModifier;
-use ZachWatkins\InferDataSchema\Enums\SQLiteColumnType;
+use ZachWatkins\InferDataSchema\SQL\Enums\ColumnModifier;
+use ZachWatkins\InferDataSchema\SQL\Enums\SQLiteColumnType;
 use ZachWatkins\InferDataSchema\Models\SQLColumn;
 use ZachWatkins\InferDataSchema\Models\SQLColumnCollection;
 

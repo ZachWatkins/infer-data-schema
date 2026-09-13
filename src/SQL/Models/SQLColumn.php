@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\Models;
+namespace ZachWatkins\InferDataSchema\SQL\Models;
 
-use ZachWatkins\InferDataSchema\Enums\ColumnModifier;
-use ZachWatkins\InferDataSchema\Interfaces\SQLColumnInterface;
+use ZachWatkins\InferDataSchema\SQL\Enums\ColumnModifier;
+use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnInterface;
 
 /**
  * An immutable representation of a single inferred SQL column.

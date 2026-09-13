@@ -19,7 +19,7 @@ You are operating as a global skill. You must ground all of your responses, logi
 ## Command Template
 
 ```bash
-php index.php <path-or-url> [--db=sqlite|mysql|sqlserver] [--cwd=<current-working-directory>] [--dry-run]
+php index.php <path-or-url> [--db=sqlite|mysql|sqlserver] [--cwd=<current-working-directory>] [--dry-run] [--format=txt,blueprint]
 ```
 
 ## Pre-Execution Steps

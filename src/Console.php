@@ -55,6 +55,7 @@ final class Console
         $databaseType = DatabaseType::Sqlite;
         $currentWorkingDirectory = null;
         $dryRun = false;
+        $format = 'txt';
 
         foreach (\array_slice($argv, 1) as $argument) {
             if (\str_starts_with($argument, '--db=')) {
@@ -71,9 +72,22 @@ final class Console
                 continue;
             }
 
-            // Parse the cwd flag.
             if (\str_starts_with($argument, '--cwd=')) {
                 $currentWorkingDirectory = \substr($argument, 6);
+                continue;
+            }
+
+            if (\str_starts_with($argument, '--format=')) {
+                $requestedFormat = \strtolower(\substr($argument, 9));
+
+                if (!\in_array($requestedFormat, ['txt', 'blueprint'], true)) {
+                    $this->writeUsage();
+
+                    return 1;
+                }
+
+                $format = $requestedFormat;
+
                 continue;
             }
 
@@ -135,7 +149,7 @@ final class Console
         $columns = $parser->parse($source, $databaseType->value);
 
         if (!$dryRun) {
-            $this->writeColumns($columns);
+            $this->writeColumns($columns, $format);
         }
 
         return 0;
@@ -161,14 +175,20 @@ final class Console
     {
         $this->writeToStream(
             $this->stderr,
-            'Usage: index.php <path-or-url> [--db=sqlite|mysql|sqlserver] [--cwd=<current-working-directory>] [--dry-run]' . \PHP_EOL
+            'Usage: index.php <path-or-url> [--db=sqlite|mysql|sqlserver] [--cwd=<current-working-directory>] [--dry-run] [--format=txt,blueprint]' . \PHP_EOL
         );
     }
 
-    private function writeColumns(SqlColumnCollectionInterface $columns): void
+    private function writeColumns(SqlColumnCollectionInterface $columns, string $format): void
     {
-        foreach ($columns->getColumns() as $column) {
-            $this->writeToStream($this->stdout, $this->formatColumn($column) . \PHP_EOL);
+        if ('txt' === $format) {
+            foreach ($columns->getColumns() as $column) {
+                $this->writeToStream($this->stdout, $this->formatColumn($column) . \PHP_EOL);
+            }
+        } else {
+            foreach ($columns->getColumns() as $column) {
+                $this->writeToStream($this->stdout, $this->formatColumnBlueprint($column) . \PHP_EOL);
+            }
         }
     }
 
@@ -187,6 +207,23 @@ final class Console
         }
 
         return \sprintf('%s: %s %s', $column->getName(), $column->getType(), $modifiers);
+    }
+
+    private function formatColumnBlueprint(SqlColumnInterface $column): string
+    {
+        $modifiers = \implode(
+            ' ',
+            \array_map(
+                static fn(ColumnModifier $modifier): string => $modifier->value,
+                $column->getModifiers(),
+            )
+        );
+
+        if ($modifiers === '') {
+            return \sprintf('%s: %s', strtolower($column->getName()), $column->getType());
+        }
+
+        return \sprintf('%s: %s %s', strtolower($column->getName()), $column->getType(), $modifiers);
     }
 
     private function writeError(string $message): void

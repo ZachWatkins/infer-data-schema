@@ -163,7 +163,7 @@ it('infers real columns for numeric values with decimal points in SQLite', funct
     $columns = infer([
         ['price' => 19.99],
         ['price' => '4.50'],
-    ], DatabaseType::Sqlite);
+    ], DatabaseType::SQLite);
 
     $price = $columns->get('price');
 

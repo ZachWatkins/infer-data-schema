@@ -28,7 +28,7 @@ final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
 {
     public function infer(
         iterable $rows,
-        DatabaseType $databaseType = DatabaseType::Sqlite,
+        DatabaseType $databaseType = DatabaseType::SQLite,
     ): SqlColumnCollectionInterface {
         /** @var array<string, ColumnStats> $stats */
         $stats = [];
@@ -115,7 +115,7 @@ final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
     private function resolveType(ColumnStats $stats, DatabaseType $databaseType): string
     {
         return match ($databaseType) {
-            DatabaseType::Sqlite => $this->resolveSqliteType($stats)->value,
+            DatabaseType::SQLite => $this->resolveSqliteType($stats)->value,
             DatabaseType::MySQL => $this->resolveMySqlType($stats)->value,
             DatabaseType::SqlServer => $this->resolveSqlServerType($stats)->value,
         };

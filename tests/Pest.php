@@ -27,7 +27,7 @@ use ZachWatkins\InferDataSchema\ColumnTypeInferrer;
 /**
  * @param array<int, array<string, mixed>> $rows
  */
-function infer(array $rows, DatabaseType $databaseType = DatabaseType::Sqlite): SqlColumnCollectionInterface
+function infer(array $rows, DatabaseType $databaseType = DatabaseType::SQLite): SqlColumnCollectionInterface
 {
     return (new ColumnTypeInferrer())->infer($rows, $databaseType);
 }

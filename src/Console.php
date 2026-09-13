@@ -52,7 +52,7 @@ final class Console
     public function run(array $argv): int
     {
         $source = null;
-        $databaseType = DatabaseType::Sqlite;
+        $databaseType = DatabaseType::SQLite;
         $currentWorkingDirectory = null;
         $dryRun = false;
         $format = 'txt';

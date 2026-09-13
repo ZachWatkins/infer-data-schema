@@ -25,6 +25,6 @@ interface ColumnTypeInferrerInterface
      */
     public function infer(
         iterable $rows,
-        DatabaseType $databaseType = DatabaseType::Sqlite,
+        DatabaseType $databaseType = DatabaseType::SQLite,
     ): SqlColumnCollectionInterface;
 }

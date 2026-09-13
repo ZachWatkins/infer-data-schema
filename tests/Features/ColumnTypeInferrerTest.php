@@ -13,7 +13,7 @@ it('infers an auto-incrementing, unsigned, unique integer id column', function (
         ['id' => 1, 'name' => 'Norbert'],
         ['id' => 2, 'name' => 'Tomek'],
         ['id' => 3, 'name' => 'Dawid'],
-    ], DatabaseType::MySql);
+    ], DatabaseType::MySQL);
 
     $id = $columns->get('id');
 
@@ -75,7 +75,7 @@ it('widens integer columns to the smallest safe MySQL type', function () {
     $columns = infer([
         ['big' => 40000],
         ['big' => 1],
-    ], DatabaseType::MySql);
+    ], DatabaseType::MySQL);
 
     expect($columns->get('big')->getType())->toBe(MySqlColumnType::SmallInt->value);
 });
@@ -84,7 +84,7 @@ it('infers boolean columns from native booleans and true/false strings', functio
     $columns = infer([
         ['active' => true],
         ['active' => 'false'],
-    ], DatabaseType::MySql);
+    ], DatabaseType::MySQL);
 
     expect($columns->get('active')->getType())->toBe(MySqlColumnType::Boolean->value);
 });
@@ -103,7 +103,7 @@ it('infers date, datetime and time columns from ISO-8601 strings', function () {
 it('falls back to varchar or text based on the longest observed string', function () {
     $columns = infer([
         ['short' => 'hi', 'long' => str_repeat('x', 300)],
-    ], DatabaseType::MySql);
+    ], DatabaseType::MySQL);
 
     expect($columns->get('short')->getType())->toBe(MySqlColumnType::Varchar->value);
     expect($columns->get('long')->getType())->toBe(MySqlColumnType::Text->value);
@@ -151,7 +151,7 @@ it('treats a column missing entirely from a row the same as an explicit null', f
     $columns = infer([
         ['id' => 1, 'name' => 'Norb'],
         ['name' => 'Tomek'],
-    ], DatabaseType::MySql);
+    ], DatabaseType::MySQL);
 
     $id = $columns->get('id');
 

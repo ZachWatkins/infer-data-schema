@@ -27,7 +27,7 @@ it('infers the expected MySQL schema from CSV basic fixture', function () {
         );
     };
 
-    $actual = $parser->parse($dataFixture, DatabaseType::MySql->value);
+    $actual = $parser->parse($dataFixture, DatabaseType::MySQL->value);
 
     $expected = require dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/schema/mysql.php');
 

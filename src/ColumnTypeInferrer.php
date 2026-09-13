@@ -89,7 +89,7 @@ final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
         if ($stats->isUnsigned()) {
             $type = $this->resolveType($stats, $databaseType);
             switch ($databaseType) {
-                case DatabaseType::MySql:
+                case DatabaseType::MySQL:
                     if (!\in_array($type, [MySqlColumnType::Boolean->value, MySqlColumnType::Bit->value])) {
                         $modifiers[] = ColumnModifier::Unsigned;
                     }
@@ -116,7 +116,7 @@ final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
     {
         return match ($databaseType) {
             DatabaseType::Sqlite => $this->resolveSqliteType($stats)->value,
-            DatabaseType::MySql => $this->resolveMySqlType($stats)->value,
+            DatabaseType::MySQL => $this->resolveMySqlType($stats)->value,
             DatabaseType::SqlServer => $this->resolveSqlServerType($stats)->value,
         };
     }

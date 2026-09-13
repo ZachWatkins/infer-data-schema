@@ -10,6 +10,6 @@ namespace ZachWatkins\InferDataSchema\Enums;
 enum DatabaseType: string
 {
     case Sqlite = 'sqlite';
-    case MySql = 'mysql';
+    case MySQL = 'mysql';
     case SqlServer = 'sqlserver';
 }

@@ -35,7 +35,7 @@ it('prints usage when no source argument is provided', function () use ($runCons
 
     expect($result['exitCode'])->toBe(1)
         ->and($result['stdout'])->toBe('')
-        ->and($result['stderr'])->toContain('Usage: infer-data-schema <path-or-url> [--db=sqlite|mysql|sqlserver]');
+        ->and($result['stderr'])->toContain('Usage: index.php <path-or-url> [--db=sqlite|mysql|sqlserver] [--cwd=<current-working-directory>] [--dry-run]');
 });
 
 it('prints usage for an unsupported source extension', function () use ($runConsole) {
@@ -43,7 +43,7 @@ it('prints usage for an unsupported source extension', function () use ($runCons
 
     expect($result['exitCode'])->toBe(1)
         ->and($result['stdout'])->toBe('')
-        ->and($result['stderr'])->toContain('Usage: infer-data-schema <path-or-url> [--db=sqlite|mysql|sqlserver]');
+        ->and($result['stderr'])->toContain('Usage: index.php <path-or-url> [--db=sqlite|mysql|sqlserver] [--cwd=<current-working-directory>] [--dry-run]');
 });
 
 it('rejects http and https sources from the cli', function (string $source) use ($runConsole) {

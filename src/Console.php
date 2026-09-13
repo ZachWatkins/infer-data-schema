@@ -7,8 +7,8 @@ namespace ZachWatkins\InferDataSchema;
 use ZachWatkins\InferDataSchema\Enums\ColumnModifier;
 use ZachWatkins\InferDataSchema\Enums\DatabaseType;
 use ZachWatkins\InferDataSchema\Interfaces\ParserInterface;
-use ZachWatkins\InferDataSchema\Interfaces\SqlColumnCollectionInterface;
-use ZachWatkins\InferDataSchema\Interfaces\SqlColumnInterface;
+use ZachWatkins\InferDataSchema\Interfaces\SQLColumnCollectionInterface;
+use ZachWatkins\InferDataSchema\Interfaces\SQLColumnInterface;
 
 final class Console
 {
@@ -179,7 +179,7 @@ final class Console
         );
     }
 
-    private function writeColumns(SqlColumnCollectionInterface $columns, string $format): void
+    private function writeColumns(SQLColumnCollectionInterface $columns, string $format): void
     {
         if ('txt' === $format) {
             foreach ($columns->getColumns() as $column) {
@@ -192,7 +192,7 @@ final class Console
         }
     }
 
-    private function formatColumn(SqlColumnInterface $column): string
+    private function formatColumn(SQLColumnInterface $column): string
     {
         $modifiers = \implode(
             ' ',
@@ -209,7 +209,7 @@ final class Console
         return \sprintf('%s: %s %s', $column->getName(), $column->getType(), $modifiers);
     }
 
-    private function formatColumnBlueprint(SqlColumnInterface $column): string
+    private function formatColumnBlueprint(SQLColumnInterface $column): string
     {
         $modifiers = \implode(
             ' ',

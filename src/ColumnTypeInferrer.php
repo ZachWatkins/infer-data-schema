@@ -11,9 +11,9 @@ use ZachWatkins\InferDataSchema\Enums\MySQLColumnType;
 use ZachWatkins\InferDataSchema\Enums\SQLiteColumnType;
 use ZachWatkins\InferDataSchema\Enums\SQLServerColumnType;
 use ZachWatkins\InferDataSchema\Interfaces\ColumnTypeInferrerInterface;
-use ZachWatkins\InferDataSchema\Interfaces\SqlColumnCollectionInterface;
-use ZachWatkins\InferDataSchema\Models\SqlColumn;
-use ZachWatkins\InferDataSchema\Models\SqlColumnCollection;
+use ZachWatkins\InferDataSchema\Interfaces\SQLColumnCollectionInterface;
+use ZachWatkins\InferDataSchema\Models\SQLColumn;
+use ZachWatkins\InferDataSchema\Models\SQLColumnCollection;
 
 /**
  * Evaluates every value of every column in a stream of rows to infer the safest possible
@@ -29,7 +29,7 @@ final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
     public function infer(
         iterable $rows,
         DatabaseType $databaseType = DatabaseType::SQLite,
-    ): SqlColumnCollectionInterface {
+    ): SQLColumnCollectionInterface {
         /** @var array<string, ColumnStats> $stats */
         $stats = [];
         /** @var array<int, string> $order */
@@ -49,7 +49,7 @@ final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
             }
         }
 
-        $collection = new SqlColumnCollection();
+        $collection = new SQLColumnCollection();
 
         foreach ($order as $column) {
             $columnStats = $stats[$column];
@@ -61,7 +61,7 @@ final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
                 $columnStats->record(null);
             }
 
-            $collection->add(new SqlColumn(
+            $collection->add(new SQLColumn(
                 $column,
                 $this->resolveType($columnStats, $databaseType),
                 $this->resolveModifiers($columnStats, $databaseType),

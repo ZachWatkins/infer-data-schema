@@ -27,22 +27,22 @@ class TestSchemaGenerator
 
         // use ZachWatkins\InferDataSchema\Enums\ColumnModifier;
         // use ZachWatkins\InferDataSchema\Enums\MySQLColumnType;
-        // use ZachWatkins\InferDataSchema\Models\SqlColumn;
-        // use ZachWatkins\InferDataSchema\Models\SqlColumnCollection;
+        // use ZachWatkins\InferDataSchema\Models\SQLColumn;
+        // use ZachWatkins\InferDataSchema\Models\SQLColumnCollection;
 
-        // return new SqlColumnCollection([
-        //     new SqlColumn('id', MySQLColumnType::TinyInt->value, [
+        // return new SQLColumnCollection([
+        //     new SQLColumn('id', MySQLColumnType::TinyInt->value, [
         //         ColumnModifier::Unique,
         //         ColumnModifier::Unsigned,
         //         ColumnModifier::AutoIncrement,
         //     ]),
-        //     new SqlColumn('name', MySQLColumnType::Varchar->value, [
+        //     new SQLColumn('name', MySQLColumnType::Varchar->value, [
         //         ColumnModifier::Unique,
         //     ]),
-        //     new SqlColumn('birthday', MySQLColumnType::Date->value, []),
-        //     new SqlColumn('created_at', MySQLColumnType::DateTime->value, []),
-        //     new SqlColumn('accept_terms', MySQLColumnType::Boolean->value, []),
-        //     new SqlColumn('deleted_at', MySQLColumnType::DateTime->value, [
+        //     new SQLColumn('birthday', MySQLColumnType::Date->value, []),
+        //     new SQLColumn('created_at', MySQLColumnType::DateTime->value, []),
+        //     new SQLColumn('accept_terms', MySQLColumnType::Boolean->value, []),
+        //     new SQLColumn('deleted_at', MySQLColumnType::DateTime->value, [
         //         ColumnModifier::Nullable,
         //     ]),
         // ]);
@@ -54,10 +54,10 @@ class TestSchemaGenerator
             '',
             'use ZachWatkins\InferDataSchema\Enums\ColumnModifier;',
             'use ZachWatkins\InferDataSchema\Enums\MySQLColumnType;',
-            'use ZachWatkins\InferDataSchema\Models\SqlColumn;',
-            'use ZachWatkins\InferDataSchema\Models\SqlColumnCollection;',
+            'use ZachWatkins\InferDataSchema\Models\SQLColumn;',
+            'use ZachWatkins\InferDataSchema\Models\SQLColumnCollection;',
             '',
-            'return new SqlColumnCollection([',
+            'return new SQLColumnCollection([',
         ];
 
         foreach ($columns as $column) {
@@ -79,7 +79,7 @@ class TestSchemaGenerator
                 MySQLColumnType::Json->value => 'Json',
                 default => throw new \InvalidArgumentException('Unknown column type: ' . $column->getType()),
             };
-            $output[] = '    new SqlColumn(\'' . $column->getName() . '\', MySQLColumnType::' . $columnType . '->value';
+            $output[] = '    new SQLColumn(\'' . $column->getName() . '\', MySQLColumnType::' . $columnType . '->value';
             $modifiers = $column->getModifiers();
             if (!empty($modifiers)) {
                 $output[array_key_last($output)] .= ', [';
@@ -116,22 +116,22 @@ class TestSchemaGenerator
 
         // use ZachWatkins\InferDataSchema\Enums\ColumnModifier;
         // use ZachWatkins\InferDataSchema\Enums\MySQLColumnType;
-        // use ZachWatkins\InferDataSchema\Models\SqlColumn;
-        // use ZachWatkins\InferDataSchema\Models\SqlColumnCollection;
+        // use ZachWatkins\InferDataSchema\Models\SQLColumn;
+        // use ZachWatkins\InferDataSchema\Models\SQLColumnCollection;
 
-        // return new SqlColumnCollection([
-        //     new SqlColumn('id', SQLiteColumnType::TinyInt->value, [
+        // return new SQLColumnCollection([
+        //     new SQLColumn('id', SQLiteColumnType::TinyInt->value, [
         //         ColumnModifier::Unique,
         //         ColumnModifier::Unsigned,
         //         ColumnModifier::AutoIncrement,
         //     ]),
-        //     new SqlColumn('name', SQLiteColumnType::Varchar->value, [
+        //     new SQLColumn('name', SQLiteColumnType::Varchar->value, [
         //         ColumnModifier::Unique,
         //     ]),
-        //     new SqlColumn('birthday', SQLiteColumnType::Date->value, []),
-        //     new SqlColumn('created_at', SQLiteColumnType::DateTime->value, []),
-        //     new SqlColumn('accept_terms', SQLiteColumnType::Boolean->value, []),
-        //     new SqlColumn('deleted_at', SQLiteColumnType::DateTime->value, [
+        //     new SQLColumn('birthday', SQLiteColumnType::Date->value, []),
+        //     new SQLColumn('created_at', SQLiteColumnType::DateTime->value, []),
+        //     new SQLColumn('accept_terms', SQLiteColumnType::Boolean->value, []),
+        //     new SQLColumn('deleted_at', SQLiteColumnType::DateTime->value, [
         //         ColumnModifier::Nullable,
         //     ]),
         // ]);
@@ -143,10 +143,10 @@ class TestSchemaGenerator
             '',
             'use ZachWatkins\InferDataSchema\Enums\ColumnModifier;',
             'use ZachWatkins\InferDataSchema\Enums\SQLiteColumnType;',
-            'use ZachWatkins\InferDataSchema\Models\SqlColumn;',
-            'use ZachWatkins\InferDataSchema\Models\SqlColumnCollection;',
+            'use ZachWatkins\InferDataSchema\Models\SQLColumn;',
+            'use ZachWatkins\InferDataSchema\Models\SQLColumnCollection;',
             '',
-            'return new SqlColumnCollection([',
+            'return new SQLColumnCollection([',
         ];
 
         foreach ($columns as $column) {
@@ -157,7 +157,7 @@ class TestSchemaGenerator
                 SQLiteColumnType::Text->value => 'Text',
                 default => throw new \InvalidArgumentException('Unknown column type: ' . $column->getType()),
             };
-            $output[] = '    new SqlColumn(\'' . $column->getName() . '\', SQLiteColumnType::' . $columnType . '->value';
+            $output[] = '    new SQLColumn(\'' . $column->getName() . '\', SQLiteColumnType::' . $columnType . '->value';
             $modifiers = $column->getModifiers();
             if (!empty($modifiers)) {
                 $output[array_key_last($output)] .= ', [';
@@ -194,22 +194,22 @@ class TestSchemaGenerator
 
         // use ZachWatkins\InferDataSchema\Enums\ColumnModifier;
         // use ZachWatkins\InferDataSchema\Enums\MySQLColumnType;
-        // use ZachWatkins\InferDataSchema\Models\SqlColumn;
-        // use ZachWatkins\InferDataSchema\Models\SqlColumnCollection;
+        // use ZachWatkins\InferDataSchema\Models\SQLColumn;
+        // use ZachWatkins\InferDataSchema\Models\SQLColumnCollection;
 
-        // return new SqlColumnCollection([
-        //     new SqlColumn('id', SQLServerColumnType::TinyInt->value, [
+        // return new SQLColumnCollection([
+        //     new SQLColumn('id', SQLServerColumnType::TinyInt->value, [
         //         ColumnModifier::Unique,
         //         ColumnModifier::Unsigned,
         //         ColumnModifier::AutoIncrement,
         //     ]),
-        //     new SqlColumn('name', SQLServerColumnType::Varchar->value, [
+        //     new SQLColumn('name', SQLServerColumnType::Varchar->value, [
         //         ColumnModifier::Unique,
         //     ]),
-        //     new SqlColumn('birthday', SQLServerColumnType::Date->value, []),
-        //     new SqlColumn('created_at', SQLServerColumnType::DateTime->value, []),
-        //     new SqlColumn('accept_terms', SQLServerColumnType::Boolean->value, []),
-        //     new SqlColumn('deleted_at', SQLServerColumnType::DateTime->value, [
+        //     new SQLColumn('birthday', SQLServerColumnType::Date->value, []),
+        //     new SQLColumn('created_at', SQLServerColumnType::DateTime->value, []),
+        //     new SQLColumn('accept_terms', SQLServerColumnType::Boolean->value, []),
+        //     new SQLColumn('deleted_at', SQLServerColumnType::DateTime->value, [
         //         ColumnModifier::Nullable,
         //     ]),
         // ]);
@@ -221,10 +221,10 @@ class TestSchemaGenerator
             '',
             'use ZachWatkins\InferDataSchema\Enums\ColumnModifier;',
             'use ZachWatkins\InferDataSchema\Enums\SQLServerColumnType;',
-            'use ZachWatkins\InferDataSchema\Models\SqlColumn;',
-            'use ZachWatkins\InferDataSchema\Models\SqlColumnCollection;',
+            'use ZachWatkins\InferDataSchema\Models\SQLColumn;',
+            'use ZachWatkins\InferDataSchema\Models\SQLColumnCollection;',
             '',
-            'return new SqlColumnCollection([',
+            'return new SQLColumnCollection([',
         ];
 
         foreach ($columns as $column) {
@@ -246,7 +246,7 @@ class TestSchemaGenerator
                 SQLServerColumnType::XML->value => 'XML',
                 default => throw new \InvalidArgumentException('Unknown column type: ' . $column->getType()),
             };
-            $output[] = '    new SqlColumn(\'' . $column->getName() . '\', SQLServerColumnType::' . $columnType . '->value';
+            $output[] = '    new SQLColumn(\'' . $column->getName() . '\', SQLServerColumnType::' . $columnType . '->value';
             $modifiers = $column->getModifiers();
             if (!empty($modifiers)) {
                 $output[array_key_last($output)] .= ', [';

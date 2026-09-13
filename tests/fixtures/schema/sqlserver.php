@@ -4,246 +4,246 @@ declare(strict_types=1);
 
 use ZachWatkins\InferDataSchema\Enums\ColumnModifier;
 use ZachWatkins\InferDataSchema\Enums\SQLServerColumnType;
-use ZachWatkins\InferDataSchema\Models\SqlColumn;
-use ZachWatkins\InferDataSchema\Models\SqlColumnCollection;
+use ZachWatkins\InferDataSchema\Models\SQLColumn;
+use ZachWatkins\InferDataSchema\Models\SQLColumnCollection;
 
-return new SqlColumnCollection([
-    new SqlColumn('bit', SQLServerColumnType::Bit->value),
-    new SqlColumn('bit_nullable', SQLServerColumnType::Bit->value, [
+return new SQLColumnCollection([
+    new SQLColumn('bit', SQLServerColumnType::Bit->value),
+    new SQLColumn('bit_nullable', SQLServerColumnType::Bit->value, [
         ColumnModifier::Nullable,
     ]),
-    new SqlColumn('tinyint', SQLServerColumnType::TinyInt->value, [
+    new SQLColumn('tinyint', SQLServerColumnType::TinyInt->value, [
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('tinyint_nullable', SQLServerColumnType::TinyInt->value, [
+    new SQLColumn('tinyint_nullable', SQLServerColumnType::TinyInt->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('tinyint_unique', SQLServerColumnType::TinyInt->value, [
+    new SQLColumn('tinyint_unique', SQLServerColumnType::TinyInt->value, [
         ColumnModifier::Unique,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('tinyint_nullable_unique', SQLServerColumnType::TinyInt->value, [
-        ColumnModifier::Nullable,
-        ColumnModifier::Unique,
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('smallint', SQLServerColumnType::SmallInt->value, [
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('smallint_nullable', SQLServerColumnType::SmallInt->value, [
-        ColumnModifier::Nullable,
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('smallint_unique', SQLServerColumnType::SmallInt->value, [
-        ColumnModifier::Unique,
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('smallint_nullable_unique', SQLServerColumnType::SmallInt->value, [
+    new SQLColumn('tinyint_nullable_unique', SQLServerColumnType::TinyInt->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unique,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('smallint_unsigned', SQLServerColumnType::SmallInt->value, [
+    new SQLColumn('smallint', SQLServerColumnType::SmallInt->value, [
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('smallint_unsigned_nullable', SQLServerColumnType::SmallInt->value, [
+    new SQLColumn('smallint_nullable', SQLServerColumnType::SmallInt->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('smallint_unsigned_unique', SQLServerColumnType::SmallInt->value, [
+    new SQLColumn('smallint_unique', SQLServerColumnType::SmallInt->value, [
         ColumnModifier::Unique,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('smallint_unsigned_nullable_unique', SQLServerColumnType::SmallInt->value, [
-        ColumnModifier::Nullable,
-        ColumnModifier::Unique,
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('int', SQLServerColumnType::Int->value, [
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('int_nullable', SQLServerColumnType::Int->value, [
-        ColumnModifier::Nullable,
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('int_unique', SQLServerColumnType::Int->value, [
-        ColumnModifier::Unique,
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('int_nullable_unique', SQLServerColumnType::Int->value, [
+    new SQLColumn('smallint_nullable_unique', SQLServerColumnType::SmallInt->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unique,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('int_unsigned', SQLServerColumnType::Int->value, [
+    new SQLColumn('smallint_unsigned', SQLServerColumnType::SmallInt->value, [
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('int_unsigned_nullable', SQLServerColumnType::Int->value, [
+    new SQLColumn('smallint_unsigned_nullable', SQLServerColumnType::SmallInt->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('int_unsigned_unique', SQLServerColumnType::Int->value, [
+    new SQLColumn('smallint_unsigned_unique', SQLServerColumnType::SmallInt->value, [
         ColumnModifier::Unique,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('int_unsigned_nullable_unique', SQLServerColumnType::Int->value, [
-        ColumnModifier::Nullable,
-        ColumnModifier::Unique,
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('bigint', SQLServerColumnType::BigInt->value),
-    new SqlColumn('bigint_nullable', SQLServerColumnType::BigInt->value, [
-        ColumnModifier::Nullable,
-    ]),
-    new SqlColumn('bigint_unique', SQLServerColumnType::BigInt->value, [
-        ColumnModifier::Unique,
-    ]),
-    new SqlColumn('bigint_nullable_unique', SQLServerColumnType::BigInt->value, [
-        ColumnModifier::Nullable,
-        ColumnModifier::Unique,
-    ]),
-    new SqlColumn('bigint_unsigned', SQLServerColumnType::BigInt->value, [
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('bigint_unsigned_nullable', SQLServerColumnType::BigInt->value, [
-        ColumnModifier::Nullable,
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('bigint_unsigned_unique', SQLServerColumnType::BigInt->value, [
-        ColumnModifier::Unique,
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('bigint_unsigned_nullable_unique', SQLServerColumnType::BigInt->value, [
+    new SQLColumn('smallint_unsigned_nullable_unique', SQLServerColumnType::SmallInt->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unique,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('decimal', SQLServerColumnType::Decimal->value, [
+    new SQLColumn('int', SQLServerColumnType::Int->value, [
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('decimal_nullable', SQLServerColumnType::Decimal->value, [
+    new SQLColumn('int_nullable', SQLServerColumnType::Int->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('decimal_unique', SQLServerColumnType::Decimal->value, [
+    new SQLColumn('int_unique', SQLServerColumnType::Int->value, [
         ColumnModifier::Unique,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('decimal_nullable_unique', SQLServerColumnType::Decimal->value, [
-        ColumnModifier::Nullable,
-        ColumnModifier::Unique,
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('decimal_unsigned', SQLServerColumnType::Decimal->value, [
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('decimal_unsigned_nullable', SQLServerColumnType::Decimal->value, [
-        ColumnModifier::Nullable,
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('decimal_unsigned_unique', SQLServerColumnType::Decimal->value, [
-        ColumnModifier::Unique,
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('decimal_unsigned_nullable_unique', SQLServerColumnType::Decimal->value, [
+    new SQLColumn('int_nullable_unique', SQLServerColumnType::Int->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unique,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('boolean', SQLServerColumnType::Bit->value),
-    new SqlColumn('boolean_nullable', SQLServerColumnType::Bit->value, [
-        ColumnModifier::Nullable,
+    new SQLColumn('int_unsigned', SQLServerColumnType::Int->value, [
+        ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('boolean_unique', SQLServerColumnType::Bit->value),
-    new SqlColumn('boolean_nullable_unique', SQLServerColumnType::Bit->value, [
+    new SQLColumn('int_unsigned_nullable', SQLServerColumnType::Int->value, [
         ColumnModifier::Nullable,
+        ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('char', SQLServerColumnType::Char->value),
-    new SqlColumn('char_nullable', SQLServerColumnType::Char->value, [
-        ColumnModifier::Nullable,
-    ]),
-    new SqlColumn('char_unique', SQLServerColumnType::Char->value, [
+    new SQLColumn('int_unsigned_unique', SQLServerColumnType::Int->value, [
         ColumnModifier::Unique,
+        ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('char_nullable_unique', SQLServerColumnType::Char->value, [
+    new SQLColumn('int_unsigned_nullable_unique', SQLServerColumnType::Int->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unique,
+        ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('varchar', SQLServerColumnType::Varchar->value),
-    new SqlColumn('varchar_nullable', SQLServerColumnType::Varchar->value, [
+    new SQLColumn('bigint', SQLServerColumnType::BigInt->value),
+    new SQLColumn('bigint_nullable', SQLServerColumnType::BigInt->value, [
         ColumnModifier::Nullable,
     ]),
-    new SqlColumn('varchar_unique', SQLServerColumnType::Varchar->value, [
+    new SQLColumn('bigint_unique', SQLServerColumnType::BigInt->value, [
         ColumnModifier::Unique,
     ]),
-    new SqlColumn('varchar_nullable_unique', SQLServerColumnType::Varchar->value, [
+    new SQLColumn('bigint_nullable_unique', SQLServerColumnType::BigInt->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unique,
     ]),
-    new SqlColumn('text', SQLServerColumnType::Char->value),
-    new SqlColumn('text_nullable', SQLServerColumnType::Char->value, [
+    new SQLColumn('bigint_unsigned', SQLServerColumnType::BigInt->value, [
+        ColumnModifier::Unsigned,
+    ]),
+    new SQLColumn('bigint_unsigned_nullable', SQLServerColumnType::BigInt->value, [
         ColumnModifier::Nullable,
+        ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('text_unique', SQLServerColumnType::Char->value, [
+    new SQLColumn('bigint_unsigned_unique', SQLServerColumnType::BigInt->value, [
         ColumnModifier::Unique,
+        ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('text_nullable_unique', SQLServerColumnType::Char->value, [
-        ColumnModifier::Nullable,
-        ColumnModifier::Unique,
-    ]),
-    new SqlColumn('date', SQLServerColumnType::Date->value),
-    new SqlColumn('date_nullable', SQLServerColumnType::Date->value, [
-        ColumnModifier::Nullable,
-    ]),
-    new SqlColumn('date_unique', SQLServerColumnType::Date->value, [
-        ColumnModifier::Unique,
-    ]),
-    new SqlColumn('date_nullable_unique', SQLServerColumnType::Date->value, [
+    new SQLColumn('bigint_unsigned_nullable_unique', SQLServerColumnType::BigInt->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unique,
+        ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('time', SQLServerColumnType::Time->value),
-    new SqlColumn('time_nullable', SQLServerColumnType::Time->value, [
+    new SQLColumn('decimal', SQLServerColumnType::Decimal->value, [
+        ColumnModifier::Unsigned,
+    ]),
+    new SQLColumn('decimal_nullable', SQLServerColumnType::Decimal->value, [
         ColumnModifier::Nullable,
+        ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('time_unique', SQLServerColumnType::Time->value, [
+    new SQLColumn('decimal_unique', SQLServerColumnType::Decimal->value, [
         ColumnModifier::Unique,
+        ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('time_nullable_unique', SQLServerColumnType::Time->value, [
-        ColumnModifier::Nullable,
-        ColumnModifier::Unique,
-    ]),
-    new SqlColumn('datetime', SQLServerColumnType::DateTime->value),
-    new SqlColumn('datetime_nullable', SQLServerColumnType::DateTime->value, [
-        ColumnModifier::Nullable,
-    ]),
-    new SqlColumn('datetime_unique', SQLServerColumnType::DateTime->value, [
-        ColumnModifier::Unique,
-    ]),
-    new SqlColumn('datetime_nullable_unique', SQLServerColumnType::DateTime->value, [
+    new SQLColumn('decimal_nullable_unique', SQLServerColumnType::Decimal->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unique,
+        ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('json', SQLServerColumnType::Char->value),
-    new SqlColumn('json_nullable', SQLServerColumnType::Char->value, [
+    new SQLColumn('decimal_unsigned', SQLServerColumnType::Decimal->value, [
+        ColumnModifier::Unsigned,
+    ]),
+    new SQLColumn('decimal_unsigned_nullable', SQLServerColumnType::Decimal->value, [
+        ColumnModifier::Nullable,
+        ColumnModifier::Unsigned,
+    ]),
+    new SQLColumn('decimal_unsigned_unique', SQLServerColumnType::Decimal->value, [
+        ColumnModifier::Unique,
+        ColumnModifier::Unsigned,
+    ]),
+    new SQLColumn('decimal_unsigned_nullable_unique', SQLServerColumnType::Decimal->value, [
+        ColumnModifier::Nullable,
+        ColumnModifier::Unique,
+        ColumnModifier::Unsigned,
+    ]),
+    new SQLColumn('boolean', SQLServerColumnType::Bit->value),
+    new SQLColumn('boolean_nullable', SQLServerColumnType::Bit->value, [
         ColumnModifier::Nullable,
     ]),
-    new SqlColumn('json_unique', SQLServerColumnType::Char->value, [
+    new SQLColumn('boolean_unique', SQLServerColumnType::Bit->value),
+    new SQLColumn('boolean_nullable_unique', SQLServerColumnType::Bit->value, [
+        ColumnModifier::Nullable,
+    ]),
+    new SQLColumn('char', SQLServerColumnType::Char->value),
+    new SQLColumn('char_nullable', SQLServerColumnType::Char->value, [
+        ColumnModifier::Nullable,
+    ]),
+    new SQLColumn('char_unique', SQLServerColumnType::Char->value, [
         ColumnModifier::Unique,
     ]),
-    new SqlColumn('json_nullable_unique', SQLServerColumnType::Char->value, [
+    new SQLColumn('char_nullable_unique', SQLServerColumnType::Char->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unique,
     ]),
-    new SqlColumn('xml', SQLServerColumnType::Char->value),
-    new SqlColumn('xml_nullable', SQLServerColumnType::Char->value, [
+    new SQLColumn('varchar', SQLServerColumnType::Varchar->value),
+    new SQLColumn('varchar_nullable', SQLServerColumnType::Varchar->value, [
         ColumnModifier::Nullable,
     ]),
-    new SqlColumn('xml_unique', SQLServerColumnType::Char->value, [
+    new SQLColumn('varchar_unique', SQLServerColumnType::Varchar->value, [
         ColumnModifier::Unique,
     ]),
-    new SqlColumn('xml_nullable_unique', SQLServerColumnType::Char->value, [
+    new SQLColumn('varchar_nullable_unique', SQLServerColumnType::Varchar->value, [
+        ColumnModifier::Nullable,
+        ColumnModifier::Unique,
+    ]),
+    new SQLColumn('text', SQLServerColumnType::Char->value),
+    new SQLColumn('text_nullable', SQLServerColumnType::Char->value, [
+        ColumnModifier::Nullable,
+    ]),
+    new SQLColumn('text_unique', SQLServerColumnType::Char->value, [
+        ColumnModifier::Unique,
+    ]),
+    new SQLColumn('text_nullable_unique', SQLServerColumnType::Char->value, [
+        ColumnModifier::Nullable,
+        ColumnModifier::Unique,
+    ]),
+    new SQLColumn('date', SQLServerColumnType::Date->value),
+    new SQLColumn('date_nullable', SQLServerColumnType::Date->value, [
+        ColumnModifier::Nullable,
+    ]),
+    new SQLColumn('date_unique', SQLServerColumnType::Date->value, [
+        ColumnModifier::Unique,
+    ]),
+    new SQLColumn('date_nullable_unique', SQLServerColumnType::Date->value, [
+        ColumnModifier::Nullable,
+        ColumnModifier::Unique,
+    ]),
+    new SQLColumn('time', SQLServerColumnType::Time->value),
+    new SQLColumn('time_nullable', SQLServerColumnType::Time->value, [
+        ColumnModifier::Nullable,
+    ]),
+    new SQLColumn('time_unique', SQLServerColumnType::Time->value, [
+        ColumnModifier::Unique,
+    ]),
+    new SQLColumn('time_nullable_unique', SQLServerColumnType::Time->value, [
+        ColumnModifier::Nullable,
+        ColumnModifier::Unique,
+    ]),
+    new SQLColumn('datetime', SQLServerColumnType::DateTime->value),
+    new SQLColumn('datetime_nullable', SQLServerColumnType::DateTime->value, [
+        ColumnModifier::Nullable,
+    ]),
+    new SQLColumn('datetime_unique', SQLServerColumnType::DateTime->value, [
+        ColumnModifier::Unique,
+    ]),
+    new SQLColumn('datetime_nullable_unique', SQLServerColumnType::DateTime->value, [
+        ColumnModifier::Nullable,
+        ColumnModifier::Unique,
+    ]),
+    new SQLColumn('json', SQLServerColumnType::Char->value),
+    new SQLColumn('json_nullable', SQLServerColumnType::Char->value, [
+        ColumnModifier::Nullable,
+    ]),
+    new SQLColumn('json_unique', SQLServerColumnType::Char->value, [
+        ColumnModifier::Unique,
+    ]),
+    new SQLColumn('json_nullable_unique', SQLServerColumnType::Char->value, [
+        ColumnModifier::Nullable,
+        ColumnModifier::Unique,
+    ]),
+    new SQLColumn('xml', SQLServerColumnType::Char->value),
+    new SQLColumn('xml_nullable', SQLServerColumnType::Char->value, [
+        ColumnModifier::Nullable,
+    ]),
+    new SQLColumn('xml_unique', SQLServerColumnType::Char->value, [
+        ColumnModifier::Unique,
+    ]),
+    new SQLColumn('xml_nullable_unique', SQLServerColumnType::Char->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unique,
     ]),

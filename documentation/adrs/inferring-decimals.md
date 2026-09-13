@@ -32,4 +32,4 @@ By not using floating-point data types for numeric values containing a decimal p
 
 By not inferring `money` or `smallmoney` data types, the library avoids potentially introducing rounding errors in financial calculations.
 
-If users wish, they can use the library to override this decision by creating their own `SqlColumnCollection` instance using the one returned by the `ParserInterface` instance, and then replacing any column in it as they see fit.
+If users wish, they can use the library to override this decision by creating their own `SQLColumnCollection` instance using the one returned by the `ParserInterface` instance, and then replacing any column in it as they see fit.

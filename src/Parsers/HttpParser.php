@@ -10,7 +10,7 @@ use Psr\Http\Message\RequestInterface;
 use ZachWatkins\InferDataSchema\Enums\DatabaseType;
 use ZachWatkins\InferDataSchema\Interfaces\ColumnTypeInferrerInterface;
 use ZachWatkins\InferDataSchema\Interfaces\ParserInterface;
-use ZachWatkins\InferDataSchema\Interfaces\SqlColumnCollectionInterface;
+use ZachWatkins\InferDataSchema\Interfaces\SQLColumnCollectionInterface;
 use ZachWatkins\InferDataSchema\ColumnTypeInferrer;
 
 use function Flow\ETL\Adapter\Http\from_static_http_requests;
@@ -26,7 +26,7 @@ final class HttpParser implements ParserInterface
     public function parse(
         string $source,
         string $databaseType = 'sqlite',
-    ): SqlColumnCollectionInterface {
+    ): SQLColumnCollectionInterface {
         if (!in_array($databaseType, array_map(fn($case) => $case->value, DatabaseType::cases()), true)) {
             throw new \InvalidArgumentException("Invalid database type: $databaseType, accepts: " . implode(', ', array_map(fn($case) => $case->value, DatabaseType::cases())));
         }

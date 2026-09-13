@@ -4,23 +4,23 @@ declare(strict_types=1);
 
 namespace ZachWatkins\InferDataSchema\Models;
 
-use ZachWatkins\InferDataSchema\Interfaces\SqlColumnCollectionInterface;
-use ZachWatkins\InferDataSchema\Interfaces\SqlColumnInterface;
+use ZachWatkins\InferDataSchema\Interfaces\SQLColumnCollectionInterface;
+use ZachWatkins\InferDataSchema\Interfaces\SQLColumnInterface;
 
 /**
  * An ordered collection of inferred SQL columns.
  *
- * @implements \IteratorAggregate<int, SqlColumnInterface>
+ * @implements \IteratorAggregate<int, SQLColumnInterface>
  */
-final class SqlColumnCollection implements SqlColumnCollectionInterface
+final class SQLColumnCollection implements SQLColumnCollectionInterface
 {
     /**
-     * @var array<int, SqlColumnInterface>
+     * @var array<int, SQLColumnInterface>
      */
     private array $columns = [];
 
     /**
-     * @param iterable<SqlColumnInterface> $columns
+     * @param iterable<SQLColumnInterface> $columns
      */
     public function __construct(iterable $columns = [])
     {
@@ -29,14 +29,14 @@ final class SqlColumnCollection implements SqlColumnCollectionInterface
         }
     }
 
-    public function add(SqlColumnInterface $column): static
+    public function add(SQLColumnInterface $column): static
     {
         $this->columns[] = $column;
 
         return $this;
     }
 
-    public function get(string $name): ?SqlColumnInterface
+    public function get(string $name): ?SQLColumnInterface
     {
         foreach ($this->columns as $column) {
             if ($column->getName() === $name) {
@@ -48,7 +48,7 @@ final class SqlColumnCollection implements SqlColumnCollectionInterface
     }
 
     /**
-     * @return array<int, SqlColumnInterface>
+     * @return array<int, SQLColumnInterface>
      */
     public function getColumns(): array
     {
@@ -61,7 +61,7 @@ final class SqlColumnCollection implements SqlColumnCollectionInterface
     }
 
     /**
-     * @return \ArrayIterator<int, SqlColumnInterface>
+     * @return \ArrayIterator<int, SQLColumnInterface>
      */
     public function getIterator(): \ArrayIterator
     {

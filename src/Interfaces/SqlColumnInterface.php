@@ -9,7 +9,7 @@ use ZachWatkins\InferDataSchema\Enums\ColumnModifier;
 /**
  * Represents a single inferred SQL column definition.
  */
-interface SqlColumnInterface
+interface SQLColumnInterface
 {
     public function getName(): string;
 

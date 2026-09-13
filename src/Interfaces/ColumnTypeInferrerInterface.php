@@ -7,7 +7,7 @@ namespace ZachWatkins\InferDataSchema\Interfaces;
 use ZachWatkins\InferDataSchema\Enums\DatabaseType;
 
 /**
- * Infers a {@see SqlColumnCollectionInterface} from a stream of data rows.
+ * Infers a {@see SQLColumnCollectionInterface} from a stream of data rows.
  *
  * Implementations must evaluate every row for every column in order to determine
  * the safest possible SQL column type and modifiers (nullable, unique, unsigned,
@@ -26,5 +26,5 @@ interface ColumnTypeInferrerInterface
     public function infer(
         iterable $rows,
         DatabaseType $databaseType = DatabaseType::SQLite,
-    ): SqlColumnCollectionInterface;
+    ): SQLColumnCollectionInterface;
 }

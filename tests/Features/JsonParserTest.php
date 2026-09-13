@@ -3,19 +3,19 @@
 declare(strict_types=1);
 
 use ZachWatkins\InferDataSchema\Enums\ColumnModifier;
-use ZachWatkins\InferDataSchema\Interfaces\SqlColumnCollectionInterface;
-use ZachWatkins\InferDataSchema\Interfaces\SqlColumnInterface;
+use ZachWatkins\InferDataSchema\Interfaces\SQLColumnCollectionInterface;
+use ZachWatkins\InferDataSchema\Interfaces\SQLColumnInterface;
 use ZachWatkins\InferDataSchema\Parsers\JsonParser;
 
 it('infers the expected MySQL schema from JSON basic fixture', function () {
-    /** @var SqlColumnCollectionInterface $expected */
+    /** @var SQLColumnCollectionInterface $expected */
     $expected = require dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/schema/mysql.php');
     $dataFixture = dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/data/test_mysql.json');
     $parser = new JsonParser();
 
     $actual = $parser->parse($dataFixture, 'mysql');
     $normalizedActual = array_map(
-        static fn(SqlColumnInterface $column): array => [
+        static fn(SQLColumnInterface $column): array => [
             'name' => $column->getName(),
             'type' => $column->getType(),
             'modifiers' => array_map(
@@ -26,7 +26,7 @@ it('infers the expected MySQL schema from JSON basic fixture', function () {
         $actual->getColumns(),
     );
     $normalizedExpected = array_map(
-        static fn(SqlColumnInterface $column): array => [
+        static fn(SQLColumnInterface $column): array => [
             'name' => $column->getName(),
             'type' => $column->getType(),
             'modifiers' => array_map(

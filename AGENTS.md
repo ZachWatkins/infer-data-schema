@@ -37,8 +37,8 @@ See [README.md](README.md) for full project details, usage examples, and depende
      - `src/Parsers/ExcelParser` - The Excel data source parser class.  
      - `src/Parsers/HttpParser` - The HTTP data source parser class.  
    - `src/Models` - Contains the model classes for the library.  
-     - `src/Models/SqlColumn.php` - The model class representing a database column.  
-     - `src/Models/SqlColumnCollection.php` - The model class representing a collection of database columns.  
+     - `src/Models/SQLColumn.php` - The model class representing a database column.  
+     - `src/Models/SQLColumnCollection.php` - The model class representing a collection of database columns.  
    - `src/Console.php` - The console class for the library.  
 3. `tests/` - Contains the test cases for the library.  
    - `tests/fixtures/` - Contains test fixture files used for testing the library's parsers and schema inference logic.  
@@ -58,7 +58,7 @@ See [README.md](README.md) for full project details, usage examples, and depende
 
 ## Key Conventions
 
-- **Parser Design**: Each parser in `src/Parsers/` must convert input datasets into an instance of `SqlColumnCollection`.
+- **Parser Design**: Each parser in `src/Parsers/` must convert input datasets into an instance of `SQLColumnCollection`.
 - **Modifier Detection**: Ensure column modifiers (`nullable`, `unique`, `unsigned`, `auto_increment`) are evaluated accurately across all rows in the dataset.
 - **Testing**: Write Pest unit tests under `tests/` for all new parsers, models, and type inference logic using test datasets. Use test fixtures for data source files and the schema objects they are expected to produce.
 

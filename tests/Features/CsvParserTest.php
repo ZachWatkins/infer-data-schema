@@ -3,19 +3,19 @@
 declare(strict_types=1);
 
 use ZachWatkins\InferDataSchema\Enums\ColumnModifier;
-use ZachWatkins\InferDataSchema\Interfaces\SqlColumnCollectionInterface;
-use ZachWatkins\InferDataSchema\Interfaces\SqlColumnInterface;
+use ZachWatkins\InferDataSchema\Interfaces\SQLColumnCollectionInterface;
+use ZachWatkins\InferDataSchema\Interfaces\SQLColumnInterface;
 use ZachWatkins\InferDataSchema\Parsers\CsvParser;
 use ZachWatkins\InferDataSchema\Enums\DatabaseType;
 
 it('infers the expected MySQL schema from CSV basic fixture', function () {
-    /** @var SqlColumnCollectionInterface $expected */
+    /** @var SQLColumnCollectionInterface $expected */
     $dataFixture = dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/data/test_mysql.csv');
 
     $parser = new CsvParser();
-    $normalizeColumns = static function (SqlColumnCollectionInterface $columns): array {
+    $normalizeColumns = static function (SQLColumnCollectionInterface $columns): array {
         return array_map(
-            static fn(SqlColumnInterface $column): array => [
+            static fn(SQLColumnInterface $column): array => [
                 'name' => $column->getName(),
                 'type' => $column->getType(),
                 'modifiers' => array_map(

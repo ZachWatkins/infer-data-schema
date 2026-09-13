@@ -15,5 +15,5 @@ interface ParserInterface
     public function parse(
         string $source,
         string $databaseType = 'sqlite',
-    ): SqlColumnCollectionInterface;
+    ): SQLColumnCollectionInterface;
 }

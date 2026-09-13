@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use ZachWatkins\InferDataSchema\Enums\ColumnModifier;
-use ZachWatkins\InferDataSchema\Interfaces\SqlColumnInterface;
+use ZachWatkins\InferDataSchema\Interfaces\SQLColumnInterface;
 use ZachWatkins\InferDataSchema\Parsers\ExcelParser;
 
 it('parses an excel workbook into an inferred mysql schema', function () {
@@ -24,7 +24,7 @@ it('parses an excel workbook into an inferred mysql schema', function () {
     $expectedColumns = $expected->getColumns();
 
     foreach ($expectedColumns as $index => $expectedColumn) {
-        /** @var SqlColumnInterface|null $actualColumn */
+        /** @var SQLColumnInterface|null $actualColumn */
         $actualColumn = $actualColumns[$index] ?? null;
 
         expect($actualColumn)->not->toBeNull();

@@ -4,7 +4,7 @@
 
 This is a PHP library which infers the SQL column schema of a data source.
 
-It reads a given data source, evaluates all values of all columns for the safest possible SQL column type and modifiers (unique, nullable, signed or unsigned, auto-incrementing), and generates a corresponding SqlColumnCollection object.
+It reads a given data source, evaluates all values of all columns for the safest possible SQL column type and modifiers (unique, nullable, signed or unsigned, auto-incrementing), and generates a corresponding SQLColumnCollection object.
 
 ## Folder structure
 
@@ -30,8 +30,8 @@ It reads a given data source, evaluates all values of all columns for the safest
      - `src/Parsers/ExcelParser` - The Excel data source parser class.  
      - `src/Parsers/HttpParser` - The HTTP data source parser class.  
    - `src/Models` - Contains the model classes for the library.  
-     - `src/Models/SqlColumn.php` - The model class representing a database column.  
-     - `src/Models/SqlColumnCollection.php` - The model class representing a collection of database columns.  
+     - `src/Models/SQLColumn.php` - The model class representing a database column.  
+     - `src/Models/SQLColumnCollection.php` - The model class representing a collection of database columns.  
    - `src/Console.php` - The console class for the library.  
 3. `tests/` - Contains the test cases for the library.  
    - `tests/fixtures/` - Contains test fixture files used for testing the library's parsers and schema inference logic.  
@@ -52,11 +52,11 @@ use ZachWatkins\InferDataSchema\Parsers\CsvParser;
 $parser = new CsvParser();
 $sqlColumnCollection = $parser->parse('path/to/your/file.csv');
 var_dump($sqlColumnCollection);
-// SqlColumnCollection Object
+// SQLColumnCollection Object
 // (
 //     [columns:protected] => Array
 //         (
-//             [0] => SqlColumn Object
+//             [0] => SQLColumn Object
 //                 (
 //                     [name:protected] => id
 //                     [type:protected] => int
@@ -67,7 +67,7 @@ var_dump($sqlColumnCollection);
 //                             [2] => unique
 //                         )
 //                 )
-//             [1] => SqlColumn Object
+//             [1] => SQLColumn Object
 //                 (
 //                     [name:protected] => name
 //                     [type:protected] => varchar

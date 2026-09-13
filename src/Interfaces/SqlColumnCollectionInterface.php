@@ -7,16 +7,16 @@ namespace ZachWatkins\InferDataSchema\Interfaces;
 /**
  * Represents an ordered collection of inferred SQL columns.
  *
- * @extends \IteratorAggregate<int, SqlColumnInterface>
+ * @extends \IteratorAggregate<int, SQLColumnInterface>
  */
-interface SqlColumnCollectionInterface extends \Countable, \IteratorAggregate
+interface SQLColumnCollectionInterface extends \Countable, \IteratorAggregate
 {
-    public function add(SqlColumnInterface $column): static;
+    public function add(SQLColumnInterface $column): static;
 
-    public function get(string $name): ?SqlColumnInterface;
+    public function get(string $name): ?SQLColumnInterface;
 
     /**
-     * @return array<int, SqlColumnInterface>
+     * @return array<int, SQLColumnInterface>
      */
     public function getColumns(): array;
 }

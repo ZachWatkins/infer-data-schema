@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace ZachWatkins\InferDataSchema\Models;
 
 use ZachWatkins\InferDataSchema\Enums\ColumnModifier;
-use ZachWatkins\InferDataSchema\Interfaces\SqlColumnInterface;
+use ZachWatkins\InferDataSchema\Interfaces\SQLColumnInterface;
 
 /**
  * An immutable representation of a single inferred SQL column.
  */
-final class SqlColumn implements SqlColumnInterface
+final class SQLColumn implements SQLColumnInterface
 {
     /**
      * @param array<int, ColumnModifier> $modifiers
@@ -19,8 +19,7 @@ final class SqlColumn implements SqlColumnInterface
         private readonly string $name,
         private readonly string $type,
         private readonly array $modifiers = [],
-    ) {
-    }
+    ) {}
 
     public function getName(): string
     {

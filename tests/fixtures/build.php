@@ -30,7 +30,7 @@ $xmlGenerator = new TestXmlFileGenerator();
 $xmlGenerator->generate('test_mysql.xml', $data);
 
 $schemaGenerator = new TestSchemaGenerator();
-$schemaGenerator->generateMySql('test_mysql.json', 'mysql.php');
+$schemaGenerator->generateMySQL('test_mysql.json', 'mysql.php');
 
 $generator = new SQLServerTestDataGenerator();
 $data = $generator->generate(10);
@@ -51,7 +51,7 @@ $xmlGenerator = new TestXmlFileGenerator();
 $xmlGenerator->generate('test_sqlserver.xml', $data);
 
 $schemaGenerator = new TestSchemaGenerator();
-$schemaGenerator->generateSqlServer('test_sqlserver.json', 'sqlserver.php');
+$schemaGenerator->generateSQLServer('test_sqlserver.json', 'sqlserver.php');
 
 // $schemaGenerator = new TestSchemaGenerator();
-// $schemaGenerator->generateSqlite('test.json', 'sqlite.php');
+// $schemaGenerator->generateSQLite('test.json', 'sqlite.php');

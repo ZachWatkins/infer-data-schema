@@ -115,13 +115,13 @@ final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
     private function resolveType(ColumnStats $stats, DatabaseType $databaseType): string
     {
         return match ($databaseType) {
-            DatabaseType::SQLite => $this->resolveSqliteType($stats)->value,
-            DatabaseType::MySQL => $this->resolveMySqlType($stats)->value,
-            DatabaseType::SQLServer => $this->resolveSqlServerType($stats)->value,
+            DatabaseType::SQLite => $this->resolveSQLiteType($stats)->value,
+            DatabaseType::MySQL => $this->resolveMySQLType($stats)->value,
+            DatabaseType::SQLServer => $this->resolveSQLServerType($stats)->value,
         };
     }
 
-    private function resolveSqliteType(ColumnStats $stats): SQLiteColumnType
+    private function resolveSQLiteType(ColumnStats $stats): SQLiteColumnType
     {
         return match (true) {
             $stats->nonNullSeenCount === 0 => SQLiteColumnType::Text,
@@ -135,12 +135,12 @@ final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
         };
     }
 
-    private function resolveMySqlType(ColumnStats $stats): MySQLColumnType
+    private function resolveMySQLType(ColumnStats $stats): MySQLColumnType
     {
         return match (true) {
             $stats->nonNullSeenCount === 0 => MySQLColumnType::Varchar,
             $stats->allBool => MySQLColumnType::Boolean,
-            $stats->allInt => $this->resolveMySqlIntegerType($stats),
+            $stats->allInt => $this->resolveMySQLIntegerType($stats),
             $stats->allNumeric => MySQLColumnType::Decimal,
             $stats->allDate => MySQLColumnType::Date,
             $stats->allDateTime => MySQLColumnType::DateTime,
@@ -150,7 +150,7 @@ final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
         };
     }
 
-    private function resolveMySqlIntegerType(ColumnStats $stats): MySQLColumnType
+    private function resolveMySQLIntegerType(ColumnStats $stats): MySQLColumnType
     {
         $unsigned = !$stats->hasNegative;
         $max = (int) \max(\abs($stats->minValue), \abs($stats->maxValue));
@@ -169,11 +169,11 @@ final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
         };
     }
 
-    private function resolveSqlServerType(ColumnStats $stats): SQLServerColumnType
+    private function resolveSQLServerType(ColumnStats $stats): SQLServerColumnType
     {
         return match (true) {
             $stats->allBool => SQLServerColumnType::Bit,
-            $stats->allInt => $this->resolveSqlServerIntegerType($stats),
+            $stats->allInt => $this->resolveSQLServerIntegerType($stats),
             $stats->allNumeric => SQLServerColumnType::Decimal,
             $stats->allDate => SQLServerColumnType::Date,
             $stats->allDateTime => SQLServerColumnType::DateTime,
@@ -183,7 +183,7 @@ final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
         };
     }
 
-    private function resolveSqlServerIntegerType(ColumnStats $stats): SQLServerColumnType
+    private function resolveSQLServerIntegerType(ColumnStats $stats): SQLServerColumnType
     {
         if ($stats->minValue === 0 && $stats->maxValue === 1) {
             return SQLServerColumnType::Bit;

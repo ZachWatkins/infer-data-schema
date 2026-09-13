@@ -14,7 +14,7 @@ use ZachWatkins\InferDataSchema\Enums\SQLServerColumnType;
 
 class TestSchemaGenerator
 {
-    public function generateMySql(string $dataFileName, string $schemaFileName): void
+    public function generateMySQL(string $dataFileName, string $schemaFileName): void
     {
         $parser = new JsonParser();
         $directory = __DIR__ . '/../data/';
@@ -103,7 +103,7 @@ class TestSchemaGenerator
         file_put_contents(__DIR__ . '/../schema/' . $schemaFileName, implode("\n", $output));
     }
 
-    public function generateSqlite(string $dataFileName, string $schemaFileName): void
+    public function generateSQLite(string $dataFileName, string $schemaFileName): void
     {
         $parser = new JsonParser();
         $directory = __DIR__ . '/../data/';
@@ -181,7 +181,7 @@ class TestSchemaGenerator
         file_put_contents(__DIR__ . '/../schema/' . $schemaFileName, implode("\n", $output));
     }
 
-    public function generateSqlServer(string $dataFileName, string $schemaFileName): void
+    public function generateSQLServer(string $dataFileName, string $schemaFileName): void
     {
         $parser = new JsonParser();
         $directory = __DIR__ . '/../data/';

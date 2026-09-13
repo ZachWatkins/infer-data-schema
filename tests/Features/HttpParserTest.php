@@ -18,7 +18,7 @@ it('parses a bare top-level json array response', function () {
         public function sendRequest(RequestInterface $request): ResponseInterface
         {
             $this->lastRequest = $request;
-            $contents = file_get_contents(__DIR__ . '/../fixtures/data/test.http');
+            $contents = file_get_contents(__DIR__ . '/../fixtures/data/test_mysql.http');
 
             return new Response(
                 200,
@@ -61,7 +61,7 @@ it('parses a wrapped json array response', function () {
         public function sendRequest(RequestInterface $request): ResponseInterface
         {
             $this->lastRequest = $request;
-            $contents = file_get_contents(__DIR__ . '/../fixtures/data/test.http');
+            $contents = file_get_contents(__DIR__ . '/../fixtures/data/test_mysql.http');
 
             return new Response(
                 200,

@@ -10,7 +10,7 @@ use ZachWatkins\InferDataSchema\Parsers\JsonParser;
 it('infers the expected MySQL schema from JSON basic fixture', function () {
     /** @var SqlColumnCollectionInterface $expected */
     $expected = require dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/schema/mysql.php');
-    $dataFixture = dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/data/test.json');
+    $dataFixture = dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/data/test_mysql.json');
     $parser = new JsonParser();
 
     $actual = $parser->parse($dataFixture, 'mysql');

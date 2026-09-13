@@ -9,7 +9,7 @@ use ZachWatkins\InferDataSchema\Parsers\ExcelParser;
 it('parses an excel workbook into an inferred mysql schema', function () {
     $parser = new ExcelParser();
     $actual = $parser->parse(
-        dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/data/test.xlsx'),
+        dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/data/test_mysql.xlsx'),
         'mysql',
     );
     $expected = require dirname(__DIR__) . str_replace(

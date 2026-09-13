@@ -9,7 +9,7 @@ use ZachWatkins\InferDataSchema\Parsers\XmlParser;
 it('parses flat xml rows into an inferred mysql schema', function () {
     $parser = new XmlParser();
     $actual = $parser->parse(
-        dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/data/test.xml'),
+        dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/data/test_mysql.xml'),
         'mysql',
     );
     $expected = require dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/schema/mysql.php');
@@ -41,7 +41,7 @@ it('parses nested xml rows when a node path is configured', function () {
     return;
     $parser = new XmlParser('root/items/item');
     $actual = $parser->parse(
-        dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/data/xml_nested.xml'),
+        dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/data/test_mysql_nested.xml'),
         'mysql',
     );
     $expected = require dirname(__DIR__) . str_replace(

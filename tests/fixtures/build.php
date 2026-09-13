@@ -1,6 +1,6 @@
 <?php
 
-use Tests\Fixtures\Build\TestDataGenerator;
+use Tests\Fixtures\Build\MySQLTestDataGenerator;
 use Tests\Fixtures\Build\TestSchemaGenerator;
 use Tests\Fixtures\Build\File\TestCsvFileGenerator;
 use Tests\Fixtures\Build\File\TestHttpFileGenerator;
@@ -10,29 +10,29 @@ use Tests\Fixtures\Build\File\TestXmlFileGenerator;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
-$generator = new TestDataGenerator();
+$generator = new MySQLTestDataGenerator();
 $data = $generator->generate(10);
 
 $csvGenerator = new TestCsvFileGenerator();
-$csvGenerator->generate('test.csv', $data);
+$csvGenerator->generate('test_mysql.csv', $data);
 
 $httpGenerator = new TestHttpFileGenerator();
-$httpGenerator->generate('test.http', $data);
+$httpGenerator->generate('test_mysql.http', $data);
 
 $jsonGenerator = new TestJsonFileGenerator();
-$jsonGenerator->generate('test.json', $data);
+$jsonGenerator->generate('test_mysql.json', $data);
 
 $xlsxGenerator = new TestXlsxFileGenerator();
-$xlsxGenerator->generate('test.xlsx', $data);
+$xlsxGenerator->generate('test_mysql.xlsx', $data);
 
 $xmlGenerator = new TestXmlFileGenerator();
-$xmlGenerator->generate('test.xml', $data);
+$xmlGenerator->generate('test_mysql.xml', $data);
 
 $schemaGenerator = new TestSchemaGenerator();
-$schemaGenerator->generateMySql('test.json', 'mysql.php');
+$schemaGenerator->generateMySql('test_mysql.json', 'mysql.php');
 
 $schemaGenerator = new TestSchemaGenerator();
-$schemaGenerator->generateSqlite('test.json', 'sqlite.php');
+$schemaGenerator->generateSqlServer('test_sqlserver.json', 'sqlserver.php');
 
-$schemaGenerator = new TestSchemaGenerator();
-$schemaGenerator->generateSqlServer('test.json', 'sqlserver.php');
+// $schemaGenerator = new TestSchemaGenerator();
+// $schemaGenerator->generateSqlite('test.json', 'sqlite.php');

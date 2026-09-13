@@ -10,7 +10,7 @@ use ZachWatkins\InferDataSchema\Enums\DatabaseType;
 
 it('infers the expected MySQL schema from CSV basic fixture', function () {
     /** @var SqlColumnCollectionInterface $expected */
-    $dataFixture = dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/data/test.csv');
+    $dataFixture = dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/data/test_mysql.csv');
 
     $parser = new CsvParser();
     $normalizeColumns = static function (SqlColumnCollectionInterface $columns): array {

@@ -7,9 +7,9 @@ namespace ZachWatkins\InferDataSchema;
 use ZachWatkins\InferDataSchema\Support\ColumnStats;
 use ZachWatkins\InferDataSchema\Enums\ColumnModifier;
 use ZachWatkins\InferDataSchema\Enums\DatabaseType;
-use ZachWatkins\InferDataSchema\Enums\MySqlColumnType;
-use ZachWatkins\InferDataSchema\Enums\SqliteColumnType;
-use ZachWatkins\InferDataSchema\Enums\SqlServerColumnType;
+use ZachWatkins\InferDataSchema\Enums\MySQLColumnType;
+use ZachWatkins\InferDataSchema\Enums\SQLiteColumnType;
+use ZachWatkins\InferDataSchema\Enums\SQLServerColumnType;
 use ZachWatkins\InferDataSchema\Interfaces\ColumnTypeInferrerInterface;
 use ZachWatkins\InferDataSchema\Interfaces\SqlColumnCollectionInterface;
 use ZachWatkins\InferDataSchema\Models\SqlColumn;
@@ -90,12 +90,12 @@ final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
             $type = $this->resolveType($stats, $databaseType);
             switch ($databaseType) {
                 case DatabaseType::MySQL:
-                    if (!\in_array($type, [MySqlColumnType::Boolean->value, MySqlColumnType::Bit->value])) {
+                    if (!\in_array($type, [MySQLColumnType::Boolean->value, MySQLColumnType::Bit->value])) {
                         $modifiers[] = ColumnModifier::Unsigned;
                     }
                     break;
-                case DatabaseType::SqlServer:
-                    if ($type !== SqlServerColumnType::Bit->value) {
+                case DatabaseType::SQLServer:
+                    if ($type !== SQLServerColumnType::Bit->value) {
                         $modifiers[] = ColumnModifier::Unsigned;
                     }
                     break;
@@ -117,87 +117,87 @@ final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
         return match ($databaseType) {
             DatabaseType::SQLite => $this->resolveSqliteType($stats)->value,
             DatabaseType::MySQL => $this->resolveMySqlType($stats)->value,
-            DatabaseType::SqlServer => $this->resolveSqlServerType($stats)->value,
+            DatabaseType::SQLServer => $this->resolveSqlServerType($stats)->value,
         };
     }
 
-    private function resolveSqliteType(ColumnStats $stats): SqliteColumnType
+    private function resolveSqliteType(ColumnStats $stats): SQLiteColumnType
     {
         return match (true) {
-            $stats->nonNullSeenCount === 0 => SqliteColumnType::Text,
-            $stats->allBool => SqliteColumnType::Integer,
-            $stats->allInt => SqliteColumnType::Integer,
-            $stats->allNumeric => SqliteColumnType::Real,
-            $stats->allDate => SqliteColumnType::Text,
-            $stats->allDateTime => SqliteColumnType::Text,
-            $stats->allTime => SqliteColumnType::Text,
-            default => SqliteColumnType::Text,
+            $stats->nonNullSeenCount === 0 => SQLiteColumnType::Text,
+            $stats->allBool => SQLiteColumnType::Integer,
+            $stats->allInt => SQLiteColumnType::Integer,
+            $stats->allNumeric => SQLiteColumnType::Real,
+            $stats->allDate => SQLiteColumnType::Text,
+            $stats->allDateTime => SQLiteColumnType::Text,
+            $stats->allTime => SQLiteColumnType::Text,
+            default => SQLiteColumnType::Text,
         };
     }
 
-    private function resolveMySqlType(ColumnStats $stats): MySqlColumnType
+    private function resolveMySqlType(ColumnStats $stats): MySQLColumnType
     {
         return match (true) {
-            $stats->nonNullSeenCount === 0 => MySqlColumnType::Varchar,
-            $stats->allBool => MySqlColumnType::Boolean,
+            $stats->nonNullSeenCount === 0 => MySQLColumnType::Varchar,
+            $stats->allBool => MySQLColumnType::Boolean,
             $stats->allInt => $this->resolveMySqlIntegerType($stats),
-            $stats->allNumeric => MySqlColumnType::Decimal,
-            $stats->allDate => MySqlColumnType::Date,
-            $stats->allDateTime => MySqlColumnType::DateTime,
-            $stats->allTime => MySqlColumnType::Time,
-            $stats->maxStringLength > 255 => MySqlColumnType::Text,
-            default => MySqlColumnType::Varchar,
+            $stats->allNumeric => MySQLColumnType::Decimal,
+            $stats->allDate => MySQLColumnType::Date,
+            $stats->allDateTime => MySQLColumnType::DateTime,
+            $stats->allTime => MySQLColumnType::Time,
+            $stats->maxStringLength > 255 => MySQLColumnType::Text,
+            default => MySQLColumnType::Varchar,
         };
     }
 
-    private function resolveMySqlIntegerType(ColumnStats $stats): MySqlColumnType
+    private function resolveMySqlIntegerType(ColumnStats $stats): MySQLColumnType
     {
         $unsigned = !$stats->hasNegative;
         $max = (int) \max(\abs($stats->minValue), \abs($stats->maxValue));
 
         return match (true) {
-            $unsigned && $max <= 1 => MySqlColumnType::Bit,
-            $unsigned && $max <= 255 => MySqlColumnType::TinyInt,
-            !$unsigned && $max <= 127 => MySqlColumnType::TinyInt,
-            $unsigned && $max <= 65_535 => MySqlColumnType::SmallInt,
-            !$unsigned && $max <= 32_768 => MySqlColumnType::SmallInt,
-            $unsigned && $max <= 16_777_215 => MySqlColumnType::MediumInt,
-            !$unsigned && $max <= 8_388_608 => MySqlColumnType::MediumInt,
-            $unsigned && $max <= 4_294_967_295 => MySqlColumnType::Int,
-            !$unsigned && $max <= 2_147_483_647 => MySqlColumnType::Int,
-            default => MySqlColumnType::BigInt,
+            $unsigned && $max <= 1 => MySQLColumnType::Bit,
+            $unsigned && $max <= 255 => MySQLColumnType::TinyInt,
+            !$unsigned && $max <= 127 => MySQLColumnType::TinyInt,
+            $unsigned && $max <= 65_535 => MySQLColumnType::SmallInt,
+            !$unsigned && $max <= 32_768 => MySQLColumnType::SmallInt,
+            $unsigned && $max <= 16_777_215 => MySQLColumnType::MediumInt,
+            !$unsigned && $max <= 8_388_608 => MySQLColumnType::MediumInt,
+            $unsigned && $max <= 4_294_967_295 => MySQLColumnType::Int,
+            !$unsigned && $max <= 2_147_483_647 => MySQLColumnType::Int,
+            default => MySQLColumnType::BigInt,
         };
     }
 
-    private function resolveSqlServerType(ColumnStats $stats): SqlServerColumnType
+    private function resolveSqlServerType(ColumnStats $stats): SQLServerColumnType
     {
         return match (true) {
-            $stats->allBool => SqlServerColumnType::Bit,
+            $stats->allBool => SQLServerColumnType::Bit,
             $stats->allInt => $this->resolveSqlServerIntegerType($stats),
-            $stats->allNumeric => SqlServerColumnType::Decimal,
-            $stats->allDate => SqlServerColumnType::Date,
-            $stats->allDateTime => SqlServerColumnType::DateTime,
-            $stats->allTime => SqlServerColumnType::Time,
-            $stats->allStringLengthsSame && $stats->maxStringLength > 0 => SqlServerColumnType::Char,
-            default => SqlServerColumnType::Varchar,
+            $stats->allNumeric => SQLServerColumnType::Decimal,
+            $stats->allDate => SQLServerColumnType::Date,
+            $stats->allDateTime => SQLServerColumnType::DateTime,
+            $stats->allTime => SQLServerColumnType::Time,
+            $stats->allStringLengthsSame && $stats->maxStringLength > 0 => SQLServerColumnType::Char,
+            default => SQLServerColumnType::Varchar,
         };
     }
 
-    private function resolveSqlServerIntegerType(ColumnStats $stats): SqlServerColumnType
+    private function resolveSqlServerIntegerType(ColumnStats $stats): SQLServerColumnType
     {
         if ($stats->minValue === 0 && $stats->maxValue === 1) {
-            return SqlServerColumnType::Bit;
+            return SQLServerColumnType::Bit;
         }
 
         // SQL Server has no unsigned integer types; TINYINT is the sole 0-255 exception.
         if (!$stats->hasNegative && $stats->maxValue <= 255) {
-            return SqlServerColumnType::TinyInt;
+            return SQLServerColumnType::TinyInt;
         }
 
         return match (true) {
-            $stats->minValue >= -32_768 && $stats->maxValue <= 32_767 => SqlServerColumnType::SmallInt,
-            $stats->minValue >= -2_147_483_648 && $stats->maxValue <= 2_147_483_647 => SqlServerColumnType::Int,
-            default => SqlServerColumnType::BigInt,
+            $stats->minValue >= -32_768 && $stats->maxValue <= 32_767 => SQLServerColumnType::SmallInt,
+            $stats->minValue >= -2_147_483_648 && $stats->maxValue <= 2_147_483_647 => SQLServerColumnType::Int,
+            default => SQLServerColumnType::BigInt,
         };
     }
 }

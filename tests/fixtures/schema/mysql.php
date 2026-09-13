@@ -3,295 +3,295 @@
 declare(strict_types=1);
 
 use ZachWatkins\InferDataSchema\Enums\ColumnModifier;
-use ZachWatkins\InferDataSchema\Enums\MySqlColumnType;
+use ZachWatkins\InferDataSchema\Enums\MySQLColumnType;
 use ZachWatkins\InferDataSchema\Models\SqlColumn;
 use ZachWatkins\InferDataSchema\Models\SqlColumnCollection;
 
 return new SqlColumnCollection([
-    new SqlColumn('bit', MySqlColumnType::Bit->value),
-    new SqlColumn('bit_nullable', MySqlColumnType::Bit->value, [
+    new SqlColumn('bit', MySQLColumnType::Bit->value),
+    new SqlColumn('bit_nullable', MySQLColumnType::Bit->value, [
         ColumnModifier::Nullable,
     ]),
-    new SqlColumn('tinyint', MySqlColumnType::TinyInt->value, [
+    new SqlColumn('tinyint', MySQLColumnType::TinyInt->value, [
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('tinyint_nullable', MySqlColumnType::TinyInt->value, [
+    new SqlColumn('tinyint_nullable', MySQLColumnType::TinyInt->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('tinyint_unique', MySqlColumnType::TinyInt->value, [
+    new SqlColumn('tinyint_unique', MySQLColumnType::TinyInt->value, [
         ColumnModifier::Unique,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('tinyint_nullable_unique', MySqlColumnType::TinyInt->value, [
-        ColumnModifier::Nullable,
-        ColumnModifier::Unique,
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('tinyint_unsigned', MySqlColumnType::TinyInt->value, [
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('tinyint_unsigned_nullable', MySqlColumnType::TinyInt->value, [
-        ColumnModifier::Nullable,
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('tinyint_unsigned_unique', MySqlColumnType::TinyInt->value, [
-        ColumnModifier::Unique,
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('tinyint_unsigned_nullable_unique', MySqlColumnType::TinyInt->value, [
+    new SqlColumn('tinyint_nullable_unique', MySQLColumnType::TinyInt->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unique,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('smallint', MySqlColumnType::SmallInt->value, [
+    new SqlColumn('tinyint_unsigned', MySQLColumnType::TinyInt->value, [
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('smallint_nullable', MySqlColumnType::SmallInt->value, [
+    new SqlColumn('tinyint_unsigned_nullable', MySQLColumnType::TinyInt->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('smallint_unique', MySqlColumnType::SmallInt->value, [
+    new SqlColumn('tinyint_unsigned_unique', MySQLColumnType::TinyInt->value, [
         ColumnModifier::Unique,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('smallint_nullable_unique', MySqlColumnType::SmallInt->value, [
-        ColumnModifier::Nullable,
-        ColumnModifier::Unique,
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('smallint_unsigned', MySqlColumnType::SmallInt->value, [
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('smallint_unsigned_nullable', MySqlColumnType::SmallInt->value, [
-        ColumnModifier::Nullable,
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('smallint_unsigned_unique', MySqlColumnType::SmallInt->value, [
-        ColumnModifier::Unique,
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('smallint_unsigned_nullable_unique', MySqlColumnType::SmallInt->value, [
+    new SqlColumn('tinyint_unsigned_nullable_unique', MySQLColumnType::TinyInt->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unique,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('mediumint', MySqlColumnType::MediumInt->value, [
+    new SqlColumn('smallint', MySQLColumnType::SmallInt->value, [
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('mediumint_nullable', MySqlColumnType::MediumInt->value, [
+    new SqlColumn('smallint_nullable', MySQLColumnType::SmallInt->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('mediumint_unique', MySqlColumnType::MediumInt->value, [
+    new SqlColumn('smallint_unique', MySQLColumnType::SmallInt->value, [
         ColumnModifier::Unique,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('mediumint_nullable_unique', MySqlColumnType::MediumInt->value, [
-        ColumnModifier::Nullable,
-        ColumnModifier::Unique,
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('mediumint_unsigned', MySqlColumnType::MediumInt->value, [
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('mediumint_unsigned_nullable', MySqlColumnType::MediumInt->value, [
-        ColumnModifier::Nullable,
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('mediumint_unsigned_unique', MySqlColumnType::MediumInt->value, [
-        ColumnModifier::Unique,
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('mediumint_unsigned_nullable_unique', MySqlColumnType::MediumInt->value, [
+    new SqlColumn('smallint_nullable_unique', MySQLColumnType::SmallInt->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unique,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('int', MySqlColumnType::Int->value, [
+    new SqlColumn('smallint_unsigned', MySQLColumnType::SmallInt->value, [
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('int_nullable', MySqlColumnType::Int->value, [
+    new SqlColumn('smallint_unsigned_nullable', MySQLColumnType::SmallInt->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('int_unique', MySqlColumnType::Int->value, [
+    new SqlColumn('smallint_unsigned_unique', MySQLColumnType::SmallInt->value, [
         ColumnModifier::Unique,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('int_nullable_unique', MySqlColumnType::Int->value, [
-        ColumnModifier::Nullable,
-        ColumnModifier::Unique,
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('int_unsigned', MySqlColumnType::Int->value, [
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('int_unsigned_nullable', MySqlColumnType::Int->value, [
-        ColumnModifier::Nullable,
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('int_unsigned_unique', MySqlColumnType::Int->value, [
-        ColumnModifier::Unique,
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('int_unsigned_nullable_unique', MySqlColumnType::Int->value, [
+    new SqlColumn('smallint_unsigned_nullable_unique', MySQLColumnType::SmallInt->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unique,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('bigint', MySqlColumnType::BigInt->value),
-    new SqlColumn('bigint_nullable', MySqlColumnType::BigInt->value, [
-        ColumnModifier::Nullable,
-    ]),
-    new SqlColumn('bigint_unique', MySqlColumnType::BigInt->value, [
-        ColumnModifier::Unique,
-    ]),
-    new SqlColumn('bigint_nullable_unique', MySqlColumnType::BigInt->value, [
-        ColumnModifier::Nullable,
-        ColumnModifier::Unique,
-    ]),
-    new SqlColumn('bigint_unsigned', MySqlColumnType::BigInt->value, [
+    new SqlColumn('mediumint', MySQLColumnType::MediumInt->value, [
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('bigint_unsigned_nullable', MySqlColumnType::BigInt->value, [
+    new SqlColumn('mediumint_nullable', MySQLColumnType::MediumInt->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('bigint_unsigned_unique', MySqlColumnType::BigInt->value, [
+    new SqlColumn('mediumint_unique', MySQLColumnType::MediumInt->value, [
         ColumnModifier::Unique,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('bigint_unsigned_nullable_unique', MySqlColumnType::BigInt->value, [
+    new SqlColumn('mediumint_nullable_unique', MySQLColumnType::MediumInt->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unique,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('decimal', MySqlColumnType::Decimal->value, [
+    new SqlColumn('mediumint_unsigned', MySQLColumnType::MediumInt->value, [
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('decimal_nullable', MySqlColumnType::Decimal->value, [
+    new SqlColumn('mediumint_unsigned_nullable', MySQLColumnType::MediumInt->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('decimal_unique', MySqlColumnType::Decimal->value, [
+    new SqlColumn('mediumint_unsigned_unique', MySQLColumnType::MediumInt->value, [
         ColumnModifier::Unique,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('decimal_nullable_unique', MySqlColumnType::Decimal->value, [
-        ColumnModifier::Nullable,
-        ColumnModifier::Unique,
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('decimal_unsigned', MySqlColumnType::Decimal->value, [
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('decimal_unsigned_nullable', MySqlColumnType::Decimal->value, [
-        ColumnModifier::Nullable,
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('decimal_unsigned_unique', MySqlColumnType::Decimal->value, [
-        ColumnModifier::Unique,
-        ColumnModifier::Unsigned,
-    ]),
-    new SqlColumn('decimal_unsigned_nullable_unique', MySqlColumnType::Decimal->value, [
+    new SqlColumn('mediumint_unsigned_nullable_unique', MySQLColumnType::MediumInt->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unique,
         ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('boolean', MySqlColumnType::Boolean->value),
-    new SqlColumn('boolean_nullable', MySqlColumnType::Boolean->value, [
-        ColumnModifier::Nullable,
+    new SqlColumn('int', MySQLColumnType::Int->value, [
+        ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('boolean_unique', MySqlColumnType::Boolean->value),
-    new SqlColumn('boolean_nullable_unique', MySqlColumnType::Boolean->value, [
+    new SqlColumn('int_nullable', MySQLColumnType::Int->value, [
         ColumnModifier::Nullable,
+        ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('char', MySqlColumnType::Varchar->value),
-    new SqlColumn('char_nullable', MySqlColumnType::Varchar->value, [
-        ColumnModifier::Nullable,
-    ]),
-    new SqlColumn('char_unique', MySqlColumnType::Varchar->value, [
+    new SqlColumn('int_unique', MySQLColumnType::Int->value, [
         ColumnModifier::Unique,
+        ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('char_nullable_unique', MySqlColumnType::Varchar->value, [
+    new SqlColumn('int_nullable_unique', MySQLColumnType::Int->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unique,
+        ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('varchar', MySqlColumnType::Varchar->value),
-    new SqlColumn('varchar_nullable', MySqlColumnType::Varchar->value, [
+    new SqlColumn('int_unsigned', MySQLColumnType::Int->value, [
+        ColumnModifier::Unsigned,
+    ]),
+    new SqlColumn('int_unsigned_nullable', MySQLColumnType::Int->value, [
         ColumnModifier::Nullable,
+        ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('varchar_unique', MySqlColumnType::Varchar->value, [
+    new SqlColumn('int_unsigned_unique', MySQLColumnType::Int->value, [
         ColumnModifier::Unique,
+        ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('varchar_nullable_unique', MySqlColumnType::Varchar->value, [
-        ColumnModifier::Nullable,
-        ColumnModifier::Unique,
-    ]),
-    new SqlColumn('text', MySqlColumnType::Text->value),
-    new SqlColumn('text_nullable', MySqlColumnType::Text->value, [
-        ColumnModifier::Nullable,
-    ]),
-    new SqlColumn('text_unique', MySqlColumnType::Text->value, [
-        ColumnModifier::Unique,
-    ]),
-    new SqlColumn('text_nullable_unique', MySqlColumnType::Text->value, [
+    new SqlColumn('int_unsigned_nullable_unique', MySQLColumnType::Int->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unique,
+        ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('date', MySqlColumnType::Date->value),
-    new SqlColumn('date_nullable', MySqlColumnType::Date->value, [
+    new SqlColumn('bigint', MySQLColumnType::BigInt->value),
+    new SqlColumn('bigint_nullable', MySQLColumnType::BigInt->value, [
         ColumnModifier::Nullable,
     ]),
-    new SqlColumn('date_unique', MySqlColumnType::Date->value, [
+    new SqlColumn('bigint_unique', MySQLColumnType::BigInt->value, [
         ColumnModifier::Unique,
     ]),
-    new SqlColumn('date_nullable_unique', MySqlColumnType::Date->value, [
+    new SqlColumn('bigint_nullable_unique', MySQLColumnType::BigInt->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unique,
     ]),
-    new SqlColumn('time', MySqlColumnType::Time->value),
-    new SqlColumn('time_nullable', MySqlColumnType::Time->value, [
+    new SqlColumn('bigint_unsigned', MySQLColumnType::BigInt->value, [
+        ColumnModifier::Unsigned,
+    ]),
+    new SqlColumn('bigint_unsigned_nullable', MySQLColumnType::BigInt->value, [
         ColumnModifier::Nullable,
+        ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('time_unique', MySqlColumnType::Time->value, [
+    new SqlColumn('bigint_unsigned_unique', MySQLColumnType::BigInt->value, [
         ColumnModifier::Unique,
+        ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('time_nullable_unique', MySqlColumnType::Time->value, [
-        ColumnModifier::Nullable,
-        ColumnModifier::Unique,
-    ]),
-    new SqlColumn('datetime', MySqlColumnType::DateTime->value),
-    new SqlColumn('datetime_nullable', MySqlColumnType::DateTime->value, [
-        ColumnModifier::Nullable,
-    ]),
-    new SqlColumn('datetime_unique', MySqlColumnType::DateTime->value, [
-        ColumnModifier::Unique,
-    ]),
-    new SqlColumn('datetime_nullable_unique', MySqlColumnType::DateTime->value, [
+    new SqlColumn('bigint_unsigned_nullable_unique', MySQLColumnType::BigInt->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unique,
+        ColumnModifier::Unsigned,
     ]),
-    new SqlColumn('json', MySqlColumnType::Varchar->value),
-    new SqlColumn('json_nullable', MySqlColumnType::Varchar->value, [
+    new SqlColumn('decimal', MySQLColumnType::Decimal->value, [
+        ColumnModifier::Unsigned,
+    ]),
+    new SqlColumn('decimal_nullable', MySQLColumnType::Decimal->value, [
+        ColumnModifier::Nullable,
+        ColumnModifier::Unsigned,
+    ]),
+    new SqlColumn('decimal_unique', MySQLColumnType::Decimal->value, [
+        ColumnModifier::Unique,
+        ColumnModifier::Unsigned,
+    ]),
+    new SqlColumn('decimal_nullable_unique', MySQLColumnType::Decimal->value, [
+        ColumnModifier::Nullable,
+        ColumnModifier::Unique,
+        ColumnModifier::Unsigned,
+    ]),
+    new SqlColumn('decimal_unsigned', MySQLColumnType::Decimal->value, [
+        ColumnModifier::Unsigned,
+    ]),
+    new SqlColumn('decimal_unsigned_nullable', MySQLColumnType::Decimal->value, [
+        ColumnModifier::Nullable,
+        ColumnModifier::Unsigned,
+    ]),
+    new SqlColumn('decimal_unsigned_unique', MySQLColumnType::Decimal->value, [
+        ColumnModifier::Unique,
+        ColumnModifier::Unsigned,
+    ]),
+    new SqlColumn('decimal_unsigned_nullable_unique', MySQLColumnType::Decimal->value, [
+        ColumnModifier::Nullable,
+        ColumnModifier::Unique,
+        ColumnModifier::Unsigned,
+    ]),
+    new SqlColumn('boolean', MySQLColumnType::Boolean->value),
+    new SqlColumn('boolean_nullable', MySQLColumnType::Boolean->value, [
         ColumnModifier::Nullable,
     ]),
-    new SqlColumn('json_unique', MySqlColumnType::Varchar->value, [
+    new SqlColumn('boolean_unique', MySQLColumnType::Boolean->value),
+    new SqlColumn('boolean_nullable_unique', MySQLColumnType::Boolean->value, [
+        ColumnModifier::Nullable,
+    ]),
+    new SqlColumn('char', MySQLColumnType::Varchar->value),
+    new SqlColumn('char_nullable', MySQLColumnType::Varchar->value, [
+        ColumnModifier::Nullable,
+    ]),
+    new SqlColumn('char_unique', MySQLColumnType::Varchar->value, [
         ColumnModifier::Unique,
     ]),
-    new SqlColumn('json_nullable_unique', MySqlColumnType::Varchar->value, [
+    new SqlColumn('char_nullable_unique', MySQLColumnType::Varchar->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unique,
     ]),
-    new SqlColumn('xml', MySqlColumnType::Varchar->value),
-    new SqlColumn('xml_nullable', MySqlColumnType::Varchar->value, [
+    new SqlColumn('varchar', MySQLColumnType::Varchar->value),
+    new SqlColumn('varchar_nullable', MySQLColumnType::Varchar->value, [
         ColumnModifier::Nullable,
     ]),
-    new SqlColumn('xml_unique', MySqlColumnType::Varchar->value, [
+    new SqlColumn('varchar_unique', MySQLColumnType::Varchar->value, [
         ColumnModifier::Unique,
     ]),
-    new SqlColumn('xml_nullable_unique', MySqlColumnType::Varchar->value, [
+    new SqlColumn('varchar_nullable_unique', MySQLColumnType::Varchar->value, [
+        ColumnModifier::Nullable,
+        ColumnModifier::Unique,
+    ]),
+    new SqlColumn('text', MySQLColumnType::Text->value),
+    new SqlColumn('text_nullable', MySQLColumnType::Text->value, [
+        ColumnModifier::Nullable,
+    ]),
+    new SqlColumn('text_unique', MySQLColumnType::Text->value, [
+        ColumnModifier::Unique,
+    ]),
+    new SqlColumn('text_nullable_unique', MySQLColumnType::Text->value, [
+        ColumnModifier::Nullable,
+        ColumnModifier::Unique,
+    ]),
+    new SqlColumn('date', MySQLColumnType::Date->value),
+    new SqlColumn('date_nullable', MySQLColumnType::Date->value, [
+        ColumnModifier::Nullable,
+    ]),
+    new SqlColumn('date_unique', MySQLColumnType::Date->value, [
+        ColumnModifier::Unique,
+    ]),
+    new SqlColumn('date_nullable_unique', MySQLColumnType::Date->value, [
+        ColumnModifier::Nullable,
+        ColumnModifier::Unique,
+    ]),
+    new SqlColumn('time', MySQLColumnType::Time->value),
+    new SqlColumn('time_nullable', MySQLColumnType::Time->value, [
+        ColumnModifier::Nullable,
+    ]),
+    new SqlColumn('time_unique', MySQLColumnType::Time->value, [
+        ColumnModifier::Unique,
+    ]),
+    new SqlColumn('time_nullable_unique', MySQLColumnType::Time->value, [
+        ColumnModifier::Nullable,
+        ColumnModifier::Unique,
+    ]),
+    new SqlColumn('datetime', MySQLColumnType::DateTime->value),
+    new SqlColumn('datetime_nullable', MySQLColumnType::DateTime->value, [
+        ColumnModifier::Nullable,
+    ]),
+    new SqlColumn('datetime_unique', MySQLColumnType::DateTime->value, [
+        ColumnModifier::Unique,
+    ]),
+    new SqlColumn('datetime_nullable_unique', MySQLColumnType::DateTime->value, [
+        ColumnModifier::Nullable,
+        ColumnModifier::Unique,
+    ]),
+    new SqlColumn('json', MySQLColumnType::Varchar->value),
+    new SqlColumn('json_nullable', MySQLColumnType::Varchar->value, [
+        ColumnModifier::Nullable,
+    ]),
+    new SqlColumn('json_unique', MySQLColumnType::Varchar->value, [
+        ColumnModifier::Unique,
+    ]),
+    new SqlColumn('json_nullable_unique', MySQLColumnType::Varchar->value, [
+        ColumnModifier::Nullable,
+        ColumnModifier::Unique,
+    ]),
+    new SqlColumn('xml', MySQLColumnType::Varchar->value),
+    new SqlColumn('xml_nullable', MySQLColumnType::Varchar->value, [
+        ColumnModifier::Nullable,
+    ]),
+    new SqlColumn('xml_unique', MySQLColumnType::Varchar->value, [
+        ColumnModifier::Unique,
+    ]),
+    new SqlColumn('xml_nullable_unique', MySQLColumnType::Varchar->value, [
         ColumnModifier::Nullable,
         ColumnModifier::Unique,
     ]),

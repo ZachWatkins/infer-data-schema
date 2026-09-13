@@ -9,7 +9,7 @@ namespace ZachWatkins\InferDataSchema\Enums;
  *
  * @see https://dev.mysql.com/doc/refman/8.0/en/data-types.html
  */
-enum MySqlColumnType: string
+enum MySQLColumnType: string
 {
     /**
      * Range: 0 to 1

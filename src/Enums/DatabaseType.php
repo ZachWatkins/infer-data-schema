@@ -11,5 +11,5 @@ enum DatabaseType: string
 {
     case SQLite = 'sqlite';
     case MySQL = 'mysql';
-    case SqlServer = 'sqlserver';
+    case SQLServer = 'sqlserver';
 }

@@ -20,9 +20,9 @@ It reads a given data source, evaluates all values of all columns for the safest
    - `src/Enums` - Contains the enum definitions for the library.  
      - `src/Enums/DatabaseType.php` - The enum definition for supported database types.  
      - `src/Enums/ColumnModifier.php` - The enum definition for SQL column modifiers (unique, nullable, signed or unsigned, auto-incrementing).  
-     - `src/Enums/SqliteColumnType.php` - The enum definition for SQLite column types.  
-     - `src/Enums/MySqlColumnType.php` - The enum definition for MySQL column types.  
-     - `src/Enums/SqlServerColumnType.php` - The enum definition for SQL Server column types.  
+     - `src/Enums/SQLiteColumnType.php` - The enum definition for SQLite column types.  
+     - `src/Enums/MySQLColumnType.php` - The enum definition for MySQL column types.  
+     - `src/Enums/SQLServerColumnType.php` - The enum definition for SQL Server column types.  
    - `src/Parsers` - Contains the data source parser classes for the library.  
      - `src/Parsers/CsvParser` - The CSV data source parser class.  
      - `src/Parsers/JsonParser` - The JSON data source parser class.  

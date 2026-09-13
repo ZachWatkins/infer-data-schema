@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 use ZachWatkins\InferDataSchema\Enums\ColumnModifier;
 use ZachWatkins\InferDataSchema\Enums\DatabaseType;
-use ZachWatkins\InferDataSchema\Enums\MySqlColumnType;
-use ZachWatkins\InferDataSchema\Enums\SqliteColumnType;
-use ZachWatkins\InferDataSchema\Enums\SqlServerColumnType;
+use ZachWatkins\InferDataSchema\Enums\MySQLColumnType;
+use ZachWatkins\InferDataSchema\Enums\SQLiteColumnType;
+use ZachWatkins\InferDataSchema\Enums\SQLServerColumnType;
 
 it('infers an auto-incrementing, unsigned, unique integer id column', function () {
     $columns = infer([
@@ -17,7 +17,7 @@ it('infers an auto-incrementing, unsigned, unique integer id column', function (
 
     $id = $columns->get('id');
 
-    expect($id->getType())->toBe(MySqlColumnType::TinyInt->value);
+    expect($id->getType())->toBe(MySQLColumnType::TinyInt->value);
     expect($id->hasModifier(ColumnModifier::AutoIncrement))->toBeTrue();
     expect($id->hasModifier(ColumnModifier::Unsigned))->toBeTrue();
     expect($id->hasModifier(ColumnModifier::Unique))->toBeTrue();
@@ -68,7 +68,7 @@ it('preserves significant leading zeros as text instead of integers', function (
         ['zip' => '90210'],
     ]);
 
-    expect($columns->get('zip')->getType())->toBe(SqliteColumnType::Text->value);
+    expect($columns->get('zip')->getType())->toBe(SQLiteColumnType::Text->value);
 });
 
 it('widens integer columns to the smallest safe MySQL type', function () {
@@ -77,7 +77,7 @@ it('widens integer columns to the smallest safe MySQL type', function () {
         ['big' => 1],
     ], DatabaseType::MySQL);
 
-    expect($columns->get('big')->getType())->toBe(MySqlColumnType::SmallInt->value);
+    expect($columns->get('big')->getType())->toBe(MySQLColumnType::SmallInt->value);
 });
 
 it('infers boolean columns from native booleans and true/false strings', function () {
@@ -86,18 +86,18 @@ it('infers boolean columns from native booleans and true/false strings', functio
         ['active' => 'false'],
     ], DatabaseType::MySQL);
 
-    expect($columns->get('active')->getType())->toBe(MySqlColumnType::Boolean->value);
+    expect($columns->get('active')->getType())->toBe(MySQLColumnType::Boolean->value);
 });
 
 it('infers date, datetime and time columns from ISO-8601 strings', function () {
     $columns = infer([
         ['created_on' => '2024-01-15', 'created_at' => '2024-01-15T10:30:00', 'opens_at' => '09:00:00'],
         ['created_on' => '2024-02-20', 'created_at' => '2024-02-20 11:45:00', 'opens_at' => '17:30:00'],
-    ], DatabaseType::SqlServer);
+    ], DatabaseType::SQLServer);
 
-    expect($columns->get('created_on')->getType())->toBe(SqlServerColumnType::Date->value);
-    expect($columns->get('created_at')->getType())->toBe(SqlServerColumnType::DateTime->value);
-    expect($columns->get('opens_at')->getType())->toBe(SqlServerColumnType::Time->value);
+    expect($columns->get('created_on')->getType())->toBe(SQLServerColumnType::Date->value);
+    expect($columns->get('created_at')->getType())->toBe(SQLServerColumnType::DateTime->value);
+    expect($columns->get('opens_at')->getType())->toBe(SQLServerColumnType::Time->value);
 });
 
 it('falls back to varchar or text based on the longest observed string', function () {
@@ -105,33 +105,33 @@ it('falls back to varchar or text based on the longest observed string', functio
         ['short' => 'hi', 'long' => str_repeat('x', 300)],
     ], DatabaseType::MySQL);
 
-    expect($columns->get('short')->getType())->toBe(MySqlColumnType::Varchar->value);
-    expect($columns->get('long')->getType())->toBe(MySqlColumnType::Text->value);
+    expect($columns->get('short')->getType())->toBe(MySQLColumnType::Varchar->value);
+    expect($columns->get('long')->getType())->toBe(MySQLColumnType::Text->value);
 });
 
 it('resolves a SQL Server tinyint for small unsigned integers and smallint for signed', function () {
     $columns = infer([
         ['age' => 30],
         ['age' => 45],
-    ], DatabaseType::SqlServer);
+    ], DatabaseType::SQLServer);
 
     $signed = infer([
         ['delta' => -10],
         ['delta' => 20],
-    ], DatabaseType::SqlServer);
+    ], DatabaseType::SQLServer);
 
-    expect($columns->get('age')->getType())->toBe(SqlServerColumnType::TinyInt->value);
-    expect($signed->get('delta')->getType())->toBe(SqlServerColumnType::SmallInt->value);
+    expect($columns->get('age')->getType())->toBe(SQLServerColumnType::TinyInt->value);
+    expect($signed->get('delta')->getType())->toBe(SQLServerColumnType::SmallInt->value);
 });
 
 it('distinguishes fixed-width SQL Server char columns from varchar columns', function () {
     $columns = infer([
         ['code' => 'AB', 'description' => 'short'],
         ['code' => 'CD', 'description' => 'a longer value'],
-    ], DatabaseType::SqlServer);
+    ], DatabaseType::SQLServer);
 
-    expect($columns->get('code')->getType())->toBe(SqlServerColumnType::Char->value);
-    expect($columns->get('description')->getType())->toBe(SqlServerColumnType::Varchar->value);
+    expect($columns->get('code')->getType())->toBe(SQLServerColumnType::Char->value);
+    expect($columns->get('description')->getType())->toBe(SQLServerColumnType::Varchar->value);
 });
 
 it('defaults a fully-null column to a nullable text/varchar type', function () {
@@ -142,7 +142,7 @@ it('defaults a fully-null column to a nullable text/varchar type', function () {
 
     $note = $columns->get('note');
 
-    expect($note->getType())->toBe(SqliteColumnType::Text->value);
+    expect($note->getType())->toBe(SQLiteColumnType::Text->value);
     expect($note->hasModifier(ColumnModifier::Nullable))->toBeTrue();
     expect($note->hasModifier(ColumnModifier::Unique))->toBeFalse();
 });
@@ -167,6 +167,6 @@ it('infers real columns for numeric values with decimal points in SQLite', funct
 
     $price = $columns->get('price');
 
-    expect($price->getType())->toBe(SqliteColumnType::Real->value);
+    expect($price->getType())->toBe(SQLiteColumnType::Real->value);
     expect($price->hasModifier(ColumnModifier::Unsigned))->toBeTrue();
 });

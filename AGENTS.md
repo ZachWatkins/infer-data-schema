@@ -10,7 +10,7 @@ See [README.md](README.md) for full project details, usage examples, and depende
 - **Strict Types**: Always include `declare(strict_types=1);` at the top of every PHP file.
 - **Code Standard**: Follow PSR-12 coding guidelines.
 - **Type Safety**: Use explicit return types, parameter type hints, and typed properties for all methods and classes.
-- **Enums**: Group column types and modifiers using backed enums (e.g. `SqliteColumnType`, `ColumnModifier`, `DatabaseType`).
+- **Enums**: Group column types and modifiers using backed enums (e.g. `SQLiteColumnType`, `ColumnModifier`, `DatabaseType`).
 - **Interfaces**: Define strict interface contracts under `src/Interfaces/` before implementing new parsers or models.
 
 ## Project Architecture
@@ -27,9 +27,9 @@ See [README.md](README.md) for full project details, usage examples, and depende
    - `src/Enums` - Contains the enum definitions for the library.  
      - `src/Enums/DatabaseType.php` - The enum definition for supported database types.  
      - `src/Enums/ColumnModifier.php` - The enum definition for SQL column modifiers (unique, nullable, signed or unsigned, auto-incrementing).  
-     - `src/Enums/SqliteColumnType.php` - The enum definition for SQLite column types.  
-     - `src/Enums/MySqlColumnType.php` - The enum definition for MySQL column types.  
-     - `src/Enums/SqlServerColumnType.php` - The enum definition for SQL Server column types.  
+     - `src/Enums/SQLiteColumnType.php` - The enum definition for SQLite column types.  
+     - `src/Enums/MySQLColumnType.php` - The enum definition for MySQL column types.  
+     - `src/Enums/SQLServerColumnType.php` - The enum definition for SQL Server column types.  
    - `src/Parsers` - Contains the data source parser classes for the library.  
      - `src/Parsers/CsvParser` - The CSV data source parser class.  
      - `src/Parsers/JsonParser` - The JSON data source parser class.  

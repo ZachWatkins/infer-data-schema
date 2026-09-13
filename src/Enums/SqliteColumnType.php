@@ -10,7 +10,7 @@ namespace ZachWatkins\InferDataSchema\Enums;
  * @see https://www.sqlite.org/datatype3.html
  * @see https://sqlite.org/limits.html
  */
-enum SqliteColumnType: string
+enum SQLiteColumnType: string
 {
     case Integer = 'INTEGER';
     case Text = 'TEXT';

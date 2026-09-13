@@ -9,7 +9,7 @@ namespace ZachWatkins\InferDataSchema\Enums;
  *
  * @see https://learn.microsoft.com/en-us/sql/t-sql/data-types/data-types-transact-sql
  */
-enum SqlServerColumnType: string
+enum SQLServerColumnType: string
 {
     /**
      * The bit data type is used for storing Boolean values as 0, 1, or NULL.

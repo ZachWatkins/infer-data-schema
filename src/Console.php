@@ -175,7 +175,7 @@ final class Console
     private function formatColumn(SqlColumnInterface $column): string
     {
         $modifiers = \implode(
-            ', ',
+            ' ',
             \array_map(
                 static fn(ColumnModifier $modifier): string => $modifier->value,
                 $column->getModifiers(),
@@ -183,10 +183,10 @@ final class Console
         );
 
         if ($modifiers === '') {
-            return \sprintf('%s %s', $column->getName(), $column->getType());
+            return \sprintf('%s: %s', $column->getName(), $column->getType());
         }
 
-        return \sprintf('%s %s %s', $column->getName(), $column->getType(), $modifiers);
+        return \sprintf('%s: %s %s', $column->getName(), $column->getType(), $modifiers);
     }
 
     private function writeError(string $message): void

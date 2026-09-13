@@ -79,7 +79,7 @@ var_dump($sqlColumnCollection);
 //         )
 // )
 foreach ($sqlColumnCollection->getColumns() as $column) {
-    echo $column->getName() . ' ' . $column->getType() . ' ' . implode(', ', $column->getModifiers()) . PHP_EOL;
+    echo $column->getName() . ': ' . $column->getType() . ' ' . implode(', ', $column->getModifiers()) . PHP_EOL;
 }
 ```
 

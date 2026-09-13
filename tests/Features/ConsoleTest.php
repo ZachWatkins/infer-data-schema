@@ -35,15 +35,15 @@ it('prints usage when no source argument is provided', function () use ($runCons
 
     expect($result['exitCode'])->toBe(1)
         ->and($result['stdout'])->toBe('')
-        ->and($result['stderr'])->toContain('Usage: index.php <path-or-url> [--db=sqlite|mysql|sqlserver] [--cwd=<current-working-directory>] [--dry-run] [--format=txt,blueprint]');
+        ->and($result['stderr'])->toContain('Usage: index.php <path-or-url> [--db=sqlite|mysql|sqlserver] [--cwd=<current-working-directory>] [--dry-run] [--format=sql,blueprint]');
 });
 
 it('prints usage for an unsupported source extension', function () use ($runConsole) {
-    $result = $runConsole(['infer-data-schema', 'dataset.txt']);
+    $result = $runConsole(['infer-data-schema', 'dataset.sql']);
 
     expect($result['exitCode'])->toBe(1)
         ->and($result['stdout'])->toBe('')
-        ->and($result['stderr'])->toContain('Usage: index.php <path-or-url> [--db=sqlite|mysql|sqlserver] [--cwd=<current-working-directory>] [--dry-run] [--format=txt,blueprint]');
+        ->and($result['stderr'])->toContain('Usage: index.php <path-or-url> [--db=sqlite|mysql|sqlserver] [--cwd=<current-working-directory>] [--dry-run] [--format=sql,blueprint]');
 });
 
 it('rejects http and https sources from the cli', function (string $source) use ($runConsole) {

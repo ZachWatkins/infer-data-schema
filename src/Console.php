@@ -55,7 +55,7 @@ final class Console
         $databaseType = DatabaseType::SQLite;
         $currentWorkingDirectory = null;
         $dryRun = false;
-        $format = 'txt';
+        $format = 'sql';
 
         foreach (\array_slice($argv, 1) as $argument) {
             if (\str_starts_with($argument, '--db=')) {
@@ -80,7 +80,7 @@ final class Console
             if (\str_starts_with($argument, '--format=')) {
                 $requestedFormat = \strtolower(\substr($argument, 9));
 
-                if (!\in_array($requestedFormat, ['txt', 'blueprint'], true)) {
+                if (!\in_array($requestedFormat, ['sql', 'blueprint'], true)) {
                     $this->writeUsage();
 
                     return 1;
@@ -175,13 +175,13 @@ final class Console
     {
         $this->writeToStream(
             $this->stderr,
-            'Usage: index.php <path-or-url> [--db=sqlite|mysql|sqlserver] [--cwd=<current-working-directory>] [--dry-run] [--format=txt,blueprint]' . \PHP_EOL
+            'Usage: index.php <path-or-url> [--db=sqlite|mysql|sqlserver] [--cwd=<current-working-directory>] [--dry-run] [--format=sql,blueprint]' . \PHP_EOL
         );
     }
 
     private function writeColumns(SQLColumnCollectionInterface $columns, string $format): void
     {
-        if ('txt' === $format) {
+        if ('sql' === $format) {
             foreach ($columns->getColumns() as $column) {
                 $this->writeToStream($this->stdout, $this->formatColumn($column) . \PHP_EOL);
             }

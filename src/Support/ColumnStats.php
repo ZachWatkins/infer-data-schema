@@ -107,6 +107,31 @@ final class ColumnStats
             && $this->isUnsigned();
     }
 
+    public function containsMultiByteEncoding(): bool
+    {
+        foreach (array_keys($this->seenValues) as $value) {
+            if (mb_strlen($value, '8bit') !== strlen($value)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function maxStringByteLength(): int
+    {
+        if ($this->containsMultiByteEncoding()) {
+            $max = 0;
+            foreach (array_keys($this->seenValues) as $value) {
+                $max = \max($max, mb_strlen($value, '8bit'));
+            }
+
+            return $max;
+        }
+
+        return $this->maxStringLength;
+    }
+
     private function recordDateTime(\DateTimeInterface $value): void
     {
         $stringValue = $value->format('Y-m-d H:i:s.u');

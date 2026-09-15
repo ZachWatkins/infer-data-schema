@@ -25,6 +25,8 @@ final class ColumnStats
 
     public bool $allNumeric = true;
 
+    public bool $allYear = true;
+
     public bool $allDate = true;
 
     public bool $allDateTime = true;
@@ -182,6 +184,7 @@ final class ColumnStats
         $this->allMacAddress = false;
         $this->allUuid = false;
         $this->allUlid = false;
+        $this->allYear = false;
     }
 
     private function recordScalar(bool|int|float|string $value): void
@@ -212,6 +215,9 @@ final class ColumnStats
             }
             if (!self::isUlidLike($value)) {
                 $this->allUlid = false;
+            }
+            if ($stringLength !== 4 || !\is_numeric($value) || (int) $value < 1901 || (int) $value > 2155) {
+                $this->allYear = false;
             }
         }
 
@@ -250,6 +256,10 @@ final class ColumnStats
 
         if ($numericValue < 0) {
             $this->hasNegative = true;
+        }
+
+        if (!$isInt || $value < 1901 || $value > 2155) {
+            $this->allYear = false;
         }
 
         if ($this->nonNullSeenCount === 1) {

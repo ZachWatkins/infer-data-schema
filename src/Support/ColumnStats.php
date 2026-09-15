@@ -31,6 +31,16 @@ final class ColumnStats
 
     public bool $allTime = true;
 
+    public bool $allJson = true;
+
+    public bool $allIpAddress = true;
+
+    public bool $allMacAddress = true;
+
+    public bool $allUuid = true;
+
+    public bool $allUlid = true;
+
     public bool $hasNegative = false;
 
     public int|float $minValue = 0;
@@ -109,8 +119,8 @@ final class ColumnStats
 
     public function containsMultiByteEncoding(): bool
     {
-        foreach (array_keys($this->seenValues) as $value) {
-            if (mb_strlen($value, '8bit') !== strlen($value)) {
+        foreach (\array_keys($this->seenValues) as $value) {
+            if (\mb_strlen($value, '8bit') !== \strlen($value)) {
                 return true;
             }
         }
@@ -122,8 +132,8 @@ final class ColumnStats
     {
         if ($this->containsMultiByteEncoding()) {
             $max = 0;
-            foreach (array_keys($this->seenValues) as $value) {
-                $max = \max($max, mb_strlen($value, '8bit'));
+            foreach (\array_keys($this->seenValues) as $value) {
+                $max = \max($max, \mb_strlen($value, '8bit'));
             }
 
             return $max;
@@ -141,7 +151,13 @@ final class ColumnStats
         $this->allBool = false;
         $this->allInt = false;
         $this->allNumeric = false;
+        $this->allJson = false;
         $this->sequenceIntact = false;
+        $this->allJson = false;
+        $this->allIpAddress = false;
+        $this->allMacAddress = false;
+        $this->allUuid = false;
+        $this->allUlid = false;
 
         if ($value->format('H:i:s') !== '00:00:00') {
             $this->allDate = false;
@@ -161,6 +177,11 @@ final class ColumnStats
         $this->allDateTime = false;
         $this->allTime = false;
         $this->sequenceIntact = false;
+        $this->allJson = false;
+        $this->allIpAddress = false;
+        $this->allMacAddress = false;
+        $this->allUuid = false;
+        $this->allUlid = false;
     }
 
     private function recordScalar(bool|int|float|string $value): void
@@ -176,6 +197,21 @@ final class ColumnStats
                 $this->firstStringLength = $stringLength;
             } elseif ($this->firstStringLength !== $stringLength) {
                 $this->allStringLengthsSame = false;
+            }
+            if (!self::isJsonLike($value)) {
+                $this->allJson = false;
+            }
+            if (!self::isIpAddressLike($value)) {
+                $this->allIpAddress = false;
+            }
+            if (!self::isMacAddressLike($value)) {
+                $this->allMacAddress = false;
+            }
+            if (!self::isUuidLike($value)) {
+                $this->allUuid = false;
+            }
+            if (!self::isUlidLike($value)) {
+                $this->allUlid = false;
             }
         }
 
@@ -338,5 +374,47 @@ final class ColumnStats
         }
 
         return (int) $matches[1] <= 23 && (int) $matches[2] <= 59 && (int) $matches[3] <= 59;
+    }
+
+    private static function isJsonLike(string $value): bool
+    {
+        $trimmed = \trim($value);
+
+        if ($trimmed === '') {
+            return false;
+        }
+
+        if (\strlen($trimmed) < 2) {
+            return false;
+        }
+
+        // Silently try to parse JSON and do not update the global error state.
+        // If the string begins and ends with certain characters, it might be JSON.
+        try {
+            \json_decode($trimmed, true, 512, JSON_THROW_ON_ERROR);
+            return true;
+        } catch (\JsonException $e) {
+            return false;
+        }
+    }
+
+    private static function isIpAddressLike(string $value): bool
+    {
+        return \filter_var($value, \FILTER_VALIDATE_IP) !== false;
+    }
+
+    private static function isMacAddressLike(string $value): bool
+    {
+        return \preg_match('/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/', $value) === 1;
+    }
+
+    private static function isUuidLike(string $value): bool
+    {
+        return \preg_match('/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/', $value) === 1;
+    }
+
+    private static function isUlidLike(string $value): bool
+    {
+        return \preg_match('/^[0-9A-HJKMNP-TV-Z]{26}$/', $value) === 1;
     }
 }

@@ -256,6 +256,7 @@ final class ColumnStats
 
         if ($numericValue < 0) {
             $this->hasNegative = true;
+            $this->allYear = false;
         }
 
         if (!$isInt || $value < 1901 || $value > 2155) {

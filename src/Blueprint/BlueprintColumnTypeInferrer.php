@@ -110,21 +110,48 @@ final class BlueprintColumnTypeInferrer implements BlueprintColumnTypeInferrerIn
 
     private function resolveIntegerType(ColumnStats $stats): LaravelColumnType
     {
-        $unsigned = !$stats->hasNegative;
-        $max = (int) \max(\abs($stats->minValue), \abs($stats->maxValue));
+        $max = (int) $stats->maxValue;
 
-        return match (true) {
-            $unsigned && $max <= 1 => LaravelColumnType::Bit,
-            $unsigned && $max <= 255 => LaravelColumnType::TinyInt,
-            !$unsigned && $max <= 127 => LaravelColumnType::TinyInt,
-            $unsigned && $max <= 65_535 => LaravelColumnType::SmallInt,
-            !$unsigned && $max <= 32_768 => LaravelColumnType::SmallInt,
-            $unsigned && $max <= 16_777_215 => LaravelColumnType::MediumInt,
-            !$unsigned && $max <= 8_388_608 => LaravelColumnType::MediumInt,
-            $unsigned && $max <= 4_294_967_295 => LaravelColumnType::Int,
-            !$unsigned && $max <= 2_147_483_647 => LaravelColumnType::Int,
-            default => LaravelColumnType::BigInt,
-        };
+        if (!$stats->hasNegative) {
+            if ($max <= 255) {
+                return LaravelColumnType::tinyInteger;
+            }
+            if ($max <= 65_535) {
+                return LaravelColumnType::smallInteger;
+            }
+            if ($max <= 16_777_215) {
+                return LaravelColumnType::mediumInteger;
+            }
+            $result = bccomp((string) $max, '4294967295');
+            if ($result <= 0) {
+                return LaravelColumnType::integer;
+            }
+            return LaravelColumnType::bigInteger;
+        }
+
+        $min = (int) \abs($stats->minValue);
+
+        if (-128 <= $min && $max <= 127) {
+            return LaravelColumnType::tinyInteger;
+        }
+
+        if (-32_768 <= $min && $max <= 32_767) {
+            return LaravelColumnType::smallInteger;
+        }
+
+        if (-8_388_608 <= $min && $max <= 8_388_607) {
+            return LaravelColumnType::mediumInteger;
+        }
+
+        $result = bccomp((string) $min, '-2147483648');
+        if ($result >= 0) {
+            $result = bccomp((string) $max, '2147483647');
+            if ($result <= 0) {
+                return LaravelColumnType::integer;
+            }
+        }
+
+        return LaravelColumnType::bigInteger;
     }
 
     private function resolveStringType(ColumnStats $stats): LaravelColumnType

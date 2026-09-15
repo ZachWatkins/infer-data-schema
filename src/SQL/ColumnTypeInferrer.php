@@ -152,21 +152,48 @@ final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
 
     private function resolveMySQLIntegerType(ColumnStats $stats): MySQLColumnType
     {
-        $unsigned = !$stats->hasNegative;
-        $max = (int) \max(\abs($stats->minValue), \abs($stats->maxValue));
+        $max = (int) $stats->maxValue;
 
-        return match (true) {
-            $unsigned && $max <= 1 => MySQLColumnType::Bit,
-            $unsigned && $max <= 255 => MySQLColumnType::TinyInt,
-            !$unsigned && $max <= 127 => MySQLColumnType::TinyInt,
-            $unsigned && $max <= 65_535 => MySQLColumnType::SmallInt,
-            !$unsigned && $max <= 32_768 => MySQLColumnType::SmallInt,
-            $unsigned && $max <= 16_777_215 => MySQLColumnType::MediumInt,
-            !$unsigned && $max <= 8_388_608 => MySQLColumnType::MediumInt,
-            $unsigned && $max <= 4_294_967_295 => MySQLColumnType::Int,
-            !$unsigned && $max <= 2_147_483_647 => MySQLColumnType::Int,
-            default => MySQLColumnType::BigInt,
-        };
+        if (!$stats->hasNegative) {
+            if ($max <= 255) {
+                return MySQLColumnType::TinyInt;
+            }
+            if ($max <= 65_535) {
+                return MySQLColumnType::SmallInt;
+            }
+            if ($max <= 16_777_215) {
+                return MySQLColumnType::MediumInt;
+            }
+            $result = bccomp((string) $max, '4294967295');
+            if ($result <= 0) {
+                return MySQLColumnType::Int;
+            }
+            return MySQLColumnType::BigInt;
+        }
+
+        $min = (int) \abs($stats->minValue);
+
+        if (-128 <= $min && $max <= 127) {
+            return MySQLColumnType::TinyInt;
+        }
+
+        if (-32_768 <= $min && $max <= 32_767) {
+            return MySQLColumnType::SmallInt;
+        }
+
+        if (-8_388_608 <= $min && $max <= 8_388_607) {
+            return MySQLColumnType::MediumInt;
+        }
+
+        $result = bccomp((string) $min, '-2147483648');
+        if ($result >= 0) {
+            $result = bccomp((string) $max, '2147483647');
+            if ($result <= 0) {
+                return MySQLColumnType::Int;
+            }
+        }
+
+        return MySQLColumnType::BigInt;
     }
 
     private function resolveSQLServerType(ColumnStats $stats): SQLServerColumnType
@@ -194,9 +221,12 @@ final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
             return SQLServerColumnType::TinyInt;
         }
 
+        $min = (int) \abs($stats->minValue);
+        $max = (int) $stats->maxValue;
+
         return match (true) {
-            $stats->minValue >= -32_768 && $stats->maxValue <= 32_767 => SQLServerColumnType::SmallInt,
-            $stats->minValue >= -2_147_483_648 && $stats->maxValue <= 2_147_483_647 => SQLServerColumnType::Int,
+            $min >= -32_768 && $max <= 32_767 => SQLServerColumnType::SmallInt,
+            $min >= -2_147_483_648 && $max <= 2_147_483_647 => SQLServerColumnType::Int,
             default => SQLServerColumnType::BigInt,
         };
     }

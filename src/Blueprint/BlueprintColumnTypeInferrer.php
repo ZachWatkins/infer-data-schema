@@ -114,6 +114,9 @@ final class BlueprintColumnTypeInferrer implements BlueprintColumnTypeInferrerIn
         $min = (int) \abs($stats->minValue);
 
         if (!$stats->hasNegative) {
+            if ($stats->allYear) {
+                return LaravelColumnType::year;
+            }
             if ($max <= 255) {
                 if ($min === 1 && $stats->sequenceIntact) {
                     return LaravelColumnType::tinyIncrements;
@@ -170,11 +173,27 @@ final class BlueprintColumnTypeInferrer implements BlueprintColumnTypeInferrerIn
 
     private function resolveStringType(ColumnStats $stats): LaravelColumnType
     {
-        // Resolve char, longText, mediumText, string, text, tinyText, json, macAddress, ipAddress, uuid, ulid.
+        if ($stats->allJson) {
+            return LaravelColumnType::json;
+        }
+        if ($stats->allIpAddress) {
+            return LaravelColumnType::ipAddress;
+        }
+        if ($stats->allMacAddress) {
+            return LaravelColumnType::macAddress;
+        }
+        if ($stats->allUuid) {
+            return LaravelColumnType::uuid;
+        }
+        if ($stats->allUlid) {
+            return LaravelColumnType::ulid;
+        }
+        if ($stats->allYear) {
+            return LaravelColumnType::year;
+        }
         if ($stats->allStringLengthsSame && $stats->maxStringLength <= 255) {
             return LaravelColumnType::char;
         }
-
         if ($stats->maxStringLength <= 255) {
             return LaravelColumnType::tinyText;
         }
@@ -184,11 +203,9 @@ final class BlueprintColumnTypeInferrer implements BlueprintColumnTypeInferrerIn
         if ($maximumBytes <= 65_535) {
             return LaravelColumnType::string;
         }
-
         if ($stats->maxStringLength <= 65_535) {
             return LaravelColumnType::text;
         }
-
         if ($stats->maxStringLength <= 16_777_215) {
             return LaravelColumnType::mediumText;
         }

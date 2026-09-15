@@ -111,25 +111,39 @@ final class BlueprintColumnTypeInferrer implements BlueprintColumnTypeInferrerIn
     private function resolveIntegerType(ColumnStats $stats): LaravelColumnType
     {
         $max = (int) $stats->maxValue;
+        $min = (int) \abs($stats->minValue);
 
         if (!$stats->hasNegative) {
             if ($max <= 255) {
+                if ($min === 1 && $stats->sequenceIntact) {
+                    return LaravelColumnType::tinyIncrements;
+                }
                 return LaravelColumnType::tinyInteger;
             }
             if ($max <= 65_535) {
+                if ($min === 1 && $stats->sequenceIntact) {
+                    return LaravelColumnType::smallIncrements;
+                }
                 return LaravelColumnType::smallInteger;
             }
             if ($max <= 16_777_215) {
+                if ($min === 1 && $stats->sequenceIntact) {
+                    return LaravelColumnType::mediumIncrements;
+                }
                 return LaravelColumnType::mediumInteger;
             }
             $result = bccomp((string) $max, '4294967295');
             if ($result <= 0) {
+                if ($min === 1 && $stats->sequenceIntact) {
+                    return LaravelColumnType::increments;
+                }
                 return LaravelColumnType::integer;
+            }
+            if ($min === 1 && $stats->sequenceIntact) {
+                return LaravelColumnType::bigIncrements;
             }
             return LaravelColumnType::bigInteger;
         }
-
-        $min = (int) \abs($stats->minValue);
 
         if (-128 <= $min && $max <= 127) {
             return LaravelColumnType::tinyInteger;

@@ -4,9 +4,15 @@ declare(strict_types=1);
 
 namespace ZachWatkins\InferDataSchema;
 
+use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintParserInterface;
+use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintColumnCollectionInterface;
+use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintColumnInterface;
+use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintModel;
+use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintConfig;
+use ZachWatkins\InferDataSchema\Blueprint\Lexers\BlueprintFileLexer;
 use ZachWatkins\InferDataSchema\SQL\Enums\ColumnModifier;
 use ZachWatkins\InferDataSchema\SQL\Enums\DatabaseType;
-use ZachWatkins\InferDataSchema\SQL\Interfaces\ParserInterface;
+use ZachWatkins\InferDataSchema\SQL\Interfaces\ParserInterface as SQLParserInterface;
 use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnCollectionInterface;
 use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnInterface;
 
@@ -37,12 +43,22 @@ final class Console
         $this->stdout = $stdout ?? \STDOUT;
         $this->stderr = $stderr ?? \STDERR;
         $this->parserClasses = $parserClasses ?? [
-            'csv' => '\ZachWatkins\InferDataSchema\SQL\Parsers\CsvParser',
-            'json' => '\ZachWatkins\InferDataSchema\SQL\Parsers\JsonParser',
-            'xml' => '\ZachWatkins\InferDataSchema\SQL\Parsers\XmlParser',
-            'xlsx' => '\ZachWatkins\InferDataSchema\SQL\Parsers\ExcelParser',
-            'xls' => '\ZachWatkins\InferDataSchema\SQL\Parsers\ExcelParser',
-            'ods' => '\ZachWatkins\InferDataSchema\SQL\Parsers\ExcelParser',
+            'sql' => [
+                'csv' => '\ZachWatkins\InferDataSchema\SQL\Parsers\CsvParser',
+                'json' => '\ZachWatkins\InferDataSchema\SQL\Parsers\JsonParser',
+                'xml' => '\ZachWatkins\InferDataSchema\SQL\Parsers\XmlParser',
+                'xlsx' => '\ZachWatkins\InferDataSchema\SQL\Parsers\ExcelParser',
+                'xls' => '\ZachWatkins\InferDataSchema\SQL\Parsers\ExcelParser',
+                'ods' => '\ZachWatkins\InferDataSchema\SQL\Parsers\ExcelParser',
+            ],
+            'blueprint' => [
+                'csv' => '\ZachWatkins\InferDataSchema\Blueprint\Parsers\CsvParser',
+                'json' => '\ZachWatkins\InferDataSchema\Blueprint\Parsers\JsonParser',
+                'xml' => '\ZachWatkins\InferDataSchema\Blueprint\Parsers\XmlParser',
+                'xlsx' => '\ZachWatkins\InferDataSchema\Blueprint\Parsers\ExcelParser',
+                'xls' => '\ZachWatkins\InferDataSchema\Blueprint\Parsers\ExcelParser',
+                'ods' => '\ZachWatkins\InferDataSchema\Blueprint\Parsers\ExcelParser',
+            ],
         ];
     }
 
@@ -56,8 +72,21 @@ final class Console
         $currentWorkingDirectory = null;
         $dryRun = false;
         $format = 'sql';
+        $blueprintOptions = [
+            'model' => null,
+            'seeders' => false,
+            'view' => null,
+            'controllers' => [],
+        ];
+        $save = false;
 
         foreach (\array_slice($argv, 1) as $argument) {
+            if (\str_starts_with($argument, '--help')) {
+                $this->writeUsage();
+
+                return 0;
+            }
+
             if (\str_starts_with($argument, '--db=')) {
                 $requestedDatabaseType = DatabaseType::tryFrom(\strtolower(\substr($argument, 5)));
 
@@ -88,6 +117,46 @@ final class Console
 
                 $format = $requestedFormat;
 
+                continue;
+            }
+
+            if (\str_starts_with($argument, '--blueprint-model=')) {
+                $blueprintOptions['model'] = \substr($argument, 18);
+                continue;
+            }
+
+            if (\str_starts_with($argument, '--blueprint-seeders')) {
+                $blueprintOptions['seeders'] = true;
+                continue;
+            }
+
+            if (\str_starts_with($argument, '--save')) {
+                $save = true;
+                continue;
+            }
+
+            if (\str_starts_with($argument, '--blueprint-view=')) {
+                $blueprintOptions['view'] = \substr($argument, 17);
+                continue;
+            }
+
+            if (\str_starts_with($argument, '--blueprint-controllers=')) {
+                $values = \array_map('trim', \explode(',', \substr($argument, 25)));
+                foreach ($values as $controller) {
+                    if (\strpos($controller, '.') !== false) {
+                        $parts = \explode('.', \trim($controller, '.'));
+                        if (!isset($blueprintOptions['controllers'][$parts[0]])) {
+                            $blueprintOptions['controllers'][$parts[0]] = [$parts[1]];
+                        } elseif (!\is_array($blueprintOptions['controllers'][$parts[0]])) {
+                            if (\in_array($parts[0], ['']))
+                                $blueprintOptions['controllers'][$parts[0]] = ['all', $parts[1]];
+                        } elseif (!\in_array($parts[1], $blueprintOptions['controllers'][$parts[0]], true)) {
+                            $blueprintOptions['controllers'][$parts[0]][] = $parts[1];
+                        }
+                    } elseif (!isset($blueprintOptions['controllers'][$controller])) {
+                        $blueprintOptions['controllers'][$controller] = true;
+                    }
+                }
                 continue;
             }
 
@@ -124,7 +193,7 @@ final class Console
             $source = $currentWorkingDirectory . \DIRECTORY_SEPARATOR . $source;
         }
 
-        $parserClass = $this->resolveParserClass($source);
+        $parserClass = $this->resolveParserClass($format, $source);
 
         if ($parserClass === null) {
             $this->writeUsage();
@@ -138,18 +207,43 @@ final class Console
             return 1;
         }
 
-        if (!\is_a($parserClass, ParserInterface::class, true)) {
-            $this->writeError(\sprintf('Parser %s does not implement %s.', $parserClass, ParserInterface::class));
+        if (\is_a($parserClass, SQLParserInterface::class, true)) {
+            /** @var SQLParserInterface $parser */
+            $parser = new $parserClass();
+            $columns = $parser->parse($source, $databaseType->value);
+
+            if (!$dryRun) {
+                $this->writeSQLColumns($columns);
+            }
+        } elseif (\is_a($parserClass, BlueprintParserInterface::class, true)) {
+            /** @var BlueprintParserInterface $parser */
+            $parser = new $parserClass();
+            $columns = $parser->parse($source);
+            $model = new BlueprintModel($blueprintOptions['model'] ?? null, $columns);
+
+            if (!$dryRun) {
+                $lexer = new BlueprintFileLexer();
+                if (!$save) {
+                    if ($blueprintOptions['seeders']) {
+                        $blueprintOptions['seeders'] = [$model->name];
+                    }
+                    $this->writeToStream(
+                        $this->stdout,
+                        $lexer->toString(
+                            new BlueprintConfig(
+                                [$model],
+                                $blueprintOptions['view'],
+                                $blueprintOptions['controllers'],
+                                $blueprintOptions['seeders']
+                            )
+                        )
+                    );
+                }
+            }
+        } else {
+            $this->writeError(\sprintf('Parser %s does not implement %s or %s.', $parserClass, SQLParserInterface::class, BlueprintParserInterface::class));
 
             return 1;
-        }
-
-        /** @var ParserInterface $parser */
-        $parser = new $parserClass();
-        $columns = $parser->parse($source, $databaseType->value);
-
-        if (!$dryRun) {
-            $this->writeColumns($columns, $format);
         }
 
         return 0;
@@ -160,7 +254,7 @@ final class Console
         return \str_starts_with($source, 'http://') || \str_starts_with($source, 'https://');
     }
 
-    private function resolveParserClass(string $source): ?string
+    private function resolveParserClass(string $format, string $source): ?string
     {
         $extension = \strtolower(\pathinfo($source, \PATHINFO_EXTENSION));
 
@@ -168,31 +262,32 @@ final class Console
             return null;
         }
 
-        return $this->parserClasses[$extension] ?? null;
+        return $this->parserClasses[$format][$extension] ?? null;
     }
 
     private function writeUsage(): void
     {
         $this->writeToStream(
             $this->stderr,
-            'Usage: index.php <path-or-url> [--db=sqlite|mysql|sqlserver] [--cwd=<current-working-directory>] [--dry-run] [--format=sql,blueprint]' . \PHP_EOL
+            'Usage: index.php <path-or-url> [--db=sqlite|mysql|sqlserver] [--cwd=<current-working-directory>] [--dry-run] [--format=sql,blueprint] [--blueprint-model=<name>] [--blueprint-seeders] [--blueprint-view=blade|inertia] [--blueprint-controllers=resource,resource:api,resource:web,index,create,store,show,edit,update,destroy,api.index,api.store,api.show,api.update,api.destroy] [--save] [--help]' . \PHP_EOL
         );
     }
 
-    private function writeColumns(SQLColumnCollectionInterface $columns, string $format): void
+    private function writeSQLColumns(SQLColumnCollectionInterface $columns): void
     {
-        if ('sql' === $format) {
-            foreach ($columns->getColumns() as $column) {
-                $this->writeToStream($this->stdout, $this->formatColumn($column) . \PHP_EOL);
-            }
-        } else {
-            foreach ($columns->getColumns() as $column) {
-                $this->writeToStream($this->stdout, $this->formatColumnBlueprint($column) . \PHP_EOL);
-            }
+        foreach ($columns->getColumns() as $column) {
+            $this->writeToStream($this->stdout, $this->formatSQLColumn($column) . \PHP_EOL);
         }
     }
 
-    private function formatColumn(SQLColumnInterface $column): string
+    private function writeBlueprintColumns(BlueprintColumnCollectionInterface $columns): void
+    {
+        foreach ($columns->getColumns() as $column) {
+            $this->writeToStream($this->stdout, $this->formatBlueprintColumn($column) . \PHP_EOL);
+        }
+    }
+
+    private function formatSQLColumn(SQLColumnInterface $column): string
     {
         $modifiers = \implode(
             ' ',
@@ -209,7 +304,7 @@ final class Console
         return \sprintf('%s: %s %s', $column->getName(), $column->getType(), $modifiers);
     }
 
-    private function formatColumnBlueprint(SQLColumnInterface $column): string
+    private function formatBlueprintColumn(BlueprintColumnInterface $column): string
     {
         $modifiers = \implode(
             ' ',

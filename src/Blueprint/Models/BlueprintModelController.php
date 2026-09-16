@@ -89,19 +89,38 @@ class BlueprintModelController
                     ];
                     break;
                 case 'api.index':
-                    $tree['api.index'] = true;
+                    $tree['api.index'] = [
+                        'query' => 'all',
+                        'resource' => sprintf('collection:%s', $this->model->tableNamePlural)
+                    ];
                     break;
                 case 'api.store':
-                    $tree['api.store'] = true;
+                    $tree['api.store'] = [
+                        'validate' => implode(', ', $this->model->columnNames()),
+                        'save' => $this->model->tableNameSingular,
+                        'resource' => $this->model->tableNameSingular,
+                    ];
                     break;
                 case 'api.show':
-                    $tree['api.show'] = true;
+                    $tree['api.show'] = [
+                        'find' => sprintf('%s.id', $this->model->tableNameSingular),
+                        'resource' => $this->model->tableNameSingular,
+                    ];
                     break;
                 case 'api.update':
-                    $tree['api.update'] = true;
+                    $tree['api.update'] = [
+                        'validate' => implode(', ', $this->model->columnNames()),
+                        'find' => sprintf('%s.id', $this->model->tableNameSingular),
+                        'save' => $this->model->tableNameSingular,
+                        'resource' => $this->model->tableNameSingular,
+                    ];
                     break;
                 case 'api.destroy':
-                    $tree['api.destroy'] = true;
+                    $tree['api.destroy'] = [
+                        'find' => sprintf('%s.id', $this->model->tableNameSingular),
+                        'delete' => $this->model->tableNameSingular,
+                        'redirect' => sprintf('%s.index', $this->model->tableNamePlural)
+                    ];
                     break;
                 case 'invokable':
                     $tree['invokable'] = true;

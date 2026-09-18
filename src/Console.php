@@ -76,7 +76,8 @@ final class Console
             'model' => null,
             'seeders' => false,
             'view' => null,
-            'controllers' => [],
+            'methods' => [],
+            'resource' => 'none',
         ];
         $save = false;
 
@@ -140,22 +141,30 @@ final class Console
                 continue;
             }
 
-            if (\str_starts_with($argument, '--blueprint-controllers=')) {
+            if (\str_starts_with($argument, '--blueprint-controller-methods=')) {
                 $values = \array_map('trim', \explode(',', \substr($argument, 25)));
                 foreach ($values as $controller) {
                     if (\strpos($controller, '.') !== false) {
                         $parts = \explode('.', \trim($controller, '.'));
-                        if (!isset($blueprintOptions['controllers'][$parts[0]])) {
-                            $blueprintOptions['controllers'][$parts[0]] = [$parts[1]];
-                        } elseif (!\is_array($blueprintOptions['controllers'][$parts[0]])) {
+                        if (!isset($blueprintOptions['methods'][$parts[0]])) {
+                            $blueprintOptions['methods'][$parts[0]] = [$parts[1]];
+                        } elseif (!\is_array($blueprintOptions['methods'][$parts[0]])) {
                             if (\in_array($parts[0], ['']))
-                                $blueprintOptions['controllers'][$parts[0]] = ['all', $parts[1]];
-                        } elseif (!\in_array($parts[1], $blueprintOptions['controllers'][$parts[0]], true)) {
-                            $blueprintOptions['controllers'][$parts[0]][] = $parts[1];
+                                $blueprintOptions['methods'][$parts[0]] = ['all', $parts[1]];
+                        } elseif (!\in_array($parts[1], $blueprintOptions['methods'][$parts[0]], true)) {
+                            $blueprintOptions['methods'][$parts[0]][] = $parts[1];
                         }
-                    } elseif (!isset($blueprintOptions['controllers'][$controller])) {
-                        $blueprintOptions['controllers'][$controller] = true;
+                    } elseif (!isset($blueprintOptions['methods'][$controller])) {
+                        $blueprintOptions['methods'][$controller] = true;
                     }
+                }
+                continue;
+            }
+
+            if (\str_starts_with($argument, '--blueprint-model-resource=')) {
+                $resourceType = \substr($argument, 27);
+                if (\in_array($resourceType, ['web', 'api', 'all'], true)) {
+                    $blueprintOptions['resource'] = $resourceType;
                 }
                 continue;
             }
@@ -233,8 +242,9 @@ final class Console
                             new BlueprintConfig(
                                 [$model],
                                 $blueprintOptions['view'],
-                                $blueprintOptions['controllers'],
-                                $blueprintOptions['seeders']
+                                $blueprintOptions['methods'],
+                                $blueprintOptions['resource'],
+                                $blueprintOptions['seeders'],
                             )
                         )
                     );
@@ -269,7 +279,7 @@ final class Console
     {
         $this->writeToStream(
             $this->stderr,
-            'Usage: index.php <path-or-url> [--db=sqlite|mysql|sqlserver] [--cwd=<current-working-directory>] [--dry-run] [--format=sql,blueprint] [--blueprint-model=<name>] [--blueprint-seeders] [--blueprint-view=blade|inertia] [--blueprint-controllers=resource,resource:api,resource:web,index,create,store,show,edit,update,destroy,api.index,api.store,api.show,api.update,api.destroy] [--save] [--help]' . \PHP_EOL
+            'Usage: index.php <path-or-url> [--db=sqlite|mysql|sqlserver] [--cwd=<current-working-directory>] [--dry-run] [--format=sql,blueprint] [--blueprint-model=<name>] [--blueprint-seeders] [--blueprint-view=blade|inertia] [--blueprint-controller-methods=index,create,read,update,delete] [--blueprint-model-resource=web,api,all,none] [--save] [--help]' . \PHP_EOL
         );
     }
 
@@ -277,13 +287,6 @@ final class Console
     {
         foreach ($columns->getColumns() as $column) {
             $this->writeToStream($this->stdout, $this->formatSQLColumn($column) . \PHP_EOL);
-        }
-    }
-
-    private function writeBlueprintColumns(BlueprintColumnCollectionInterface $columns): void
-    {
-        foreach ($columns->getColumns() as $column) {
-            $this->writeToStream($this->stdout, $this->formatBlueprintColumn($column) . \PHP_EOL);
         }
     }
 

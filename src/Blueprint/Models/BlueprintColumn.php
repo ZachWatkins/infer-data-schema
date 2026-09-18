@@ -19,6 +19,7 @@ final class BlueprintColumn implements BlueprintColumnInterface
     public function __construct(
         private readonly string $name,
         private readonly LaravelColumnType $type,
+        private readonly array $attributes = [],
         private readonly array $modifiers = [],
     ) {}
 
@@ -32,12 +33,27 @@ final class BlueprintColumn implements BlueprintColumnInterface
         return $this->type;
     }
 
+    public function getAttributes(): array
+    {
+        return $this->attributes;
+    }
+
+    public function hasAttributes(): bool
+    {
+        return !empty($this->attributes);
+    }
+
     /**
      * @return array<int, ColumnModifier>
      */
     public function getModifiers(): array
     {
         return $this->modifiers;
+    }
+
+    public function hasModifiers(): bool
+    {
+        return !empty($this->modifiers);
     }
 
     public function hasModifier(ColumnModifier $modifier): bool

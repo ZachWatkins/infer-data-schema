@@ -15,10 +15,12 @@ use Doctrine\Inflector\InflectorFactory;
 class BlueprintModel
 {
     protected Inflector $inflector;
+    public readonly BlueprintColumnCollection $columns;
     public function __construct(
         public string $name,
-        protected BlueprintColumnCollection $columns
+        BlueprintColumnCollection $columns
     ) {
+        $this->columns = $columns;
         $this->inflector = InflectorFactory::create()->build();
     }
 

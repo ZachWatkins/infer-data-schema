@@ -6,19 +6,20 @@ namespace ZachWatkins\InferDataSchema\Blueprint\Models;
 
 class BlueprintModelController
 {
-    private const OPTIONS = ['resource', 'resource:api', 'resource:web', 'index', 'create', 'store', 'show', 'edit', 'update', 'destroy', 'api.index', 'api.store', 'api.show', 'api.update', 'api.destroy', 'invokable'];
+    private const METHODS = ['index', 'create', 'read', 'update', 'delete'];
 
     public readonly array $methods;
 
     public function __construct(
         protected BlueprintModel $model,
         array $methodsParam,
-        protected string $view = 'blade'
+        protected string $view = 'blade',
+        protected bool $resource = false,
     ) {
-        $invalidMethods = array_diff($methodsParam, self::OPTIONS);
+        $invalidMethods = array_diff($methodsParam, self::METHODS);
         if (!empty($invalidMethods)) {
             throw new \RuntimeException(
-                "Invalid controller methods: " . implode(', ', $invalidMethods) . ". Accepts: " . implode(', ', self::OPTIONS)
+                "Invalid controller methods: " . implode(', ', $invalidMethods) . ". Accepts: " . implode(', ', self::METHODS)
             );
         }
 
@@ -36,23 +37,40 @@ class BlueprintModelController
         foreach ($methodsParam as $method) {
             switch ($method) {
                 case 'resource':
-                    $tree['resource'] = true;
+                    if (!isset($tree['resource'])) {
+                        $tree['resource'] = [];
+                    }
+                    $tree['resource'][] = true;
                     break;
                 case 'resource:api':
-                    $tree['resource'] = 'api';
+                    if (!isset($tree['resource'])) {
+                        $tree['resource'] = [];
+                    }
+                    $tree['resource'][] = 'api';
                     break;
                 case 'resource:web':
-                    $tree['resource'] = 'web';
+                    if (!isset($tree['resource'])) {
+                        $tree['resource'] = [];
+                    }
+                    $tree['resource'][] = 'web';
                     break;
                 case 'index':
+                    $renderValue = match ($this->view) {
+                        'inertia' => sprintf('%s/Index with:%s,%s', $this->model->name, $this->model->tableNameSingular, $this->model->tableNamePlural),
+                        default => sprintf('%s.index with:%s', $this->model->tableNamePlural, $this->model->tableNamePlural),
+                    };
                     $tree['index'] = [
-                        'query' => 'all',
-                        $renderKey => sprintf('%s.index with:%s', $this->model->tableNamePlural, $this->model->tableNamePlural)
+                        'query' => sprintf('all:%s', $this->model->tableNamePlural),
+                        $renderKey => $renderValue,
                     ];
                     break;
                 case 'create':
+                    $renderValue = match ($this->view) {
+                        'inertia' => sprintf('%s/Create with:%s', $this->model->name, $this->model->tableNameSingular),
+                        default => sprintf('%s.create with:%s', $this->model->tableNamePlural, $this->model->tableNameSingular),
+                    };
                     $tree['create'] = [
-                        $renderKey => sprintf('%s.create with:%s', $this->model->tableNamePlural, $this->model->tableNameSingular)
+                        $renderKey => $renderValue
                     ];
                     break;
                 case 'store':
@@ -63,15 +81,23 @@ class BlueprintModelController
                     ];
                     break;
                 case 'show':
+                    $renderValue = match ($this->view) {
+                        'inertia' => sprintf('%s/Show with:%s', $this->model->name, $this->model->tableNameSingular),
+                        default => sprintf('%s.show with:%s', $this->model->tableNamePlural, $this->model->tableNameSingular),
+                    };
                     $tree['show'] = [
                         'find' => sprintf('%s.id', $this->model->tableNameSingular),
-                        $renderKey => sprintf('%s.show with:%s', $this->model->tableNamePlural, $this->model->tableNameSingular)
+                        $renderKey => $renderValue
                     ];
                     break;
                 case 'edit':
+                    $renderValue = match ($this->view) {
+                        'inertia' => sprintf('%s/Edit with:%s', $this->model->name, $this->model->tableNameSingular),
+                        default => sprintf('%s.edit with:%s', $this->model->tableNamePlural, $this->model->tableNameSingular),
+                    };
                     $tree['edit'] = [
                         'find' => sprintf('%s.id', $this->model->tableNameSingular),
-                        $renderKey => sprintf('%s.edit with:%s', $this->model->tableNamePlural, $this->model->tableNameSingular)
+                        $renderKey => $renderValue
                     ];
                     break;
                 case 'update':

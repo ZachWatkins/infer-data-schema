@@ -38,7 +38,7 @@ class BlueprintConfig
         $this->models = $this->resolveModels($models);
         $this->view = $this->resolveView($view);
         $this->methods = $this->resolveMethods($methods);
-        $this->resources = $this->resolveResource($resources);
+        $this->resources = $this->resolveResources($resources);
     }
 
     private function resolveModels(array $models): array
@@ -83,7 +83,7 @@ class BlueprintConfig
     private function resolveMethods(array $methods): array
     {
         $resolved = [];
-        foreach ($methods as $method) {
+        foreach (array_unique($methods) as $method) {
             if (\is_string($method) && $method !== '') {
                 $resolved[] = $method;
             } else {
@@ -104,10 +104,10 @@ class BlueprintConfig
      * @param array<string> $resource
      * @return array<string>
      */
-    private function resolveResource(array $resource): array
+    private function resolveResources(array $resource): array
     {
         $resolved = [];
-        foreach ($resource as $item) {
+        foreach (array_unique($resource) as $item) {
             if (\is_string($item) && $item !== '') {
                 $resolved[] = $item;
             } else {

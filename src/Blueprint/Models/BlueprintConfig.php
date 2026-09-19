@@ -83,8 +83,8 @@ class BlueprintConfig
     private function resolveMethods(array $methods): array
     {
         $resolved = [];
-        foreach (array_unique($methods) as $method) {
-            if (\is_string($method) && $method !== '') {
+        foreach (array_unique(array_filter($methods)) as $method) {
+            if (\is_string($method)) {
                 $resolved[] = $method;
             } else {
                 throw new \RuntimeException(\sprintf(
@@ -107,8 +107,8 @@ class BlueprintConfig
     private function resolveResources(array $resource): array
     {
         $resolved = [];
-        foreach (array_unique($resource) as $item) {
-            if (\is_string($item) && $item !== '') {
+        foreach (array_unique(array_filter($resource)) as $item) {
+            if (\is_string($item)) {
                 $resolved[] = $item;
             } else {
                 throw new \RuntimeException(\sprintf(

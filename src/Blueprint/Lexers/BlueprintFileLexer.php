@@ -15,6 +15,34 @@ class BlueprintFileLexer
     private const WEB_RESOURCE_METHODS = ['index', 'create', 'store', 'edit', 'update', 'show', 'destroy'];
     private const API_RESOURCE_METHODS = ['api.index', 'api.store', 'api.update', 'api.show', 'api.destroy'];
 
+    public function toString(BlueprintConfig $config): string
+    {
+        $tree = $this->toTree($config);
+        $output = '';
+        if ($tree['models']) {
+            $output .= "models:\n";
+            foreach ($tree['models'] as $model) {
+                $output .= "  {$model->name}:\n";
+            }
+        }
+        if ($tree['controllers']) {
+            $output .= "controllers:\n";
+            foreach ($tree['controllers'] as $controller => $methods) {
+                $output .= "  {$controller}:\n";
+                foreach ($methods as $method => $actions) {
+                    $output .= "    {$method}:\n";
+                    foreach ($actions as $action => $value) {
+                        $output .= "      {$action}: {$value}\n";
+                    }
+                }
+            }
+        }
+        if ($tree['seeders']) {
+            $output .= "seeders: " . \implode(', ', $tree['seeders']) . "\n";
+        }
+        return $output;
+    }
+
     public function toTree(BlueprintConfig $config): array
     {
         $tree = [
@@ -36,7 +64,10 @@ class BlueprintFileLexer
                 }
                 $tree['models'][$model->name][$column->name] = implode(' ', $values);
             }
-            $tree['controllers'][$model->name] = $this->getControllerTree($model, $config);
+            $controller = $this->getControllerTree($model, $config);
+            if (!empty($controller)) {
+                $tree['controllers'][$model->name] = $controller;
+            }
         }
         if ($config->seeders) {
             foreach ($config->models as $model) {
@@ -48,8 +79,10 @@ class BlueprintFileLexer
 
     private function getControllerTree(BlueprintModel $model, BlueprintConfig $config): array
     {
+        if ($config->view === BlueprintConfigView::Inertia) {
+            return $this->getInertiaControllerTree($model, $config);
+        }
         $template = [
-            'resource' => [],
             'index' => [
                 'query' => 'all:[plural]',
                 'render' => '[singular].index with:[plural]',
@@ -58,7 +91,7 @@ class BlueprintFileLexer
                 'render' => '[singular].create',
             ],
             'store' => [
-                'validate' => '[singular]',
+                'validate' => '[columns]',
                 'save' => '[singular]',
                 'flash' => '[singular].id',
                 'redirect' => '[plural].index',
@@ -70,7 +103,7 @@ class BlueprintFileLexer
                 'render' => '[singular].edit with:[singular]',
             ],
             'update' => [
-                'validate' => '[singular]',
+                'validate' => '[columns]',
                 'update' => '[singular]',
                 'flash' => '[singular].id',
                 'redirect' => '[plural].index',
@@ -84,7 +117,7 @@ class BlueprintFileLexer
                 'resource' => 'collection:[plural]',
             ],
             'api.store' => [
-                'validate' => '[singular]',
+                'validate' => '[columns]',
                 'save' => '[singular]',
                 'resource' => '[singular]',
             ],
@@ -92,7 +125,7 @@ class BlueprintFileLexer
                 'resource' => '[singular]',
             ],
             'api.update' => [
-                'validate' => '[singular]',
+                'validate' => '[columns]',
                 'update' => '[singular]',
                 'resource' => '[singular]',
             ],
@@ -101,143 +134,179 @@ class BlueprintFileLexer
                 'respond' => 204,
             ],
         ];
-        if (!empty($config->resources)) {
-            if ($config->view === BlueprintConfigView::Inertia) {
-                // Inertia views are not currently auto-resolved by the resource shorthand.
-                
-            } else {
-                $template['resource'] = implode(', ', $config->resources);
-            }
-        } else {
-            unset($template['resource']);
+        $result = [];
+        if ($config->resources) {
+            $result['resources'] = $config->resources;
         }
-        $filtered = array_intersect_key($template, array_flip($config->methods));
+        foreach (\array_keys($template) as $templateMethod) {
+            if (\in_array($templateMethod, $config->methods)) {
+                $result[$templateMethod] = $template[$templateMethod];
+            }
+        }
+        $result = $this->resolveConflictingControllerMethods($result);
+        $result = $this->resolveModelControllerPlaceholders($result, $model);
         foreach ($config->methods as $method) {
-            if (!isset($template[$method])) {
-                $filtered[$method] = [
-                    '# <action>' => '<parameters>',
+            if (!isset($result[$method])) {
+                $result[$method] = [
+                    '# <action>' => '<parameters>'
                 ];
             }
         }
-        foreach ($filtered as $method => $actions) {
-            foreach ($actions as $action => $parameters) {
-                if (is_string($parameters) && str_contains($parameters, '[singular]')) {
-                    $filtered[$method][$action] = str_replace('[singular]', $model->tableNameSingular, $parameters);
-                }
-                if (is_string($parameters) && str_contains($parameters, '[plural]')) {
-                    $filtered[$method][$action] = str_replace('[plural]', $model->tableNamePlural, $parameters);
+        return $result;
+    }
+
+    private function getInertiaControllerTree(BlueprintModel $model, BlueprintConfig $config): array
+    {
+        $template = [
+            'resource' => [],
+            'index' => [
+                'query' => 'all:[plural]',
+                'inertia' => '[model]/Index with:[plural]',
+            ],
+            'create' => [
+                'inertia' => '[model]/Create',
+            ],
+            'store' => [
+                'validate' => '[columns]',
+                'save' => '[singular]',
+                'flash' => '[singular].id',
+                'redirect' => '[plural].index',
+            ],
+            'show' => [
+                'inertia' => '[model]/Show with:[singular]',
+            ],
+            'edit' => [
+                'inertia' => '[model]/Edit with:[singular]',
+            ],
+            'update' => [
+                'validate' => '[columns]',
+                'update' => '[singular]',
+                'flash' => '[singular].id',
+                'redirect' => '[plural].index',
+            ],
+            'destroy' => [
+                'delete' => '[singular]',
+                'redirect' => '[plural].index',
+            ],
+            'api.index' => [
+                'query' => 'all:[plural]',
+                'resource' => 'collection:[plural]',
+            ],
+            'api.store' => [
+                'validate' => '[columns]',
+                'save' => '[singular]',
+                'resource' => '[singular]',
+            ],
+            'api.show' => [
+                'resource' => '[singular]',
+            ],
+            'api.update' => [
+                'validate' => '[columns]',
+                'update' => '[singular]',
+                'resource' => '[singular]',
+            ],
+            'api.destroy' => [
+                'delete' => '[singular]',
+                'respond' => 204,
+            ],
+        ];
+        $result = [];
+        if ($config->resources) {
+            // Extract web-related resource declarations and move them to the controllers, since Laravel Shift Blueprint does not resolve these shorthands for Inertia views at this time.
+            $filteredResources = array_flip($config->resources);
+            $webResourceMethods = [];
+            if (isset($filteredResources['web'])) {
+                $webResourceMethods = array_flip(self::WEB_RESOURCE_METHODS);
+                unset($filteredResources['web']);
+            }
+            // Look at each resource declaration and move web methods to extractedResourceMethods.
+            foreach (self::WEB_RESOURCE_METHODS as $method) {
+                if (isset($filteredResources[$method])) {
+                    if (!isset($webResourceMethods[$method])) {
+                        $webResourceMethods[$method] = true;
+                    }
+                    unset($filteredResources[$method]);
                 }
             }
-        }
-        if ($config->view === BlueprintConfigView::Inertia) {
-            foreach ($filtered as $method => $actions) {
-                foreach ($actions as $action => $parameters) {
-                    if ('render' === $action) {
-                        unset($filtered[$method]['render']);
-                        $filtered[$method]['inertia'] = $parameters;
+            if (!empty($filteredResources)) {
+                $result['resource'] = implode(', ', array_keys($filteredResources));
+            }
+            if (!empty($webResourceMethods)) {
+                foreach (\array_keys($template) as $method) {
+                    if (isset($webResourceMethods[$method])) {
+                        $result[$method] = $template[$method];
+                    } else {
+                        // To preserve the declared order of methods for future assignment, set a null value and remove it later.
+                        $result[$method] = null;
                     }
                 }
             }
         }
-        return $filtered;
-    }
-
-    private function getBladeControllerTree(BlueprintModel $model, array $methods): array
-    {
-        $values = [
-            'index' => [
-                'query' => 'all',
-                'render' => "{$model->tableNamePlural}.index with:{$model->tableNamePlural}",
-            ],
-            'create' => [
-                'render' => "{$model->tableNamePlural}.create with:{$model->tableNameSingular}",
-            ],
-            'store' => [
-                'validate' => implode(', ', $model->columnNames()),
-                'save' => "{$model->tableNameSingular}",
-                'redirect' => "{$model->tableNamePlural}.index",
-            ],
-            'show' => [
-                'find' => "{$model->tableNameSingular}.id",
-                'render' => "{$model->tableNamePlural}.show with:{$model->tableNameSingular}",
-            ],
-            'edit' => [
-                'find' => "{$model->tableNameSingular}.id",
-                'render' => "{$model->tableNamePlural}.edit with:{$model->tableNameSingular}",
-            ],
-            'update' => [
-                'validate' => implode(', ', $model->columnNames()),
-                'find' => "{$model->tableNameSingular}.id",
-                'save' => "{$model->tableNameSingular}",
-                'redirect' => "{$model->tableNamePlural}.index",
-            ],
-            'destroy' => [
-                'find' => "{$model->tableNameSingular}.id",
-                'delete' => "{$model->tableNameSingular}",
-                'redirect' => "{$model->tableNamePlural}.index",
-            ],
-        ];
-        $selected = array_intersect_key($values, array_flip($methods));
-        foreach ($methods as $method) {
-            if (!isset($values[$method])) {
-                $selected[$method] = [
-                    '# <action>' => '<parameters>',
+        foreach ($config->methods as $method) {
+            // Apply web resource methods declared in $config->methods.
+            if (\in_array($method, self::WEB_RESOURCE_METHODS) && isset($result[$method]) && $result[$method] === null) {
+                $result[$method] = $template[$method];
+            }
+            // Apply API resource methods declared in $config->methods.
+            if (\in_array($method, self::API_RESOURCE_METHODS) && isset($result[$method]) && $result[$method] === null) {
+                $result[$method] = $template[$method];
+            }
+        }
+        foreach ($result as $method => $actions) {
+            if ($actions === null) {
+                unset($result[$method]);
+            }
+        }
+        $result = $this->resolveConflictingControllerMethods($result);
+        $result = $this->resolveModelControllerPlaceholders($result, $model);
+        foreach ($config->methods as $method) {
+            if (!isset($result[$method])) {
+                $result[$method] = [
+                    '# <action>' => '<parameters>'
                 ];
             }
         }
-        return $selected;
+        return $result;
     }
 
-    private function getInertiaControllerTree(BlueprintModel $model): array
+    private function resolveModelControllerPlaceholders(array $tree, BlueprintModel $model): array
     {
-        return [
-            'index' => [
-                'query' => 'all',
-                'inertia' => "{$model->name}/Index with:{$model->tableNamePlural}",
-            ],
-            'create' => [
-                'inertia' => "{$model->name}/Create with:{$model->tableNameSingular}",
-            ],
-            'store' => [
-                'validate' => implode(', ', $model->columnNames()),
-                'save' => "{$model->tableNameSingular}",
-                'redirect' => "{$model->tableNamePlural}.index",
-            ],
-            'show' => [
-                'find' => "{$model->tableNameSingular}.id",
-                'inertia' => "{$model->name}/Show with:{$model->tableNameSingular}",
-            ],
-            'edit' => [
-                'find' => "{$model->tableNameSingular}.id",
-                'inertia' => "{$model->name}/Edit with:{$model->tableNameSingular}",
-            ],
-            'update' => [
-                'validate' => implode(', ', $model->columnNames()),
-                'find' => "{$model->tableNameSingular}.id",
-                'save' => "{$model->tableNameSingular}",
-                'redirect' => "{$model->tableNamePlural}.index",
-            ],
-            'destroy' => [
-                'find' => "{$model->tableNameSingular}.id",
-                'delete' => "{$model->tableNameSingular}",
-                'redirect' => "{$model->tableNamePlural}.index",
-            ],
-        ];
+        foreach (array_keys($tree) as $method) {
+            $actions = $tree[$method];
+            foreach ($actions as $action => $parameters) {
+                if (is_string($parameters)) {
+                    if (str_contains($parameters, '[singular]')) {
+                        $actions[$action] = str_replace('[singular]', $model->tableNameSingular, $parameters);
+                    }
+                    if (str_contains($parameters, '[plural]')) {
+                        $actions[$action] = str_replace('[plural]', $model->tableNamePlural, $parameters);
+                    }
+                    if (str_contains($parameters, '[model]')) {
+                        $actions[$action] = str_replace('[model]', $model->name, $parameters);
+                    }
+                    if (str_contains($parameters, '[columns]')) {
+                        $actions[$action] = str_replace('[columns]', implode(', ', $model->columnNames()), $parameters);
+                    }
+                }
+            }
+            $tree[$method] = $actions;
+        }
+        return $tree;
     }
 
-    public function toString(BlueprintConfig $config): string
+    private function resolveConflictingControllerMethods(array $tree): array
     {
-        $tree = $this->toTree($config);
-        $output = '';
-        if ($tree['models']) {
-            $output .= "models:\n";
-            foreach ($tree['models'] as $model) {
-                $output .= "  {$model->name}:\n";
+        foreach ($tree as $method => $actions) {
+            if (\str_starts_with($method, 'api.')) {
+                $baseMethod = substr($method, 4);
+                if (isset($tree[$baseMethod])) {
+                    unset($tree[$method]);
+                } else {
+                    $tree[$baseMethod] = $actions;
+                    unset($tree[$method]);
+                }
             }
         }
-        if ($tree['seeders']) {
-            $output .= "seeders: " . \implode(', ', $tree['seeders']) . "\n";
-        }
-        return $output;
+        return $tree;
     }
 }

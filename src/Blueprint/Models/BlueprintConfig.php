@@ -4,43 +4,41 @@ declare(strict_types=1);
 
 namespace ZachWatkins\InferDataSchema\Blueprint\Models;
 
-use ZachWatkins\InferDataSchema\Blueprint\Enums\BlueprintConfigMethod;
-use ZachWatkins\InferDataSchema\Blueprint\Enums\BlueprintConfigResource;
 use ZachWatkins\InferDataSchema\Blueprint\Enums\BlueprintConfigView;
 use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintModel;
 
 /**
  * @property array<BlueprintModel> $models
  * @property BlueprintConfigView $view
- * @property array<BlueprintConfigMethod> $methods
- * @property BlueprintConfigResource $resource
+ * @property array<string> $methods
+ * @property array<string> $resources
  * @property bool $seeders
  */
 class BlueprintConfig
 {
-    /** @var array<BlueprintModel> */
+    /** @var array<int, BlueprintModel> */
     public readonly array $models;
 
     /** @var BlueprintConfigView */
     public readonly BlueprintConfigView $view;
 
-    /** @var array<BlueprintConfigMethod> */
+    /** @var array<int, string> */
     public readonly array $methods;
 
-    /** @var BlueprintConfigResource */
-    public readonly BlueprintConfigResource $resource;
+    /** @var array<int, string> */
+    public readonly array $resources;
 
     public function __construct(
         array $models,
         BlueprintConfigView|string $view = BlueprintConfigView::Blade,
         array $methods = [],
-        BlueprintConfigResource|string $resource = BlueprintConfigResource::None,
+        array $resources = [],
         public readonly bool $seeders = false,
     ) {
         $this->models = $this->resolveModels($models);
         $this->view = $this->resolveView($view);
         $this->methods = $this->resolveMethods($methods);
-        $this->resource = $this->resolveResource($resource);
+        $this->resources = $this->resolveResource($resources);
     }
 
     private function resolveModels(array $models): array
@@ -79,44 +77,46 @@ class BlueprintConfig
     }
 
     /**
-     * @param array<BlueprintConfigMethod|string> $methods
-     * @return array<BlueprintConfigMethod>
+     * @param array<string> $methods
+     * @return array<string>
      */
     private function resolveMethods(array $methods): array
     {
         $resolved = [];
         foreach ($methods as $method) {
-            if ($method instanceof BlueprintConfigMethod) {
+            if (\is_string($method) && $method !== '') {
                 $resolved[] = $method;
             } else {
-                $value = BlueprintConfigMethod::tryFrom($method);
-                if ($value === null) {
-                    throw new \RuntimeException(\sprintf(
-                        "Method '%s' is not a valid option. Accepts: %s.",
-                        $method,
-                        \implode(', ', \array_column(BlueprintConfigMethod::cases(), 'value'))
-                    ));
-                }
-                $resolved[] = $value;
+                throw new \RuntimeException(\sprintf(
+                    "Method '%s' (type: '%s') is not a valid option.",
+                    \is_object($method) ? \get_class($method) : \gettype($method),
+                    \gettype($method)
+                ));
             }
         }
 
         return $resolved;
     }
 
-    private function resolveResource(BlueprintConfigResource|string $resource): BlueprintConfigResource
+    /**
+     * Resolves an array of resource strings, ensuring each item is a valid string.
+     *
+     * @param array<string> $resource
+     * @return array<string>
+     */
+    private function resolveResource(array $resource): array
     {
-        if ($resource instanceof BlueprintConfigResource) {
-            return $resource;
-        }
-
-        $resolved = BlueprintConfigResource::tryFrom($resource);
-        if ($resolved === null) {
-            throw new \RuntimeException(\sprintf(
-                "Resource '%s' is not a valid option. Accepts: %s.",
-                $resource,
-                \implode(', ', \array_column(BlueprintConfigResource::cases(), 'value'))
-            ));
+        $resolved = [];
+        foreach ($resource as $item) {
+            if (\is_string($item) && $item !== '') {
+                $resolved[] = $item;
+            } else {
+                throw new \RuntimeException(\sprintf(
+                    "Resource '%s' (type: '%s') is not a valid option.",
+                    \is_object($item) ? \get_class($item) : \gettype($item),
+                    \gettype($item)
+                ));
+            }
         }
 
         return $resolved;

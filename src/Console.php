@@ -18,6 +18,7 @@ use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnInterface;
 
 final class Console
 {
+    const HELP = "index.php <path-or-url> [--db=sqlite|mysql|sqlserver] [--cwd=<current-working-directory>] [--dry-run] [--format=sql,blueprint] [--blueprint-model=<name>] [--blueprint-seeders] [--blueprint-view=blade|inertia] [--blueprint-controller-methods=index,create,store,show,edit,update,destroy] [--blueprint-model-resource=<string>[,<string>]] [--save] [--help]";
     /**
      * @var resource
      */
@@ -142,22 +143,7 @@ final class Console
             }
 
             if (\str_starts_with($argument, '--blueprint-controller-methods=')) {
-                $values = \array_map('trim', \explode(',', \substr($argument, 25)));
-                foreach ($values as $controller) {
-                    if (\strpos($controller, '.') !== false) {
-                        $parts = \explode('.', \trim($controller, '.'));
-                        if (!isset($blueprintOptions['methods'][$parts[0]])) {
-                            $blueprintOptions['methods'][$parts[0]] = [$parts[1]];
-                        } elseif (!\is_array($blueprintOptions['methods'][$parts[0]])) {
-                            if (\in_array($parts[0], ['']))
-                                $blueprintOptions['methods'][$parts[0]] = ['all', $parts[1]];
-                        } elseif (!\in_array($parts[1], $blueprintOptions['methods'][$parts[0]], true)) {
-                            $blueprintOptions['methods'][$parts[0]][] = $parts[1];
-                        }
-                    } elseif (!isset($blueprintOptions['methods'][$controller])) {
-                        $blueprintOptions['methods'][$controller] = true;
-                    }
-                }
+                $blueprintOptions['methods'] = \array_map('trim', \explode(',', \substr($argument, 25)));
                 continue;
             }
 
@@ -279,7 +265,7 @@ final class Console
     {
         $this->writeToStream(
             $this->stderr,
-            'Usage: index.php <path-or-url> [--db=sqlite|mysql|sqlserver] [--cwd=<current-working-directory>] [--dry-run] [--format=sql,blueprint] [--blueprint-model=<name>] [--blueprint-seeders] [--blueprint-view=blade|inertia] [--blueprint-controller-methods=index,create,read,update,delete] [--blueprint-model-resource=web,api,all,none] [--save] [--help]' . \PHP_EOL
+            'Usage: ' . self::HELP . \PHP_EOL
         );
     }
 

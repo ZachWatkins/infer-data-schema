@@ -73,3 +73,19 @@ it('infers the expected Blueprint CRUD with custom methods web resource file fro
     expect($output)->toBeString();
     expect($output)->toContain(file_get_contents($fixture));
 });
+
+it('infers the expected Blueprint API methods file from the MySQL JSON fixture', function () {
+    $dataFixture = dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/../fixtures/data/test_mysql.json');
+    $parser = new JsonParser();
+    $columns = $parser->parse($dataFixture);
+    $model = new BlueprintModel('Model', $columns);
+    $config = new BlueprintConfig(
+        models: [$model],
+        methods: BlueprintConfigResource::apiMethods()
+    );
+    $lexer = new BlueprintFileLexer();
+    $output = $lexer->toString($config);
+    $fixture = dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/blueprint/test_mysql_api_methods.yaml');
+    expect($output)->toBeString();
+    expect($output)->toContain(file_get_contents($fixture));
+});

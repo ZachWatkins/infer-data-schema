@@ -23,4 +23,52 @@ enum BlueprintConfigResource: string
     case ApiUpdate = 'api.update';
     case ApiShow = 'api.show';
     case ApiDestroy = 'api.destroy';
+
+    public static function isApiMethod(string $resource): bool
+    {
+        return \in_array($resource, [
+            self::ApiIndex->value,
+            self::ApiStore->value,
+            self::ApiUpdate->value,
+            self::ApiShow->value,
+            self::ApiDestroy->value,
+        ], true);
+    }
+
+    public static function isWebMethod(string $resource): bool
+    {
+        return \in_array($resource, [
+            self::Index->value,
+            self::Create->value,
+            self::Store->value,
+            self::Edit->value,
+            self::Update->value,
+            self::Show->value,
+            self::Destroy->value,
+        ], true);
+    }
+
+    public static function webMethods(): array
+    {
+        return [
+            self::Index->value,
+            self::Create->value,
+            self::Store->value,
+            self::Edit->value,
+            self::Update->value,
+            self::Show->value,
+            self::Destroy->value,
+        ];
+    }
+
+    public static function apiMethods(): array
+    {
+        return [
+            self::ApiIndex->value,
+            self::ApiStore->value,
+            self::ApiUpdate->value,
+            self::ApiShow->value,
+            self::ApiDestroy->value,
+        ];
+    }
 }

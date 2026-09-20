@@ -232,10 +232,10 @@ final class Console
                         $lexer->toString(
                             new BlueprintConfig(
                                 [$model],
-                                $blueprintOptions['view'],
-                                $blueprintOptions['methods'],
                                 $blueprintOptions['resources'],
+                                $blueprintOptions['methods'],
                                 $blueprintOptions['seeders'],
+                                $blueprintOptions['view'],
                             )
                         )
                     );

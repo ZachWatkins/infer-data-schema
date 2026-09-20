@@ -18,7 +18,30 @@ use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnInterface;
 
 final class Console
 {
-    const HELP = "index.php <path-or-url> [--db=sqlite|mysql|sqlserver] [--cwd=<current-working-directory>] [--dry-run] [--format=sql,blueprint] [--blueprint-model=<name>] [--blueprint-seeders] [--blueprint-view=blade|inertia] [--blueprint-model-resource=web,api,index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy] [--blueprint-controller-methods=index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy,<custom>] [--save] [--help]";
+    public const HELP = "Infer data schema from various sources into selected formats. By Zach Watkins.
+Usage: index.php [--db=sqlite|mysql|sqlserver] [--cwd=<current-working-directory>] [--dry-run] [--format=sql,blueprint] [--blueprint-model=<name>] [--blueprint-seeders] [--blueprint-view=blade|inertia] [--blueprint-resource=web,api,index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy] [--blueprint-controller-methods=index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy,<custom>] [--save] [--help] <path-or-url>
+Options:
+  [--db=]                 Database type. Accepts: sqlite, mysql, sqlserver.
+                          Default: mysql.
+  [--cwd=]                Set the current working directory.
+  [--dry-run]             Perform a trial run without making any changes.
+  [--format=]             Output format. Accepts: sql, blueprint. Default: sql.
+  [--blueprint-model=]    Specify the Blueprint model name.
+  [--blueprint-seeders]   Include seeders in Blueprint output.
+  [--blueprint-view=]     Set the Blueprint view type. Accepts: blade, inertia.
+                          Default: blade.
+  [--blueprint-resource=] Define the Blueprint model controller resources.
+                          Accepts: web, api, index, create, store, edit, update,
+                          show, destroy, api.index, api.store, api.store,
+                          api.update, api.show, api.destroy. Default: none.
+  [--blueprint-controller-methods=]
+                          Specify the Blueprint controller methods.
+                          Accepts: index, create, store, edit, update, show,
+                          destroy, api.index, api.store, api.store, api.update,
+                          api.show, api.destroy, <custom>. Default: none.
+  [--save]                Save the output to a file.
+  [--help]                Display this help message.
+";
 
     /**
      * @var resource
@@ -148,7 +171,7 @@ final class Console
                 continue;
             }
 
-            if (\str_starts_with($argument, '--blueprint-model-resource=')) {
+            if (\str_starts_with($argument, '--blueprint-resource=')) {
                 $resourceType = \substr($argument, 27);
                 $split = \array_map('trim', \explode(',', $resourceType));
                 foreach ($split as $resource) {

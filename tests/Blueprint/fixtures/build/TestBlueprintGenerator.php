@@ -13,18 +13,19 @@ use ZachWatkins\InferDataSchema\Blueprint\Lexers\BlueprintFileLexer;
 
 class TestBlueprintGenerator
 {
-    public function generate(string $dataFilePath, string $blueprintFileName, array $config = ['view' => 'blade', 'resources' => ['web'], 'methods' => [], 'seeders' => true]): void
+    /**
+     * Generates a test blueprint file from the given data file and configuration.
+     * @param string $dataFilePath The path to the source data file.
+     * @param string $blueprintFileName The name of the output blueprint file.
+     * @param BlueprintConfig $config The configuration options for generating the blueprint file.
+     * @return void
+     */
+    public function generate(string $dataFilePath, string $blueprintFileName, BlueprintConfig $config = new BlueprintConfig()): void
     {
         $parser = $this->resolveParser(basename($dataFilePath));
         $columns = $parser->parse($dataFilePath);
         $model = new BlueprintModel('Data', $columns);
-        $config = new BlueprintConfig(
-            models: [$model],
-            view: $config['view'],
-            resources: $config['resources'],
-            methods: $config['methods'],
-            seeders: $config['seeders']
-        );
+        $config->addModel($model);
         $lexer = new BlueprintFileLexer();
         $output = $lexer->toString($config);
 

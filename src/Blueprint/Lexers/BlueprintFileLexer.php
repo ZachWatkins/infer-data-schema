@@ -279,25 +279,26 @@ class BlueprintFileLexer
 
     private function resolveModelControllerPlaceholders(array $tree, BlueprintModel $model): array
     {
-        foreach (array_keys($tree) as $method) {
-            $actions = $tree[$method];
-            foreach ($actions as $action => $parameters) {
-                if (is_string($parameters)) {
-                    if (str_contains($parameters, '[singular]')) {
-                        $actions[$action] = str_replace('[singular]', $model->tableNameSingular, $parameters);
-                    }
-                    if (str_contains($parameters, '[plural]')) {
-                        $actions[$action] = str_replace('[plural]', $model->tableNamePlural, $parameters);
-                    }
-                    if (str_contains($parameters, '[model]')) {
-                        $actions[$action] = str_replace('[model]', $model->name, $parameters);
-                    }
-                    if (str_contains($parameters, '[columns]')) {
-                        $actions[$action] = str_replace('[columns]', implode(', ', $model->columnNames()), $parameters);
+        foreach ($tree as $method => $actions) {
+            if (is_array($actions)) {
+                foreach ($actions as $action => $parameters) {
+                    if (is_string($parameters)) {
+                        if (str_contains($parameters, '[singular]')) {
+                            // $actions[$action] = str_replace('[singular]', $model->tableNameSingular, $parameters);
+                            $tree[$method][$action] = str_replace('[singular]', $model->tableNameSingular, $parameters);
+                        }
+                        if (str_contains($parameters, '[plural]')) {
+                            $tree[$method][$action] = str_replace('[plural]', $model->tableNamePlural, $parameters);
+                        }
+                        if (str_contains($parameters, '[model]')) {
+                            $tree[$method][$action] = str_replace('[model]', $model->name, $parameters);
+                        }
+                        if (str_contains($parameters, '[columns]')) {
+                            $tree[$method][$action] = str_replace('[columns]', implode(', ', $model->columnNames()), $parameters);
+                        }
                     }
                 }
             }
-            $tree[$method] = $actions;
         }
         return $tree;
     }

@@ -19,6 +19,10 @@ final class ColumnStats
 
     public int $nonNullSeenCount = 0;
 
+    public int $precision = 0;
+
+    public int $scale = 0;
+
     public bool $allBool = true;
 
     public bool $allInt = true;
@@ -250,6 +254,16 @@ final class ColumnStats
 
         if (!$isInt) {
             $this->allInt = false;
+        }
+
+        if ($isFloat) {
+            $precision = 0;
+            $scale = 0;
+            $parts = \explode('.', (string) $value);
+            $scale = isset($parts[1]) ? (int) \strlen($parts[1]) : 0;
+            $precision = (int) \strlen($parts[0]) + $scale;
+            $this->precision = \max($this->precision, $precision);
+            $this->scale = \max($this->scale, $scale);
         }
 
         $numericValue = $isInt ? (int) $value : (float) $value;

@@ -10,7 +10,6 @@ use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintConfig;
 require_once __DIR__ . '/../../../vendor/autoload.php';
 
 $outDir = __DIR__ . DIRECTORY_SEPARATOR . 'blueprint' . DIRECTORY_SEPARATOR;
-// Remove existing yaml files.
 $existingFiles = glob($outDir . '*.yaml');
 foreach ($existingFiles as $file) {
     unlink($file);
@@ -28,4 +27,7 @@ $blueprintGenerator->generate(__DIR__ . '/../../fixtures/data/test_mysql.json', 
 ));
 $blueprintGenerator->generate(__DIR__ . '/../../fixtures/data/test_mysql.json', $outDir . 'test_mysql_crud_with_custom_methods.yaml', new BlueprintConfig(
     methods: array_merge(BlueprintConfigResource::webMethods(), ['customMethod'])
+));
+$blueprintGenerator->generate(__DIR__ . '/../../fixtures/data/test_mysql.json', $outDir . 'test_mysql_api_methods.yaml', new BlueprintConfig(
+    methods: BlueprintConfigResource::apiMethods()
 ));

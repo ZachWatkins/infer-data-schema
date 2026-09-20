@@ -4,7 +4,7 @@
  * Generates test fixture schema files using the source data.
  */
 
-namespace Tests\Fixtures\Build;
+namespace Tests\Blueprint\Fixtures\Build;
 
 use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintParserInterface;
 use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintModel;
@@ -13,12 +13,10 @@ use ZachWatkins\InferDataSchema\Blueprint\Lexers\BlueprintFileLexer;
 
 class TestBlueprintGenerator
 {
-    public function generate(string $dataFileName, string $blueprintFileName, array $config = ['view' => 'blade', 'resources' => ['web'], 'methods' => [], 'seeders' => true]): void
+    public function generate(string $dataFilePath, string $blueprintFileName, array $config = ['view' => 'blade', 'resources' => ['web'], 'methods' => [], 'seeders' => true]): void
     {
-        $parser = $this->resolveParser($dataFileName);
-        $directory = __DIR__ . '/../data/';
-        $filePath = $directory . $dataFileName;
-        $columns = $parser->parse($filePath);
+        $parser = $this->resolveParser(basename($dataFilePath));
+        $columns = $parser->parse($dataFilePath);
         $model = new BlueprintModel('Data', $columns);
         $config = new BlueprintConfig(
             models: [$model],
@@ -27,25 +25,10 @@ class TestBlueprintGenerator
             methods: $config['methods'],
             seeders: $config['seeders']
         );
-        // Example output:
-        // models:
-        //   Data:
-        //     id: TinyInt unique unsigned autoIncrement
-        //     name: Varchar unique
-        //     birthday: Date
-        //     created_at: DateTime
-        //     accept_terms: Boolean
-        //     deleted_at: DateTime nullable
-        //
-        // controllers:
-        //   DataController:
-        //     resource: web
-        //
-        // seeders: Data
         $lexer = new BlueprintFileLexer();
         $output = $lexer->toString($config);
 
-        file_put_contents(__DIR__ . '/../blueprint/' . $blueprintFileName, $output);
+        file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'blueprint' . DIRECTORY_SEPARATOR . $blueprintFileName, $output);
     }
 
     private function resolveParser(string $dataFileName): BlueprintParserInterface

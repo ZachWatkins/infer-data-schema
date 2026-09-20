@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace ZachWatkins\InferDataSchema;
 
 use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintParserInterface;
-use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintColumnCollectionInterface;
 use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintColumnInterface;
 use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintModel;
 use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintConfig;
 use ZachWatkins\InferDataSchema\Blueprint\Lexers\BlueprintFileLexer;
+use ZachWatkins\InferDataSchema\Blueprint\Enums\BlueprintConfigResource;
 use ZachWatkins\InferDataSchema\SQL\Enums\ColumnModifier;
 use ZachWatkins\InferDataSchema\SQL\Enums\DatabaseType;
 use ZachWatkins\InferDataSchema\SQL\Interfaces\ParserInterface as SQLParserInterface;
@@ -18,7 +18,8 @@ use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnInterface;
 
 final class Console
 {
-    const HELP = "index.php <path-or-url> [--db=sqlite|mysql|sqlserver] [--cwd=<current-working-directory>] [--dry-run] [--format=sql,blueprint] [--blueprint-model=<name>] [--blueprint-seeders] [--blueprint-view=blade|inertia] [--blueprint-controller-methods=index,create,store,show,edit,update,destroy] [--blueprint-model-resource=<string>[,<string>]] [--save] [--help]";
+    const HELP = "index.php <path-or-url> [--db=sqlite|mysql|sqlserver] [--cwd=<current-working-directory>] [--dry-run] [--format=sql,blueprint] [--blueprint-model=<name>] [--blueprint-seeders] [--blueprint-view=blade|inertia] [--blueprint-controller-methods=index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy,<custom>] [--blueprint-model-resource=web,api,index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy] [--save] [--help]";
+
     /**
      * @var resource
      */
@@ -78,7 +79,7 @@ final class Console
             'seeders' => false,
             'view' => null,
             'methods' => [],
-            'resource' => 'none',
+            'resources' => [],
         ];
         $save = false;
 
@@ -149,8 +150,12 @@ final class Console
 
             if (\str_starts_with($argument, '--blueprint-model-resource=')) {
                 $resourceType = \substr($argument, 27);
-                if (\in_array($resourceType, ['web', 'api', 'all'], true)) {
-                    $blueprintOptions['resource'] = $resourceType;
+                $split = \array_map('trim', \explode(',', $resourceType));
+                foreach ($split as $resource) {
+                    $resolved = BlueprintConfigResource::tryFrom($resource);
+                    if ($resolved instanceof BlueprintConfigResource) {
+                        $blueprintOptions['resources'][] = $resolved;
+                    }
                 }
                 continue;
             }
@@ -229,7 +234,7 @@ final class Console
                                 [$model],
                                 $blueprintOptions['view'],
                                 $blueprintOptions['methods'],
-                                $blueprintOptions['resource'],
+                                $blueprintOptions['resources'],
                                 $blueprintOptions['seeders'],
                             )
                         )

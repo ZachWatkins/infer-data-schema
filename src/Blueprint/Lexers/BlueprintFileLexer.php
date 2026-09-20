@@ -283,24 +283,42 @@ class BlueprintFileLexer
             if (is_array($actions)) {
                 foreach ($actions as $action => $parameters) {
                     if (is_string($parameters)) {
-                        if (str_contains($parameters, '[singular]')) {
-                            // $actions[$action] = str_replace('[singular]', $model->tableNameSingular, $parameters);
-                            $tree[$method][$action] = str_replace('[singular]', $model->tableNameSingular, $parameters);
+                        $resolved = $this->resolveModelControllerPlaceholder($parameters, $model);
+                        if ($resolved !== $tree[$method][$action]) {
+                            $tree[$method][$action] = $resolved;
                         }
-                        if (str_contains($parameters, '[plural]')) {
-                            $tree[$method][$action] = str_replace('[plural]', $model->tableNamePlural, $parameters);
+                    } elseif (is_array($parameters)) {
+                        foreach ($parameters as $key => $value) {
+                            if (is_string($value)) {
+                                $resolved = $this->resolveModelControllerPlaceholder($value, $model);
+                                if ($resolved !== $parameters[$key]) {
+                                    $parameters[$key] = $resolved;
+                                }
+                            }
                         }
-                        if (str_contains($parameters, '[model]')) {
-                            $tree[$method][$action] = str_replace('[model]', $model->name, $parameters);
-                        }
-                        if (str_contains($parameters, '[columns]')) {
-                            $tree[$method][$action] = str_replace('[columns]', implode(', ', $model->columnNames()), $parameters);
-                        }
+                        $tree[$method][$action] = $parameters;
                     }
                 }
             }
         }
         return $tree;
+    }
+
+    private function resolveModelControllerPlaceholder(string $parameters, $model): string
+    {
+        if (str_contains($parameters, '[singular]')) {
+            $parameters = str_replace('[singular]', $model->tableNameSingular, $parameters);
+        }
+        if (str_contains($parameters, '[plural]')) {
+            $parameters = str_replace('[plural]', $model->tableNamePlural, $parameters);
+        }
+        if (str_contains($parameters, '[model]')) {
+            $parameters = str_replace('[model]', $model->name, $parameters);
+        }
+        if (str_contains($parameters, '[columns]')) {
+            $parameters = str_replace('[columns]', implode(', ', $model->columnNames()), $parameters);
+        }
+        return $parameters;
     }
 
     private function resolveConflictingControllerMethods(array $tree): array

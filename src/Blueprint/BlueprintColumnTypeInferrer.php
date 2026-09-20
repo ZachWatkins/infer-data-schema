@@ -60,11 +60,42 @@ final class BlueprintColumnTypeInferrer implements BlueprintColumnTypeInferrerIn
             $collection->add(new BlueprintColumn(
                 $column,
                 $this->resolveType($columnStats),
+                $this->resolveAttributes($columnStats),
                 $this->resolveModifiers($columnStats),
             ));
         }
 
         return $collection;
+    }
+
+    private function resolveType(ColumnStats $stats): LaravelColumnType
+    {
+        return match (true) {
+            $stats->allBool => LaravelColumnType::boolean,
+            $stats->allInt => $this->resolveIntegerType($stats),
+            $stats->allNumeric => LaravelColumnType::decimal,
+            $stats->allDate => LaravelColumnType::date,
+            $stats->allDateTime => LaravelColumnType::dateTime,
+            $stats->allTime => LaravelColumnType::time,
+            default => $this->resolveStringType($stats),
+        };
+    }
+
+    private function resolveAttributes(ColumnStats $stats): array
+    {
+        $type = $this->resolveType($stats);
+        // If the type is a decimal, return an array with precision and scale.
+        if (\in_array($type, [LaravelColumnType::decimal, LaravelColumnType::float, LaravelColumnType::double], true)) {
+            return [(string) $stats->precision, (string) $stats->scale];
+        }
+        if ($type === LaravelColumnType::char && $stats->allStringLengthsSame) {
+            return [(string) $stats->maxStringLength];
+        }
+        if (\in_array($type, [LaravelColumnType::enum, LaravelColumnType::set], true) && !empty($stats->getSeenValues())) {
+            return $stats->getSeenValues();
+        }
+
+        return [];
     }
 
     /**
@@ -93,19 +124,6 @@ final class BlueprintColumnTypeInferrer implements BlueprintColumnTypeInferrerIn
         }
 
         return $modifiers;
-    }
-
-    private function resolveType(ColumnStats $stats): LaravelColumnType
-    {
-        return match (true) {
-            $stats->allBool => LaravelColumnType::boolean,
-            $stats->allInt => $this->resolveIntegerType($stats),
-            $stats->allNumeric => LaravelColumnType::decimal,
-            $stats->allDate => LaravelColumnType::date,
-            $stats->allDateTime => LaravelColumnType::dateTime,
-            $stats->allTime => LaravelColumnType::time,
-            default => $this->resolveStringType($stats),
-        };
     }
 
     private function resolveIntegerType(ColumnStats $stats): LaravelColumnType

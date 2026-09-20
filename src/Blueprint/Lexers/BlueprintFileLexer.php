@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace ZachWatkins\InferDataSchema\Blueprint\Lexers;
 
 use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintConfig;
-use ZachWatkins\InferDataSchema\Blueprint\Enums\BlueprintConfigMethod;
 use ZachWatkins\InferDataSchema\Blueprint\Enums\BlueprintConfigView;
-use ZachWatkins\InferDataSchema\Blueprint\Enums\BlueprintConfigResource;
+use ZachWatkins\InferDataSchema\Blueprint\Enums\BlueprintConfigWebMethod;
+use ZachWatkins\InferDataSchema\Blueprint\Enums\BlueprintConfigApiMethod;
 use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintModel;
 
 class BlueprintFileLexer
 {
-    private const WEB_RESOURCE_METHODS = ['index', 'create', 'store', 'edit', 'update', 'show', 'destroy'];
     private const API_RESOURCE_METHODS = ['api.index', 'api.store', 'api.update', 'api.show', 'api.destroy'];
 
     public function toString(BlueprintConfig $config): string
@@ -216,11 +215,12 @@ class BlueprintFileLexer
             $filteredResources = array_flip($config->resources);
             $webResourceMethods = [];
             if (isset($filteredResources['web'])) {
-                $webResourceMethods = array_flip(self::WEB_RESOURCE_METHODS);
+                $webResourceMethods = array_flip(array_column(BlueprintConfigWebMethod::cases(), 'value'));
                 unset($filteredResources['web']);
             }
             // Look at each resource declaration and move web methods to extractedResourceMethods.
-            foreach (self::WEB_RESOURCE_METHODS as $method) {
+            foreach (BlueprintConfigWebMethod::cases() as $case) {
+                $method = $case->value;
                 if (isset($filteredResources[$method])) {
                     if (!isset($webResourceMethods[$method])) {
                         $webResourceMethods[$method] = true;
@@ -244,11 +244,13 @@ class BlueprintFileLexer
         }
         foreach ($config->methods as $method) {
             // Apply web resource methods declared in $config->methods.
-            if (\in_array($method, self::WEB_RESOURCE_METHODS) && isset($result[$method]) && $result[$method] === null) {
+            $attempt = BlueprintConfigWebMethod::tryFrom($method);
+            if ($attempt !== null && isset($result[$method]) && $result[$method] === null) {
                 $result[$method] = $template[$method];
             }
             // Apply API resource methods declared in $config->methods.
-            if (\in_array($method, self::API_RESOURCE_METHODS) && isset($result[$method]) && $result[$method] === null) {
+            $attempt = BlueprintConfigApiMethod::tryFrom($method);
+            if ($attempt !== null && isset($result[$method]) && $result[$method] === null) {
                 $result[$method] = $template[$method];
             }
         }

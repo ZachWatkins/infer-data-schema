@@ -153,7 +153,8 @@ class BlueprintFileLexer
         }
         $result = $this->resolveConflictingControllerMethods($result);
         $result = $this->resolveModelControllerPlaceholders($result, $model);
-        foreach ($config->methods as $method) {
+        $customMethods = \array_diff($config->methods, BlueprintConfigResource::webMethods(), BlueprintConfigResource::apiMethods());
+        foreach ($customMethods as $method) {
             if (!isset($result[$method])) {
                 $result[$method] = [
                     '# <action>' => '<parameters>'
@@ -267,7 +268,8 @@ class BlueprintFileLexer
         }
         $result = $this->resolveConflictingControllerMethods($result);
         $result = $this->resolveModelControllerPlaceholders($result, $model);
-        foreach ($config->methods as $method) {
+        $customMethods = \array_diff($config->methods, BlueprintConfigResource::webMethods(), BlueprintConfigResource::apiMethods());
+        foreach ($customMethods as $method) {
             if (!isset($result[$method])) {
                 $result[$method] = [
                     '# <action>' => '<parameters>'

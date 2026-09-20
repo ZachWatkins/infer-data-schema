@@ -304,7 +304,7 @@ class BlueprintFileLexer
         return $tree;
     }
 
-    private function resolveModelControllerPlaceholder(string $parameters, $model): string
+    private function resolveModelControllerPlaceholder(string $parameters, BlueprintModel $model): string
     {
         if (str_contains($parameters, '[singular]')) {
             $parameters = str_replace('[singular]', $model->tableNameSingular, $parameters);

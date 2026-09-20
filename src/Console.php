@@ -231,11 +231,11 @@ final class Console
                         $this->stdout,
                         $lexer->toString(
                             new BlueprintConfig(
-                                [$model],
-                                $blueprintOptions['resources'],
-                                $blueprintOptions['methods'],
-                                $blueprintOptions['seeders'],
-                                $blueprintOptions['view'],
+                                models: [$model],
+                                resources: $blueprintOptions['resources'],
+                                methods: $blueprintOptions['methods'],
+                                seeders: $blueprintOptions['seeders'],
+                                view: $blueprintOptions['view'],
                             )
                         )
                     );

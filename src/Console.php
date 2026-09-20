@@ -117,7 +117,7 @@ Options:
                 $requestedDatabaseType = DatabaseType::tryFrom(\strtolower(\substr($argument, 5)));
 
                 if ($requestedDatabaseType === null) {
-                    $this->writeUsage();
+                    $this->writeUsage('Error: Invalid database type specified: ' . \substr($argument, 5));
 
                     return 1;
                 }
@@ -136,7 +136,7 @@ Options:
                 $requestedFormat = \strtolower(\substr($argument, 9));
 
                 if (!\in_array($requestedFormat, ['sql', 'blueprint'], true)) {
-                    $this->writeUsage();
+                    $this->writeUsage('Error: Invalid format specified: ' . $requestedFormat);
 
                     return 1;
                 }
@@ -189,7 +189,7 @@ Options:
             }
 
             if (\str_starts_with($argument, '--') || $source !== null) {
-                $this->writeUsage();
+                $this->writeUsage('Error: Unexpected argument: ' . $argument);
 
                 return 1;
             }
@@ -198,7 +198,7 @@ Options:
         }
 
         if ($source === null || $currentWorkingDirectory === null) {
-            $this->writeUsage();
+            $this->writeUsage('Error: Source or current working directory not specified.');
 
             return 1;
         }
@@ -219,7 +219,7 @@ Options:
         $parserClass = $this->resolveParserClass($format, $source);
 
         if ($parserClass === null) {
-            $this->writeUsage();
+            $this->writeUsage('Error: Unable to resolve parser class for the specified format and source.');
 
             return 1;
         }
@@ -289,11 +289,15 @@ Options:
         return $this->parserClasses[$format][$extension] ?? null;
     }
 
-    private function writeUsage(): void
+    private function writeUsage(string $message = ''): void
     {
+        $output = 'Usage: ' . self::HELP . \PHP_EOL;
+        if ($message) {
+            $output = $message . \PHP_EOL . $output;
+        }
         $this->writeToStream(
             $this->stderr,
-            'Usage: ' . self::HELP . \PHP_EOL
+            $output
         );
     }
 

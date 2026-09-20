@@ -16,20 +16,20 @@ class TestBlueprintGenerator
     /**
      * Generates a test blueprint file from the given data file and configuration.
      * @param string $dataFilePath The path to the source data file.
-     * @param string $blueprintFileName The name of the output blueprint file.
+     * @param string $blueprintFilePath The path to the output blueprint file.
      * @param BlueprintConfig $config The configuration options for generating the blueprint file.
      * @return void
      */
-    public function generate(string $dataFilePath, string $blueprintFileName, BlueprintConfig $config = new BlueprintConfig()): void
+    public function generate(string $dataFilePath, string $blueprintFilePath, BlueprintConfig $config = new BlueprintConfig()): void
     {
         $parser = $this->resolveParser(basename($dataFilePath));
         $columns = $parser->parse($dataFilePath);
-        $model = new BlueprintModel('Data', $columns);
+        $model = new BlueprintModel('Model', $columns);
         $config->addModel($model);
         $lexer = new BlueprintFileLexer();
         $output = $lexer->toString($config);
 
-        file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'blueprint' . DIRECTORY_SEPARATOR . $blueprintFileName, $output);
+        file_put_contents($blueprintFilePath, $output);
     }
 
     private function resolveParser(string $dataFileName): BlueprintParserInterface

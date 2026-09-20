@@ -9,15 +9,23 @@ use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintConfig;
 
 require_once __DIR__ . '/../../../vendor/autoload.php';
 
+$outDir = __DIR__ . DIRECTORY_SEPARATOR . 'blueprint' . DIRECTORY_SEPARATOR;
+// Remove existing yaml files.
+$existingFiles = glob($outDir . '*.yaml');
+foreach ($existingFiles as $file) {
+    unlink($file);
+}
 $blueprintGenerator = new TestBlueprintGenerator();
-$blueprintGenerator->generate(__DIR__ . '/../../fixtures/data/test_mysql.json', 'test_mysql_basic.yaml');
-$blueprintGenerator->generate(__DIR__ . '/../../fixtures/data/test_mysql.json', 'test_mysql_inertia_basic.yaml', new BlueprintConfig(
+$blueprintGenerator->generate(__DIR__ . '/../../fixtures/data/test_mysql.json', $outDir . 'test_mysql_basic.yaml');
+$blueprintGenerator->generate(__DIR__ . '/../../fixtures/data/test_mysql.json', $outDir . 'test_mysql_inertia_basic.yaml', new BlueprintConfig(
     view: BlueprintConfigView::Inertia,
     resources: [BlueprintConfigResource::Web],
     seeders: true
 ));
-$blueprintGenerator->generate(__DIR__ . '/../../fixtures/data/test_mysql.json', 'test_mysql_inertia_view_only.yaml', new BlueprintConfig(
+$blueprintGenerator->generate(__DIR__ . '/../../fixtures/data/test_mysql.json', $outDir . 'test_mysql_inertia_view_only.yaml', new BlueprintConfig(
     view: BlueprintConfigView::Inertia,
-    resources: [BlueprintConfigResource::Index, BlueprintConfigResource::Show],
-    seeders: true
+    resources: [BlueprintConfigResource::Index, BlueprintConfigResource::Show]
+));
+$blueprintGenerator->generate(__DIR__ . '/../../fixtures/data/test_mysql.json', $outDir . 'test_mysql_crud_with_custom_methods.yaml', new BlueprintConfig(
+    methods: array_merge(BlueprintConfigResource::webMethods(), ['customMethod'])
 ));

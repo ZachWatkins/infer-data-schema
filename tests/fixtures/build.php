@@ -3,6 +3,7 @@
 use Tests\Fixtures\Build\MySQLTestDataGenerator;
 use Tests\Fixtures\Build\SQLServerTestDataGenerator;
 use Tests\Fixtures\Build\TestSchemaGenerator;
+use Tests\Fixtures\Build\TestBlueprintGenerator;
 use Tests\Fixtures\Build\File\TestCsvFileGenerator;
 use Tests\Fixtures\Build\File\TestHttpFileGenerator;
 use Tests\Fixtures\Build\File\TestJsonFileGenerator;
@@ -55,3 +56,7 @@ $schemaGenerator->generateSQLServer('test_sqlserver.json', 'sqlserver.php');
 
 // $schemaGenerator = new TestSchemaGenerator();
 // $schemaGenerator->generateSQLite('test.json', 'sqlite.php');
+
+// Blueprint package.
+$blueprintGenerator = new TestBlueprintGenerator();
+$blueprintGenerator->generate('test_mysql.json', 'test_mysql.yaml');

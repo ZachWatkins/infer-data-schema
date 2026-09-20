@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace ZachWatkins\InferDataSchema\Blueprint\Models;
 
 use ZachWatkins\InferDataSchema\Blueprint\Enums\BlueprintConfigView;
+use ZachWatkins\InferDataSchema\Blueprint\Enums\BlueprintConfigResource;
 use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintModel;
 
 /**
- * @property array<BlueprintModel> $models
+ * @property array<int, BlueprintModel> $models
  * @property BlueprintConfigView $view
- * @property array<string> $methods
- * @property array<string> $resources
+ * @property array<int, string> $methods
+ * @property array<int, BlueprintConfigResource> $resources
  * @property bool $seeders
  */
 class BlueprintConfig
@@ -25,7 +26,7 @@ class BlueprintConfig
     /** @var array<int, string> */
     public readonly array $methods;
 
-    /** @var array<int, string> */
+    /** @var array<int, BlueprintConfigResource> */
     public readonly array $resources;
 
     public function __construct(
@@ -77,8 +78,8 @@ class BlueprintConfig
     }
 
     /**
-     * @param array<string> $methods
-     * @return array<string>
+     * @param array<int, string> $methods
+     * @return array<int, string>
      */
     private function resolveMethods(array $methods): array
     {
@@ -101,21 +102,26 @@ class BlueprintConfig
     /**
      * Resolves an array of resource strings, ensuring each item is a valid string.
      *
-     * @param array<string> $resource
-     * @return array<string>
+     * @param array<int, BlueprintConfigResource> $resource
+     * @return array<int, BlueprintConfigResource>
      */
     private function resolveResources(array $resource): array
     {
         $resolved = [];
         foreach (array_unique(array_filter($resource)) as $item) {
-            if (\is_string($item)) {
+            if ($item instanceof BlueprintConfigResource) {
                 $resolved[] = $item;
             } else {
-                throw new \RuntimeException(\sprintf(
-                    "Resource '%s' (type: '%s') is not a valid option.",
-                    \is_object($item) ? \get_class($item) : \gettype($item),
-                    \gettype($item)
-                ));
+                $item = BlueprintConfigResource::tryFrom($item);
+                if ($item instanceof BlueprintConfigResource) {
+                    $resolved[] = $item;
+                } else {
+                    throw new \RuntimeException(\sprintf(
+                        "Resource '%s' (type: '%s') is not a valid option.",
+                        \is_object($item) ? \get_class($item) : \gettype($item),
+                        \gettype($item)
+                    ));
+                }
             }
         }
 

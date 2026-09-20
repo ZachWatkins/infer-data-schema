@@ -6,37 +6,43 @@ namespace ZachWatkins\InferDataSchema\Blueprint\Lexers;
 
 use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintConfig;
 use ZachWatkins\InferDataSchema\Blueprint\Enums\BlueprintConfigView;
-use ZachWatkins\InferDataSchema\Blueprint\Enums\BlueprintConfigWebMethod;
-use ZachWatkins\InferDataSchema\Blueprint\Enums\BlueprintConfigApiMethod;
+use ZachWatkins\InferDataSchema\Blueprint\Enums\BlueprintConfigResource;
 use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintModel;
 
 class BlueprintFileLexer
 {
-    private const API_RESOURCE_METHODS = ['api.index', 'api.store', 'api.update', 'api.show', 'api.destroy'];
-
     public function toString(BlueprintConfig $config): string
     {
         $tree = $this->toTree($config);
         $output = '';
         if ($tree['models']) {
             $output .= "models:\n";
-            foreach ($tree['models'] as $model) {
-                $output .= "  {$model->name}:\n";
+            foreach ($tree['models'] as $modelName => $columns) {
+                $output .= "  {$modelName}:\n";
+                foreach ($columns as $columnName => $columnValue) {
+                    $output .= "    {$columnName}: {$columnValue}\n";
+                }
             }
         }
-        if ($tree['controllers']) {
+        if (isset($tree['controllers']) && $tree['controllers']) {
+            $output .= "\n";
             $output .= "controllers:\n";
-            foreach ($tree['controllers'] as $controller => $methods) {
-                $output .= "  {$controller}:\n";
+            foreach ($tree['controllers'] as $modelName => $methods) {
+                $output .= "  {$modelName}:\n";
                 foreach ($methods as $method => $actions) {
-                    $output .= "    {$method}:\n";
-                    foreach ($actions as $action => $value) {
-                        $output .= "      {$action}: {$value}\n";
+                    if (is_array($actions)) {
+                        $output .= "    {$method}:\n";
+                        foreach ($actions as $action => $value) {
+                            $output .= "      {$action}: {$value}\n";
+                        }
+                    } elseif (is_string($actions)) {
+                        $output .= "    {$method}: {$actions}\n";
                     }
                 }
             }
         }
         if ($tree['seeders']) {
+            $output .= "\n";
             $output .= "seeders: " . \implode(', ', $tree['seeders']) . "\n";
         }
         return $output;
@@ -52,16 +58,16 @@ class BlueprintFileLexer
         foreach ($config->models as $model) {
             $tree['models'][$model->name] = [];
             foreach ($model->columns as $column) {
-                $values = [$column->type];
+                $values = [$column->getType()->value];
                 if ($column->hasAttributes()) {
                     $values[0] .= ':' . implode(',', $column->getAttributes());
                 }
                 if ($column->hasModifiers()) {
                     foreach ($column->getModifiers() as $modifier) {
-                        $values[] = (string) $modifier;
+                        $values[] = $modifier->value;
                     }
                 }
-                $tree['models'][$model->name][$column->name] = implode(' ', $values);
+                $tree['models'][$model->name][$column->getName()] = implode(' ', $values);
             }
             $controller = $this->getControllerTree($model, $config);
             if (!empty($controller)) {
@@ -135,7 +141,10 @@ class BlueprintFileLexer
         ];
         $result = [];
         if ($config->resources) {
-            $result['resources'] = $config->resources;
+            $resources = \implode(', ', \array_filter(\array_map(fn($resource) => $resource->value, $config->resources)));
+            if ($resources) {
+                $result['resource'] = $resources;
+            }
         }
         foreach (\array_keys($template) as $templateMethod) {
             if (\in_array($templateMethod, $config->methods)) {
@@ -215,12 +224,11 @@ class BlueprintFileLexer
             $filteredResources = array_flip($config->resources);
             $webResourceMethods = [];
             if (isset($filteredResources['web'])) {
-                $webResourceMethods = array_flip(array_column(BlueprintConfigWebMethod::cases(), 'value'));
+                $webResourceMethods = array_flip(BlueprintConfigResource::webMethods());
                 unset($filteredResources['web']);
             }
             // Look at each resource declaration and move web methods to extractedResourceMethods.
-            foreach (BlueprintConfigWebMethod::cases() as $case) {
-                $method = $case->value;
+            foreach (BlueprintConfigResource::webMethods() as $method) {
                 if (isset($filteredResources[$method])) {
                     if (!isset($webResourceMethods[$method])) {
                         $webResourceMethods[$method] = true;
@@ -244,13 +252,11 @@ class BlueprintFileLexer
         }
         foreach ($config->methods as $method) {
             // Apply web resource methods declared in $config->methods.
-            $attempt = BlueprintConfigWebMethod::tryFrom($method);
-            if ($attempt !== null && isset($result[$method]) && $result[$method] === null) {
+            if (BlueprintConfigResource::isWebMethod($method) && isset($result[$method]) && $result[$method] === null) {
                 $result[$method] = $template[$method];
             }
             // Apply API resource methods declared in $config->methods.
-            $attempt = BlueprintConfigApiMethod::tryFrom($method);
-            if ($attempt !== null && isset($result[$method]) && $result[$method] === null) {
+            if (BlueprintConfigResource::isApiMethod($method) && isset($result[$method]) && $result[$method] === null) {
                 $result[$method] = $template[$method];
             }
         }

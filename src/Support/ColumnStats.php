@@ -98,6 +98,11 @@ final class ColumnStats
         $this->recordScalar($value);
     }
 
+    public function getSeenValues(): array
+    {
+        return array_keys($this->seenValues);
+    }
+
     public function isNullable(): bool
     {
         return $this->nullCount > 0;

@@ -86,3 +86,30 @@ models:
     xml_nullable: char:30 nullable
     xml_unique: char:30 unique
     xml_nullable_unique: char:30 nullable unique
+
+controllers:
+  Model:
+    index:
+      query: all:models
+      inertia: Model/Index with:models
+    create:
+      inertia: Model/Create
+    store:
+      validate: bit, bit_nullable, tinyint, tinyint_nullable, tinyint_unique, tinyint_nullable_unique, tinyint_unsigned, tinyint_unsigned_nullable, tinyint_unsigned_unique, tinyint_unsigned_nullable_unique, smallint, smallint_nullable, smallint_unique, smallint_nullable_unique, smallint_unsigned, smallint_unsigned_nullable, smallint_unsigned_unique, smallint_unsigned_nullable_unique, mediumint, mediumint_nullable, mediumint_unique, mediumint_nullable_unique, mediumint_unsigned, mediumint_unsigned_nullable, mediumint_unsigned_unique, mediumint_unsigned_nullable_unique, int, int_nullable, int_unique, int_nullable_unique, int_unsigned, int_unsigned_nullable, int_unsigned_unique, int_unsigned_nullable_unique, bigint, bigint_nullable, bigint_unique, bigint_nullable_unique, bigint_unsigned, bigint_unsigned_nullable, bigint_unsigned_unique, bigint_unsigned_nullable_unique, decimal, decimal_nullable, decimal_unique, decimal_nullable_unique, decimal_unsigned, decimal_unsigned_nullable, decimal_unsigned_unique, decimal_unsigned_nullable_unique, boolean, boolean_nullable, boolean_unique, boolean_nullable_unique, char, char_nullable, char_unique, char_nullable_unique, varchar, varchar_nullable, varchar_unique, varchar_nullable_unique, text, text_nullable, text_unique, text_nullable_unique, date, date_nullable, date_unique, date_nullable_unique, time, time_nullable, time_unique, time_nullable_unique, datetime, datetime_nullable, datetime_unique, datetime_nullable_unique, json, json_nullable, json_unique, json_nullable_unique, xml, xml_nullable, xml_unique, xml_nullable_unique
+      save: model
+      flash: model.id
+      redirect: models.index
+    show:
+      inertia: Model/Show with:model
+    edit:
+      inertia: Model/Edit with:model
+    update:
+      validate: bit, bit_nullable, tinyint, tinyint_nullable, tinyint_unique, tinyint_nullable_unique, tinyint_unsigned, tinyint_unsigned_nullable, tinyint_unsigned_unique, tinyint_unsigned_nullable_unique, smallint, smallint_nullable, smallint_unique, smallint_nullable_unique, smallint_unsigned, smallint_unsigned_nullable, smallint_unsigned_unique, smallint_unsigned_nullable_unique, mediumint, mediumint_nullable, mediumint_unique, mediumint_nullable_unique, mediumint_unsigned, mediumint_unsigned_nullable, mediumint_unsigned_unique, mediumint_unsigned_nullable_unique, int, int_nullable, int_unique, int_nullable_unique, int_unsigned, int_unsigned_nullable, int_unsigned_unique, int_unsigned_nullable_unique, bigint, bigint_nullable, bigint_unique, bigint_nullable_unique, bigint_unsigned, bigint_unsigned_nullable, bigint_unsigned_unique, bigint_unsigned_nullable_unique, decimal, decimal_nullable, decimal_unique, decimal_nullable_unique, decimal_unsigned, decimal_unsigned_nullable, decimal_unsigned_unique, decimal_unsigned_nullable_unique, boolean, boolean_nullable, boolean_unique, boolean_nullable_unique, char, char_nullable, char_unique, char_nullable_unique, varchar, varchar_nullable, varchar_unique, varchar_nullable_unique, text, text_nullable, text_unique, text_nullable_unique, date, date_nullable, date_unique, date_nullable_unique, time, time_nullable, time_unique, time_nullable_unique, datetime, datetime_nullable, datetime_unique, datetime_nullable_unique, json, json_nullable, json_unique, json_nullable_unique, xml, xml_nullable, xml_unique, xml_nullable_unique
+      update: model
+      flash: model.id
+      redirect: models.index
+    destroy:
+      delete: model
+      redirect: models.index
+
+seeders: Model

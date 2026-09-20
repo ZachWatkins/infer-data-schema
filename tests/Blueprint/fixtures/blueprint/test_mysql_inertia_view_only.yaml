@@ -86,3 +86,11 @@ models:
     xml_nullable: char:30 nullable
     xml_unique: char:30 unique
     xml_nullable_unique: char:30 nullable unique
+
+controllers:
+  Model:
+    index:
+      query: all:models
+      inertia: Model/Index with:models
+    show:
+      inertia: Model/Show with:model

@@ -10,36 +10,40 @@ use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintModel;
 
 /**
  * @property array<int, BlueprintModel> $models
- * @property BlueprintConfigView $view
- * @property array<int, string> $methods
  * @property array<int, BlueprintConfigResource> $resources
+ * @property array<int, string> $methods
  * @property bool $seeders
+ * @property BlueprintConfigView $view
  */
 class BlueprintConfig
 {
     /** @var array<int, BlueprintModel> */
     public readonly array $models;
 
-    /** @var BlueprintConfigView */
-    public readonly BlueprintConfigView $view;
+    /** @var array<int, BlueprintConfigResource> */
+    public readonly array $resources;
 
     /** @var array<int, string> */
     public readonly array $methods;
 
-    /** @var array<int, BlueprintConfigResource> */
-    public readonly array $resources;
+    /** @var bool */
+    public readonly bool $seeders;
+
+    /** @var BlueprintConfigView */
+    public readonly BlueprintConfigView $view;
 
     public function __construct(
         array $models,
-        BlueprintConfigView|string $view = BlueprintConfigView::Blade,
-        array $methods = [],
         array $resources = [],
-        public readonly bool $seeders = false,
+        array $methods = [],
+        bool $seeders = false,
+        BlueprintConfigView|string $view = BlueprintConfigView::Blade,
     ) {
         $this->models = $this->resolveModels($models);
-        $this->view = $this->resolveView($view);
-        $this->methods = $this->resolveMethods($methods);
         $this->resources = $this->resolveResources($resources);
+        $this->methods = $this->resolveMethods($methods);
+        $this->seeders = $seeders;
+        $this->view = $this->resolveView($view);
     }
 
     private function resolveModels(array $models): array

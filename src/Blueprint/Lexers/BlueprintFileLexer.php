@@ -221,7 +221,7 @@ class BlueprintFileLexer
         $result = [];
         if ($config->resources) {
             // Extract web-related resource declarations and move them to the controllers, since Laravel Shift Blueprint does not resolve these shorthands for Inertia views at this time.
-            $filteredResources = array_flip($config->resources);
+            $filteredResources = array_flip(array_map(fn($resource) => $resource->value, $config->resources));
             $webResourceMethods = [];
             if (isset($filteredResources['web'])) {
                 $webResourceMethods = array_flip(BlueprintConfigResource::webMethods());

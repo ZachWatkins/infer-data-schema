@@ -55,7 +55,7 @@ class BlueprintFileLexer
             'controllers' => [],
             'seeders' => [],
         ];
-        foreach ($config->models as $model) {
+        foreach ($config->getModels() as $model) {
             $tree['models'][$model->name] = [];
             foreach ($model->columns as $column) {
                 $values = [$column->getType()->value];
@@ -75,7 +75,7 @@ class BlueprintFileLexer
             }
         }
         if ($config->seeders) {
-            foreach ($config->models as $model) {
+            foreach ($config->getModels() as $model) {
                 $tree['seeders'][] = $model->name;
             }
         }

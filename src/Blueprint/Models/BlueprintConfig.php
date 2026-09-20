@@ -18,7 +18,7 @@ use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintModel;
 class BlueprintConfig
 {
     /** @var array<int, BlueprintModel> */
-    public readonly array $models;
+    private array $models;
 
     /** @var array<int, BlueprintConfigResource> */
     public readonly array $resources;
@@ -33,7 +33,7 @@ class BlueprintConfig
     public readonly BlueprintConfigView $view;
 
     public function __construct(
-        array $models,
+        array $models = [],
         array $resources = [],
         array $methods = [],
         bool $seeders = false,
@@ -44,6 +44,16 @@ class BlueprintConfig
         $this->methods = $this->resolveMethods($methods);
         $this->seeders = $seeders;
         $this->view = $this->resolveView($view);
+    }
+
+    public function addModel(BlueprintModel $model): void
+    {
+        $this->models[] = $model;
+    }
+
+    public function getModels(): array
+    {
+        return $this->models;
     }
 
     private function resolveModels(array $models): array
@@ -112,7 +122,7 @@ class BlueprintConfig
     private function resolveResources(array $resource): array
     {
         $resolved = [];
-        foreach (array_unique(array_filter($resource)) as $item) {
+        foreach (array_unique(array_filter($resource), SORT_REGULAR) as $item) {
             if ($item instanceof BlueprintConfigResource) {
                 $resolved[] = $item;
             } else {

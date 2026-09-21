@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace ZachWatkins\InferDataSchema;
 
 use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintParserInterface;
-use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintColumnInterface;
 use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintModel;
 use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintConfig;
 use ZachWatkins\InferDataSchema\Blueprint\Lexers\BlueprintFileLexer;
@@ -19,7 +18,7 @@ use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnInterface;
 final class Console
 {
     public const HELP = "Infer data schema from various sources into selected formats. By Zach Watkins.
-Usage: index.php [--db=sqlite|mysql|sqlserver] [--cwd=<current-working-directory>] [--dry-run] [--format=sql,blueprint] [--blueprint-model=<name>] [--blueprint-seeders] [--blueprint-view=blade|inertia] [--blueprint-resource=web,api,index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy] [--blueprint-controller-methods=index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy,<custom>] [--save] [--help] <path-or-url>
+Usage: {filename} [--db=sqlite|mysql|sqlserver] [--cwd=<current-working-directory>] [--dry-run] [--format=sql,blueprint] [--blueprint-model=<name>] [--blueprint-seeders] [--blueprint-view=blade|inertia] [--blueprint-resource=web,api,index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy] [--blueprint-controller-methods=index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy,<custom>] [--save] [--help] <path-or-url>
 Options:
   [--db=]                 Database type. Accepts: sqlite, mysql, sqlserver.
                           Default: mysql.
@@ -42,6 +41,7 @@ Options:
   [--save]                Save the output to a file.
   [--help]                Display this help message.
 ";
+    private string $filename = 'index.php';
 
     /**
      * @var resource
@@ -85,6 +85,13 @@ Options:
                 'ods' => '\ZachWatkins\InferDataSchema\Blueprint\Parsers\ExcelParser',
             ],
         ];
+
+        $runningPhar = \Phar::running(false);
+        if ($runningPhar !== '') {
+            $this->filename = basename($runningPhar);
+        } elseif (isset($_SERVER['argv'][0]) && !empty($_SERVER['argv'][0])) {
+            $this->filename = basename($_SERVER['argv'][0]);
+        }
     }
 
     /**
@@ -315,9 +322,9 @@ Options:
 
     private function writeUsage(string $message = ''): void
     {
-        $output = 'Usage: ' . self::HELP . \PHP_EOL;
+        $output = 'Usage: ' . str_replace('{filename}', $this->filename, self::HELP) . "\n";
         if ($message) {
-            $output = $message . \PHP_EOL . $output;
+            $output = $message .  "\n" . $output;
         }
         $this->writeToStream(
             $this->stderr,
@@ -328,7 +335,7 @@ Options:
     private function writeSQLColumns(SQLColumnCollectionInterface $columns): void
     {
         foreach ($columns->getColumns() as $column) {
-            $this->writeToStream($this->stdout, $this->formatSQLColumn($column) . \PHP_EOL);
+            $this->writeToStream($this->stdout, $this->formatSQLColumn($column) . "\n");
         }
     }
 
@@ -349,26 +356,9 @@ Options:
         return \sprintf('%s: %s %s', $column->getName(), $column->getType(), $modifiers);
     }
 
-    private function formatBlueprintColumn(BlueprintColumnInterface $column): string
-    {
-        $modifiers = \implode(
-            ' ',
-            \array_map(
-                static fn(ColumnModifier $modifier): string => $modifier->value,
-                $column->getModifiers(),
-            )
-        );
-
-        if ($modifiers === '') {
-            return \sprintf('%s: %s', strtolower($column->getName()), $column->getType());
-        }
-
-        return \sprintf('%s: %s %s', strtolower($column->getName()), $column->getType(), $modifiers);
-    }
-
     private function writeError(string $message): void
     {
-        $this->writeToStream($this->stderr, $message . \PHP_EOL);
+        $this->writeToStream($this->stderr, $message . "\n");
     }
 
     /**

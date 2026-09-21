@@ -51,11 +51,11 @@ it('outputs blueprint YAML file contents to the console if --save is not provide
 
 it('saves a blueprint YAML file to disk if --save is provided', function () use ($runConsole) {
     $dataFixturePath = __DIR__ . str_replace('/', DIRECTORY_SEPARATOR, '/../../fixtures/data/test_mysql.csv');
-    $expectedSavePath = __DIR__ . str_replace('/', DIRECTORY_SEPARATOR, '/../../fixtures/data/blueprint.yaml');
+    $expectedSavePath = __DIR__ . str_replace('/', DIRECTORY_SEPARATOR, '/../../fixtures/data/model-blueprint.yaml');
     $blueprintFixturePath = __DIR__ . str_replace('/', DIRECTORY_SEPARATOR, '/../fixtures/blueprint/test_mysql_basic.yaml');
     $result = $runConsole(['infer-data-schema', '--format=blueprint', '--blueprint-model=Model', '--save', $dataFixturePath]);
-
     expect($result['exitCode'])->toBe(0)
-        ->and($result['stdout'])->toContain('Blueprint file saved to ' . $expectedSavePath)
-        ->and(file_exists($expectedSavePath))->toBeTrue();
+        ->and($result['stdout'])->toContain('Blueprint file saved to ' . realpath($expectedSavePath))
+        ->and(file_exists(realpath($expectedSavePath)))->toBeTrue()
+        ->and(file_get_contents(realpath($expectedSavePath)))->toBe(file_get_contents($blueprintFixturePath));
 });

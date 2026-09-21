@@ -37,13 +37,13 @@ class BlueprintConfig
         array $resources = [],
         array $methods = [],
         bool $seeders = false,
-        BlueprintConfigView|string $view = BlueprintConfigView::Blade,
+        BlueprintConfigView|string|null $view = BlueprintConfigView::Blade,
     ) {
         $this->models = $this->resolveModels($models);
         $this->resources = $this->resolveResources($resources);
         $this->methods = $this->resolveMethods($methods);
         $this->seeders = $seeders;
-        $this->view = $this->resolveView($view);
+        $this->view = $this->resolveView($view ?? BlueprintConfigView::Blade);
     }
 
     public function addModel(BlueprintModel $model): void

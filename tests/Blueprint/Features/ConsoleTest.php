@@ -32,6 +32,13 @@ $runConsole = static function (array $argv, ?array $parserClasses = null): array
     ];
 };
 
+afterEach(function () {
+    $expectedSavePath = __DIR__ . str_replace('/', DIRECTORY_SEPARATOR, '/../../fixtures/data/model-blueprint.yaml');
+    if (file_exists(realpath($expectedSavePath))) {
+        unlink(realpath($expectedSavePath));
+    }
+});
+
 it('prints usage when no source argument is provided', function () use ($runConsole) {
     $result = $runConsole(['infer-data-schema']);
 

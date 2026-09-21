@@ -42,9 +42,20 @@ it('prints usage when no source argument is provided', function () use ($runCons
 
 it('outputs blueprint YAML file contents to the console if --save is not provided', function () use ($runConsole) {
     $dataFixturePath = __DIR__ . str_replace('/', DIRECTORY_SEPARATOR, '/../../fixtures/data/test_mysql.csv');
+    $blueprintFixturePath = __DIR__ . str_replace('/', DIRECTORY_SEPARATOR, '/../fixtures/blueprint/test_mysql_basic.yaml');
     $result = $runConsole(['infer-data-schema', '--format=blueprint', '--blueprint-model=Model', $dataFixturePath]);
 
-    print_r($result);
     expect($result['exitCode'])->toBe(0)
-        ->and($result['stdout'])->toContain('model: Model');
+        ->and($result['stdout'])->toContain(file_get_contents($blueprintFixturePath));
+});
+
+it('saves a blueprint YAML file to disk if --save is provided', function () use ($runConsole) {
+    $dataFixturePath = __DIR__ . str_replace('/', DIRECTORY_SEPARATOR, '/../../fixtures/data/test_mysql.csv');
+    $expectedSavePath = __DIR__ . str_replace('/', DIRECTORY_SEPARATOR, '/../../fixtures/data/blueprint.yaml');
+    $blueprintFixturePath = __DIR__ . str_replace('/', DIRECTORY_SEPARATOR, '/../fixtures/blueprint/test_mysql_basic.yaml');
+    $result = $runConsole(['infer-data-schema', '--format=blueprint', '--blueprint-model=Model', '--save', $dataFixturePath]);
+
+    expect($result['exitCode'])->toBe(0)
+        ->and($result['stdout'])->toContain('Blueprint file saved to ' . $expectedSavePath)
+        ->and(file_exists($expectedSavePath))->toBeTrue();
 });

@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace Tests\Features;
+
 use ZachWatkins\InferDataSchema\Console;
 
 $runConsole = static function (array $argv, ?array $parserClasses = null): array {

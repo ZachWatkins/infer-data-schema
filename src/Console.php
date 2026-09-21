@@ -197,23 +197,30 @@ Options:
             $source = $argument;
         }
 
-        if ($source === null || $currentWorkingDirectory === null) {
-            $this->writeUsage('Error: Source or current working directory not specified.');
-
-            return 1;
-        }
-
         if ($this->isHttpSource($source)) {
             $this->writeError(
-                'HttpParser requires programmatic PSR-18 client injection and is not '
-                    . 'supported directly from the CLI in this version.'
+                'HttpParser requires programmatic PSR-18 client injection and is not supported directly from the CLI in this version.'
             );
 
             return 1;
         }
 
+        if ($source === null) {
+            $this->writeUsage('Error: Source is not specified.');
+
+            return 1;
+        }
+
         if (!\str_starts_with($source, '/') && !\preg_match('/^[a-zA-Z]:\\\\/', $source)) {
-            $source = $currentWorkingDirectory . \DIRECTORY_SEPARATOR . $source;
+            if ($currentWorkingDirectory === null) {
+                $source = getcwd() . \DIRECTORY_SEPARATOR . $source;
+                if (\file_exists($source)) {
+                    $currentWorkingDirectory = getcwd();
+                } else {
+                    $this->writeError(sprintf('File path \'%s\' could not be found. Try specifying an absolute path or use the --cwd option.', $source));
+                    return 1;
+                }
+            }
         }
 
         $parserClass = $this->resolveParserClass($format, $source);

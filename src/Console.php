@@ -277,11 +277,11 @@ Options:
                 if (!$save) {
                     $this->writeToStream(
                         $this->stdout,
-                        $blueprintContent . \PHP_EOL
+                        $blueprintContent
                     );
                 } else {
                     $destinationPath = realpath($currentWorkingDirectory) . DIRECTORY_SEPARATOR . $model->tableNameSingular . '-blueprint.yaml';
-                    file_put_contents($destinationPath, $blueprintContent . \PHP_EOL);
+                    file_put_contents($destinationPath, $blueprintContent);
                     $this->writeToStream(
                         $this->stdout,
                         sprintf('Blueprint file saved to %s', $destinationPath)

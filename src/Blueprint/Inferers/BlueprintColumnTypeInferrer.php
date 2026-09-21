@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\Blueprint;
+namespace ZachWatkins\InferDataSchema\Blueprint\Inferers;
 
 use ZachWatkins\InferDataSchema\Support\ColumnStats;
 use ZachWatkins\InferDataSchema\Blueprint\Enums\ColumnModifier;

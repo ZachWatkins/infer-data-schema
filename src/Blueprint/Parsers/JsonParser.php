@@ -7,7 +7,7 @@ namespace ZachWatkins\InferDataSchema\Blueprint\Parsers;
 use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintColumnTypeInferrerInterface;
 use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintParserInterface;
 use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintColumnCollectionInterface;
-use ZachWatkins\InferDataSchema\Blueprint\BlueprintColumnTypeInferrer;
+use ZachWatkins\InferDataSchema\Blueprint\Inferers\BlueprintColumnTypeInferrer;
 
 use function Flow\ETL\Adapter\JSON\from_json;
 use function Flow\ETL\DSL\data_frame;

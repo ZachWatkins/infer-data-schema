@@ -31,10 +31,18 @@
     "scripts": {
         "test": "pest",
         "lint": "phpcs",
-        "skill:install": [
+        "build": [
             "composer install --no-dev",
-            "@php install-skill.php",
-            "composer install"
+            "@php -d phar.readonly=0 scripts/build-phar.php",
+            "composer install",
+            "phpacker build"
+        ],
+        "install:skill": [
+            "composer install --no-dev",
+            "@php -d phar.readonly=0 scripts/build-phar.php",
+            "composer install",
+            "phpacker build",
+            "@php scripts/install-skill.php"
         ]
     },
     "config": {

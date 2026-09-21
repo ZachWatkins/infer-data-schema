@@ -1,0 +1,6 @@
+{
+    "src": "./.phar/infer-data-schema.phar",
+    "dest": "./build",
+    "php": "8.5",
+    "platform": "all"
+}

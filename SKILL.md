@@ -1,25 +1,23 @@
 ---
 name: infer-laravel-blueprint
-description: "Use when: generating a Laravel Blueprint YAML file from a CSV or JSON dataset, turning a plain-language request into a valid php index.php command, and asking for missing CLI options before running the app for the current project workspace."
+description: "Use when: generating a Laravel Blueprint YAML file from a JSON, CSV, XLSX, or XML dataset, turning a plain-language request into a valid `infer-laravel-blueprint` CLI tool command, and asking for missing CLI options before running it for the current project workspace."
 ---
 
 # Laravel Blueprint Generator
 
-ONLY READ FILES ~/.copilot/skills/infer-laravel-blueprint/src/Console.php and ~/.copilot/skills/infer-laravel-blueprint/SKILL.md.
-ONLY EXECUTE the `php` CLI tool. DO NOT use python, composer, or any other CLI tool.
-DO NOT READ data files.
-DO NOT WRITE OR MODIFY any files yourself.
+ONLY EXECUTE the `./infer-laravel-blueprint` CLI tool. DO NOT use python, composer, or any other CLI tool.
+DO NOT WRITE OR MODIFY any files yourself when using this skill.
 DO NOT search for files.
 The project workspace is the VS Code workspace folder where the user is running the commands.
 
 ## Context and Scope
 
-You are operating as a global skill. You must ground all of your responses, logic, and generation in the context of the user's active, open VS Code workspace directory. You will invoke the PHP CLI tool as specified in the command template.
+You are operating as a global skill. You must ground all of your responses, logic, and generation in the context of the user's active, open VS Code workspace directory. You will invoke the `./infer-laravel-blueprint` CLI tool as specified in the command template.
 
 ## Command Template
 
 ```bash
-index.php [--db=sqlite|mysql|sqlserver] [--cwd=<current-working-directory>] [--dry-run] [--format=sql,blueprint] [--blueprint-model=<name>] [--blueprint-seeders] [--blueprint-view=blade|inertia] [--blueprint-resource=web,api,index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy] [--blueprint-controller-methods=index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy,<custom>] [--save] [--help] <path-or-url>
+infer-laravel-blueprint [--cwd=<current-working-directory>] [--db=sqlite|mysql|sqlserver] [--format=sql,blueprint] [--blueprint-model=<name>] [--blueprint-view=blade|inertia] [--blueprint-resource=web,api,index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy] [--blueprint-controller-methods=index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy,<custom>] [--blueprint-seeders] [--save] [--dry-run] [--help] <path-or-url>
 ```
 
 ## Pre-Execution Steps
@@ -27,17 +25,17 @@ index.php [--db=sqlite|mysql|sqlserver] [--cwd=<current-working-directory>] [--d
 Before performing the primary task, you must:
 
 1. Get the root directory of the open project workspace to use as the fully qualified path.
-2. Ensure the PHP script's CLI parameters only read files from and save files to the open VS Code workspace folder.
+2. Ensure the `./infer-laravel-blueprint` CLI parameters only read files from and save files to the open VS Code workspace folder.
 
 ## Purpose
 
-Use the PHP CLI in this repository to transform a CSV or JSON dataset into a Laravel Blueprint YAML file. The skill converts a natural-language request into the correct command, asks for any missing CLI options, and verifies the generated output.
+Use the `./infer-laravel-blueprint` CLI tool in this repository to transform a CSV or JSON dataset into a Laravel Blueprint YAML file. The skill converts a natural-language request into the correct command, asks for any missing CLI options, and verifies the generated output.
 
 ## File Access Boundaries
 
-- Only read the CLI contract in `Console.php`. Do not read any other PHP file and do not read any data source provided to the script.
-- If the task requires behavior not described in `Console.php`, inform the user of this limitation and any error message thrown.
-- Treat `Console.php` as the single source of truth for supported flags, arguments, and validation rules.
+- Only read the CLI contract in `./infer-laravel-blueprint`. Do not read any other PHP file and do not read any data source provided to the script.
+- If the task requires behavior not described in `./infer-laravel-blueprint`, inform the user of this limitation and any error message thrown.
+- Treat `./infer-laravel-blueprint` as the single source of truth for supported flags, arguments, and validation rules.
 
 ## Required Inputs
 
@@ -59,7 +57,7 @@ If the user does not provide a value for an option, ask a short follow-up questi
    - The user should not need to provide the --cwd option explicitly; use the project workspace as the default value.
 
 3. Build the command.
-   - Use the repo CLI entry point: php index.php
+   - Use the CLI entry point: `./infer-laravel-blueprint`
    - Add only the flags that the user provided or that you confirmed.
    - Preserve quoting for file paths and URLs.
 
@@ -75,7 +73,7 @@ If the user does not provide a value for an option, ask a short follow-up questi
 
 ## Quality Bar
 
-- Use the actual CLI contract in `Console.php` and the CLI entry point `index.php`.
+- Use the actual CLI contract in `./infer-laravel-blueprint`.
 - Ask for any missing required option before running the command.
 - Prefer a short confirmation step when the request is ambiguous.
 - Do not invent undocumented flags.

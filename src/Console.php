@@ -197,6 +197,12 @@ Options:
             $source = $argument;
         }
 
+        if ($source === null) {
+            $this->writeUsage('Error: Source is not specified.');
+
+            return 1;
+        }
+
         if ($this->isHttpSource($source)) {
             $this->writeError(
                 'HttpParser requires programmatic PSR-18 client injection and is not supported directly from the CLI in this version.'
@@ -205,22 +211,28 @@ Options:
             return 1;
         }
 
-        if ($source === null) {
-            $this->writeUsage('Error: Source is not specified.');
-
-            return 1;
-        }
-
         if (!\str_starts_with($source, '/') && !\preg_match('/^[a-zA-Z]:\\\\/', $source)) {
-            if ($currentWorkingDirectory === null) {
-                $source = getcwd() . \DIRECTORY_SEPARATOR . $source;
-                if (\file_exists($source)) {
-                    $currentWorkingDirectory = getcwd();
+            if (!file_exists($source)) {
+                if (is_string($currentWorkingDirectory) && !empty($currentWorkingDirectory)) {
+                    $resolved = $currentWorkingDirectory . \DIRECTORY_SEPARATOR . $source;
+                    if (file_exists($resolved)) {
+                        $source = $resolved;
+                    } else {
+                        $this->writeError(sprintf('File path \'%s\' could not be found relative to the current working directory at %s. Provide an absolute path or use the --cwd option.', $source, $currentWorkingDirectory));
+                        return 1;
+                    }
                 } else {
-                    $this->writeError(sprintf('File path \'%s\' could not be found. Try specifying an absolute path or use the --cwd option.', $source));
+                    $this->writeError(sprintf('File path \'%s\' could not be found relative to the current working directory at %s. Provide an absolute path or use the --cwd option.', $source, getcwd()));
                     return 1;
                 }
+            } elseif (!is_string($currentWorkingDirectory) || empty($currentWorkingDirectory)) {
+                $currentWorkingDirectory = \dirname($source);
             }
+        } elseif (!file_exists($source)) {
+            $this->writeError(sprintf('File path \'%s\' could not be found.', $source));
+            return 1;
+        } elseif (!is_string($currentWorkingDirectory) || empty($currentWorkingDirectory)) {
+            $currentWorkingDirectory = \dirname($source);
         }
 
         $parserClass = $this->resolveParserClass($format, $source);
@@ -253,21 +265,26 @@ Options:
 
             if (!$dryRun) {
                 $lexer = new BlueprintFileLexer();
+                $blueprintContent = $lexer->toString(
+                    new BlueprintConfig(
+                        models: [$model],
+                        resources: $blueprintOptions['resources'],
+                        methods: $blueprintOptions['methods'],
+                        seeders: $blueprintOptions['seeders'],
+                        view: $blueprintOptions['view'],
+                    )
+                );
                 if (!$save) {
-                    if ($blueprintOptions['seeders']) {
-                        $blueprintOptions['seeders'] = [$model->name];
-                    }
                     $this->writeToStream(
                         $this->stdout,
-                        $lexer->toString(
-                            new BlueprintConfig(
-                                models: [$model],
-                                resources: $blueprintOptions['resources'],
-                                methods: $blueprintOptions['methods'],
-                                seeders: $blueprintOptions['seeders'],
-                                view: $blueprintOptions['view'],
-                            )
-                        )
+                        $blueprintContent . \PHP_EOL
+                    );
+                } else {
+                    $destinationPath = realpath($currentWorkingDirectory) . DIRECTORY_SEPARATOR . $model->tableNameSingular . '-blueprint.yaml';
+                    file_put_contents($destinationPath, $blueprintContent . \PHP_EOL);
+                    $this->writeToStream(
+                        $this->stdout,
+                        sprintf('Blueprint file saved to %s', $destinationPath)
                     );
                 }
             }

@@ -1,0 +1,47 @@
+<?php
+
+declare(strict_types=1);
+
+namespace ZachWatkins\InferDataSchema\Blueprint\Models;
+
+use Doctrine\Inflector\Inflector;
+use Doctrine\Inflector\InflectorFactory;
+
+/**
+ * @property string $name
+ * @property-read string $tableNameSingular
+ * @property-read string $tableNamePlural
+ */
+class BlueprintModel
+{
+    protected Inflector $inflector;
+    public readonly BlueprintColumnCollection $columns;
+    public function __construct(
+        public string $name,
+        BlueprintColumnCollection $columns
+    ) {
+        $this->columns = $columns;
+        $this->inflector = InflectorFactory::create()->build();
+    }
+
+    /**
+     * Resolve table name accessors through property syntax.
+     */
+    public function __get(string $name): mixed
+    {
+        return match ($name) {
+            'tableNameSingular' => $this->inflector->tableize($this->name),
+            'tableNamePlural' => $this->inflector->pluralize($this->inflector->tableize($this->name)),
+            default => throw new \OutOfBoundsException("Undefined property: {$name}"),
+        };
+    }
+
+    public function columnNames(): array
+    {
+        $names = [];
+        foreach ($this->columns as $column) {
+            $names[] = $column->getName();
+        }
+        return $names;
+    }
+}

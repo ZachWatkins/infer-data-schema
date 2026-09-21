@@ -33,9 +33,9 @@ $runConsole = static function (array $argv, ?array $parserClasses = null): array
 };
 
 afterEach(function () {
-    $expectedSavePath = __DIR__ . str_replace('/', DIRECTORY_SEPARATOR, '/../../fixtures/data/model-blueprint.yaml');
-    if (file_exists(realpath($expectedSavePath))) {
-        unlink(realpath($expectedSavePath));
+    $expectedSavePath = realpath(__DIR__ . str_replace('/', DIRECTORY_SEPARATOR, '/../../fixtures/data/model-blueprint.yaml'));
+    if ($expectedSavePath && file_exists($expectedSavePath)) {
+        unlink($expectedSavePath);
     }
 });
 

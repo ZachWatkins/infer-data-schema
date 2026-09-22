@@ -4,7 +4,7 @@
  * Generate test XML file.
  */
 
-namespace Tests\Fixtures\Build\File;
+namespace Tests\SQL\Fixtures\Build\File;
 
 class TestXmlFileGenerator
 {

@@ -4,7 +4,7 @@
  * Generate test CSV file.
  */
 
-namespace Tests\Fixtures\Build\File;
+namespace Tests\SQL\Fixtures\Build\File;
 
 class TestCsvFileGenerator
 {

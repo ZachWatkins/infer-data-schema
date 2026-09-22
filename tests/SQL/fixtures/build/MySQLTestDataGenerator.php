@@ -4,7 +4,7 @@
  * Generates the test data set.
  */
 
-namespace Tests\Fixtures\Build;
+namespace Tests\SQL\Fixtures\Build;
 
 use DateTime;
 use Random\Randomizer;

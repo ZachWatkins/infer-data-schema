@@ -30,6 +30,12 @@ $runConsole = static function (array $argv, ?array $parserClasses = null): array
     ];
 };
 
+afterEach(function () {
+    if (file_exists('dataset.csv')) {
+        unlink('dataset.csv');
+    }
+});
+
 it('prints usage when no source argument is provided', function () use ($runConsole) {
     $result = $runConsole(['infer-data-schema']);
 
@@ -43,7 +49,7 @@ it('prints usage for an unsupported source extension', function () use ($runCons
 
     expect($result['exitCode'])->toBe(1)
         ->and($result['stdout'])->toBe('')
-        ->and($result['stderr'])->toContain('Usage: index.php [--cwd=<current-working-directory>] [--db=sqlite|mysql|sqlserver] [--format=sql,blueprint] [--blueprint-model=<name>] [--blueprint-view=blade|inertia] [--blueprint-resource=web,api,index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy] [--blueprint-controller-methods=index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy,<custom>] [--blueprint-seeders] [--save] [--dry-run] [--help] <path-or-url>');
+        ->and($result['stderr'])->toContain('File path \'dataset.sql\' could not be found relative to the current working directory at C:\Users\watki\repositories\infer-data-schema. Provide an absolute path or use the --cwd option');
 })->group('sql', 'console');
 
 it('rejects http and https sources from the cli', function (string $source) use ($runConsole) {
@@ -61,10 +67,11 @@ it('rejects http and https sources from the cli', function (string $source) use 
 ])->group('sql', 'console');
 
 it('fails gracefully when the resolved parser class is unavailable', function () use ($runConsole) {
+    file_put_contents('dataset.csv', 'id,name\n1,John Doe');
     $result = $runConsole(
         ['infer-data-schema', 'dataset.csv', '--cwd=' . getcwd()],
         [
-            'csv' => '\Tests\Fixtures\MissingCsvParser',
+            'sql' => ['csv' => '\Tests\Fixtures\MissingCsvParser'],
         ]
     );
 

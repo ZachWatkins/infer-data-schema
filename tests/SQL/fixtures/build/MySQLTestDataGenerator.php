@@ -28,8 +28,6 @@ class MySQLTestDataGenerator
     public function generate(int $length = 10): array
     {
         $columns = [
-            'bit' => $this->generateBitColumn($length),
-            'bit_nullable' => $this->generateBitColumn($length, nullable: true),
             'tinyint' => $this->generateTinyIntColumn($length),
             'tinyint_nullable' => $this->generateTinyIntColumn($length, nullable: true),
             'tinyint_unique' => $this->generateTinyIntColumn($length, unique: true),

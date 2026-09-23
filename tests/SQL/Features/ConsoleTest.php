@@ -36,7 +36,7 @@ it('prints usage when no source argument is provided', function () use ($runCons
     expect($result['exitCode'])->toBe(1)
         ->and($result['stdout'])->toBe('')
         ->and($result['stderr'])->toContain('Usage: index.php [--cwd=<current-working-directory>] [--db=sqlite|mysql|sqlserver] [--format=sql,blueprint] [--blueprint-model=<name>] [--blueprint-view=blade|inertia] [--blueprint-resource=web,api,index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy] [--blueprint-controller-methods=index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy,<custom>] [--blueprint-seeders] [--save] [--dry-run] [--help] <path-or-url>');
-});
+})->group('sql', 'console');
 
 it('prints usage for an unsupported source extension', function () use ($runConsole) {
     $result = $runConsole(['infer-data-schema', 'dataset.sql']);
@@ -44,7 +44,7 @@ it('prints usage for an unsupported source extension', function () use ($runCons
     expect($result['exitCode'])->toBe(1)
         ->and($result['stdout'])->toBe('')
         ->and($result['stderr'])->toContain('Usage: index.php [--cwd=<current-working-directory>] [--db=sqlite|mysql|sqlserver] [--format=sql,blueprint] [--blueprint-model=<name>] [--blueprint-view=blade|inertia] [--blueprint-resource=web,api,index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy] [--blueprint-controller-methods=index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy,<custom>] [--blueprint-seeders] [--save] [--dry-run] [--help] <path-or-url>');
-});
+})->group('sql', 'console');
 
 it('rejects http and https sources from the cli', function (string $source) use ($runConsole) {
     $result = $runConsole(['infer-data-schema', $source, '--cwd=' . getcwd()]);
@@ -58,7 +58,7 @@ it('rejects http and https sources from the cli', function (string $source) use 
 })->with([
     'http source' => 'http://example.com/data.csv',
     'https source' => 'https://example.com/data.csv',
-]);
+])->group('sql', 'console');
 
 it('fails gracefully when the resolved parser class is unavailable', function () use ($runConsole) {
     $result = $runConsole(
@@ -71,4 +71,4 @@ it('fails gracefully when the resolved parser class is unavailable', function ()
     expect($result['exitCode'])->toBe(1)
         ->and($result['stdout'])->toBe('')
         ->and($result['stderr'])->toContain('Parser \Tests\Fixtures\MissingCsvParser is not available.');
-});
+})->group('sql', 'console');

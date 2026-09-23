@@ -32,4 +32,4 @@ it('infers the expected MySQL schema from CSV basic fixture', function () {
     $expected = require dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/schema/mysql.php');
 
     expect($normalizeColumns($actual))->toBe($normalizeColumns($expected));
-});
+})->group('sql');

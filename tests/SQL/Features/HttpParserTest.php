@@ -50,7 +50,7 @@ it('parses a bare top-level json array response', function () {
             \array_map(static fn(ColumnModifier $modifier): string => $modifier->value, $expectedColumn->getModifiers())
         );
     }
-});
+})->group('sql');
 
 it('parses a wrapped json array response', function () {
     $expected = require dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/schema/mysql.php');
@@ -93,4 +93,4 @@ it('parses a wrapped json array response', function () {
             \array_map(static fn(ColumnModifier $modifier): string => $modifier->value, $expectedColumn->getModifiers())
         );
     }
-});
+})->group('sql');

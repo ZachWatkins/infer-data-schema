@@ -32,7 +32,7 @@ it('parses flat xml rows into an inferred mysql schema', function () {
             \array_map(static fn(ColumnModifier $modifier): string => $modifier->value, $expectedColumn->getModifiers())
         );
     }
-});
+})->group('sql');
 
 it('parses nested xml rows when a node path is configured', function () {
     // Mark the test as skipped since this configuration isn't an option in the current CLI.
@@ -68,4 +68,4 @@ it('parses nested xml rows when a node path is configured', function () {
             \array_map(static fn(ColumnModifier $modifier): string => $modifier->value, $expectedColumn->getModifiers())
         );
     }
-});
+})->group('sql');

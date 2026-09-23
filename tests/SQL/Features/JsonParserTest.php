@@ -38,4 +38,4 @@ it('infers the expected MySQL schema from JSON basic fixture', function () {
     );
 
     expect($normalizedActual)->toBe($normalizedExpected);
-});
+})->group('sql');

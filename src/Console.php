@@ -88,8 +88,10 @@ Options:
 
         $runningPhar = \Phar::running(false);
         if ($runningPhar !== '') {
-            $this->filename = basename($runningPhar);
-        } elseif (isset($_SERVER['argv'][0]) && !empty($_SERVER['argv'][0])) {
+            if ('infer-laravel-blueprint' === $runningPhar) {
+                $this->filename = basename($runningPhar);
+            }
+        } elseif (isset($_SERVER['argv'][0]) && !empty($_SERVER['argv'][0]) && 'infer-laravel-blueprint' === basename($_SERVER['argv'][0])) {
             $this->filename = basename($_SERVER['argv'][0]);
         }
     }

@@ -1,15 +1,15 @@
 <?php
 
-use Tests\Fixtures\Build\MySQLTestDataGenerator;
-use Tests\Fixtures\Build\SQLServerTestDataGenerator;
-use Tests\Fixtures\Build\TestSchemaGenerator;
-use Tests\Fixtures\Build\File\TestCsvFileGenerator;
-use Tests\Fixtures\Build\File\TestHttpFileGenerator;
-use Tests\Fixtures\Build\File\TestJsonFileGenerator;
-use Tests\Fixtures\Build\File\TestXlsxFileGenerator;
-use Tests\Fixtures\Build\File\TestXmlFileGenerator;
+use Tests\SQL\Fixtures\Build\MySQLTestDataGenerator;
+use Tests\SQL\Fixtures\Build\SQLServerTestDataGenerator;
+use Tests\SQL\Fixtures\Build\TestSchemaGenerator;
+use Tests\SQL\Fixtures\Build\File\TestCsvFileGenerator;
+use Tests\SQL\Fixtures\Build\File\TestHttpFileGenerator;
+use Tests\SQL\Fixtures\Build\File\TestJsonFileGenerator;
+use Tests\SQL\Fixtures\Build\File\TestXlsxFileGenerator;
+use Tests\SQL\Fixtures\Build\File\TestXmlFileGenerator;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../../../vendor/autoload.php';
 
 $generator = new MySQLTestDataGenerator();
 $data = $generator->generate(10);

@@ -43,4 +43,4 @@ it('parses an excel workbook into an inferred mysql schema', function () {
             "Mismatch in column modifiers for column: {$actualColumn->getName()}"
         );
     }
-});
+})->group('sql');

@@ -10,29 +10,26 @@ jobs:
   lint:
     name: Code Style (PHP 8.5)
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.head_ref }}
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.5
           coverage: none
+          tools: pint
 
-      - name: Validate composer.json and composer.lock
-        run: composer validate --strict
+      - name: Run pint
+        run: pint
 
-      - name: Cache Composer dependencies
-        uses: actions/cache@v4
+      - name: Commit linted files
+        uses: stefanzweifel/git-auto-commit-action@v6
         with:
-          path: ~/.composer/cache
-          key: php-8.5-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: php-8.5-composer-
-
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress
-
-      - name: Run lint (PHP_CodeSniffer, PSR-12)
-        run: composer run lint
+          commit_message: "chore: auto-commit linted files"

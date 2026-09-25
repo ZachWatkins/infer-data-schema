@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   audit:
-    name: Composer Validate and Audit
+    name: Composer Validate and Audit (PHP 8.4)
     runs-on: ubuntu-latest
 
     steps:
@@ -22,7 +22,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.5
+          php-version: 8.4
           coverage: none
 
       - name: Validate composer.json and composer.lock

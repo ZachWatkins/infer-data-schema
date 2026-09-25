@@ -12,21 +12,21 @@ concurrency:
 
 jobs:
   test:
-    name: Test (PHP 8.3)
+    name: Test (PHP 8.5)
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.3
+          php-version: 8.5
           coverage: none
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress
+        run: composer install --no-interaction --prefer-dist
 
       - name: Run tests (Pest)
         run: composer run test

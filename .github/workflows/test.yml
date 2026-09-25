@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   test:
-    name: Test (PHP 8.5)
+    name: Test (PHP 8.4)
     runs-on: ubuntu-latest
 
     steps:
@@ -22,11 +22,12 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.5
+          php-version: 8.4
           coverage: none
+          tools: pest
 
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
 
       - name: Run tests (Pest)
-        run: composer run test
+        run: pest

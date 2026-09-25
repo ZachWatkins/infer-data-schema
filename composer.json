@@ -5,7 +5,7 @@
     "license": "MIT",
     "minimum-stability": "stable",
     "require": {
-        "php": "^8.3",
+        "php": "^8.4",
         "doctrine/inflector": "^2.1",
         "flow-php/etl": "^0.43.0",
         "flow-php/etl-adapter-csv": "^0.43.0",

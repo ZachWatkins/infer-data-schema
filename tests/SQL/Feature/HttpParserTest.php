@@ -10,15 +10,16 @@ use ZachWatkins\InferDataSchema\SQL\Enums\ColumnModifier;
 use ZachWatkins\InferDataSchema\SQL\Parsers\HttpParser;
 
 it('parses a bare top-level json array response', function () {
-    $expected = require dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/schema/mysql.php');
+    $expected = require dirname(__DIR__).str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/schema/mysql.php');
 
-    $client = new class implements ClientInterface {
+    $client = new class implements ClientInterface
+    {
         public ?RequestInterface $lastRequest = null;
 
         public function sendRequest(RequestInterface $request): ResponseInterface
         {
             $this->lastRequest = $request;
-            $contents = file_get_contents(__DIR__ . '/../fixtures/data/test_mysql.http');
+            $contents = file_get_contents(__DIR__.'/../fixtures/data/test_mysql.http');
 
             return new Response(
                 200,
@@ -45,23 +46,24 @@ it('parses a bare top-level json array response', function () {
         expect($actualColumn->getName())->toBe($expectedColumn->getName());
         expect($actualColumn->getType())->toBe($expectedColumn->getType());
         expect(
-            \array_map(static fn(ColumnModifier $modifier): string => $modifier->value, $actualColumn->getModifiers())
+            \array_map(static fn (ColumnModifier $modifier): string => $modifier->value, $actualColumn->getModifiers())
         )->toBe(
-            \array_map(static fn(ColumnModifier $modifier): string => $modifier->value, $expectedColumn->getModifiers())
+            \array_map(static fn (ColumnModifier $modifier): string => $modifier->value, $expectedColumn->getModifiers())
         );
     }
 })->group('sql');
 
 it('parses a wrapped json array response', function () {
-    $expected = require dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/schema/mysql.php');
+    $expected = require dirname(__DIR__).str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/schema/mysql.php');
 
-    $client = new class implements ClientInterface {
+    $client = new class implements ClientInterface
+    {
         public ?RequestInterface $lastRequest = null;
 
         public function sendRequest(RequestInterface $request): ResponseInterface
         {
             $this->lastRequest = $request;
-            $contents = file_get_contents(__DIR__ . '/../fixtures/data/test_mysql.http');
+            $contents = file_get_contents(__DIR__.'/../fixtures/data/test_mysql.http');
 
             return new Response(
                 200,
@@ -88,9 +90,9 @@ it('parses a wrapped json array response', function () {
         expect($actualColumn->getName())->toBe($expectedColumn->getName());
         expect($actualColumn->getType())->toBe($expectedColumn->getType());
         expect(
-            \array_map(static fn(ColumnModifier $modifier): string => $modifier->value, $actualColumn->getModifiers())
+            \array_map(static fn (ColumnModifier $modifier): string => $modifier->value, $actualColumn->getModifiers())
         )->toBe(
-            \array_map(static fn(ColumnModifier $modifier): string => $modifier->value, $expectedColumn->getModifiers())
+            \array_map(static fn (ColumnModifier $modifier): string => $modifier->value, $expectedColumn->getModifiers())
         );
     }
 })->group('sql');

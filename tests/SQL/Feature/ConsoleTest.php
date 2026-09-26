@@ -9,7 +9,7 @@ $runConsole = static function (array $argv, ?array $parserClasses = null): array
     $stderr = \fopen('php://temp', 'w+');
 
     if ($stdout === false || $stderr === false) {
-        throw new \RuntimeException('Unable to create in-memory output streams.');
+        throw new RuntimeException('Unable to create in-memory output streams.');
     }
 
     $exitCode = (new Console($stdout, $stderr, $parserClasses))->run($argv);
@@ -53,13 +53,13 @@ it('prints usage for an unsupported source extension', function () use ($runCons
 })->group('sql', 'console');
 
 it('rejects http and https sources from the cli', function (string $source) use ($runConsole) {
-    $result = $runConsole(['infer-data-schema', $source, '--cwd=' . getcwd()]);
+    $result = $runConsole(['infer-data-schema', $source, '--cwd='.getcwd()]);
 
     expect($result['exitCode'])->toBe(1)
         ->and($result['stdout'])->toBe('')
         ->and($result['stderr'])->toContain(
             'HttpParser requires programmatic PSR-18 client injection and is not '
-                . 'supported directly from the CLI in this version.'
+                .'supported directly from the CLI in this version.'
         );
 })->with([
     'http source' => 'http://example.com/data.csv',
@@ -69,7 +69,7 @@ it('rejects http and https sources from the cli', function (string $source) use 
 it('fails gracefully when the resolved parser class is unavailable', function () use ($runConsole) {
     file_put_contents('dataset.csv', 'id,name\n1,John Doe');
     $result = $runConsole(
-        ['infer-data-schema', 'dataset.csv', '--cwd=' . getcwd()],
+        ['infer-data-schema', 'dataset.csv', '--cwd='.getcwd()],
         [
             'sql' => ['csv' => '\Tests\Fixtures\MissingCsvParser'],
         ]

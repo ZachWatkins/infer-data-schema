@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace ZachWatkins\InferDataSchema\SQL\Parsers;
 
-use ZachWatkins\InferDataSchema\SQL\ColumnTypeInferrer;
 use ZachWatkins\InferDataSchema\SQL\Enums\DatabaseType;
+use ZachWatkins\InferDataSchema\SQL\Inferrers\ColumnTypeInferrer;
 use ZachWatkins\InferDataSchema\SQL\Interfaces\ColumnTypeInferrerInterface;
 use ZachWatkins\InferDataSchema\SQL\Interfaces\ParserInterface;
 use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnCollectionInterface;

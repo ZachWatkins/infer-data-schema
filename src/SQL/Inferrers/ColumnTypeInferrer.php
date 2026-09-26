@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\SQL;
+namespace ZachWatkins\InferDataSchema\SQL\Inferrers;
 
 use ZachWatkins\InferDataSchema\Parsers;
 use ZachWatkins\InferDataSchema\SQL\Enums\ColumnModifier;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\Blueprint\Inferers;
+namespace ZachWatkins\InferDataSchema\Blueprint\Inferrers;
 
 use ZachWatkins\InferDataSchema\Blueprint\Enums\ColumnModifier;
 use ZachWatkins\InferDataSchema\Blueprint\Enums\LaravelColumnType;

@@ -1,7 +1,5 @@
 models:
   Model:
-    bit: tinyInteger unsigned
-    bit_nullable: tinyInteger nullable unsigned
     tinyint: tinyInteger unsigned
     tinyint_nullable: tinyInteger nullable unsigned
     tinyint_unique: tinyInteger unique unsigned

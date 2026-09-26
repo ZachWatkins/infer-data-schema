@@ -7,7 +7,7 @@ namespace ZachWatkins\InferDataSchema\Blueprint\Parsers;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
-use ZachWatkins\InferDataSchema\Blueprint\Inferers\BlueprintColumnTypeInferrer;
+use ZachWatkins\InferDataSchema\Blueprint\Inferrers\BlueprintColumnTypeInferrer;
 use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintColumnCollectionInterface;
 use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintColumnTypeInferrerInterface;
 use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintParserInterface;

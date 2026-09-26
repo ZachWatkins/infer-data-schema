@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use ZachWatkins\InferDataSchema\SQL\Inferrers\ColumnTypeInferrer;
 use ZachWatkins\InferDataSchema\SQL\Enums\DatabaseType;
+use ZachWatkins\InferDataSchema\SQL\Inferrers\ColumnTypeInferrer;
 use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnCollectionInterface;
 
 /*

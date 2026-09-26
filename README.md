@@ -4,51 +4,11 @@
 
 [![Test](https://github.com/ZachWatkins/infer-data-schema/actions/workflows/test.yml/badge.svg)](https://github.com/ZachWatkins/infer-data-schema/actions/workflows/test.yml) [![Audit](https://github.com/ZachWatkins/infer-data-schema/actions/workflows/audit.yml/badge.svg)](https://github.com/ZachWatkins/infer-data-schema/actions/workflows/audit.yml)
 
-This PHP library infers the SQL column schema of a data source and can either provide those details or use them to generate a Laravel Shift Blueprint YAML file, which can then be used to scaffold the corresponding Laravel files to implement that data model into an existing application.
-
-It reads a given data source, evaluates all values of all columns for the safest possible SQL column type and modifiers (unique, nullable, signed or unsigned, auto-incrementing), and generates a corresponding SQLColumnCollection object.
-
-## Folder structure
-
-1. `.github/` - Contains GitHub-specific configuration files, such as workflows for CI/CD.  
-   - `workflows/` - Contains the GitHub Actions workflow files for CI/CD.  
-   - `workflows/lint.yml` - The GitHub Actions workflow file for running code style checks.  
-   - `workflows/build.yml` - The GitHub Actions workflow file for building and running the binary using a list of PHP versions.  
-   - `workflows/test.yml` - The GitHub Actions workflow file for running tests using a list of PHP versions.  
-2. `documentation/` - Contains the documentation files for the library, including ADRs and other relevant documentation.
-   - `documentation/adrs/` - Contains the Architecture Decision Records (ADRs) for the library.
-3. `src/` - Contains the main PHP source code.  
-   - `src/SQL/` - Contains the main SQL-related source code for the library.
-     - `src/SQL/Interfaces` - Contains the interface definitions for the library's class files.  
-     - `src/SQL/Enums` - Contains the SQL enum definitions for the library.  
-       - `src/SQL/Enums/DatabaseType.php` - The enum definition for supported database types.  
-       - `src/SQL/Enums/ColumnModifier.php` - The enum definition for SQL column modifiers (unique, nullable, signed or unsigned, auto-incrementing).  
-       - `src/SQL/Enums/SQLiteColumnType.php` - The enum definition for SQLite column types.  
-       - `src/SQL/Enums/MySQLColumnType.php` - The enum definition for MySQL column types.  
-       - `src/SQL/Enums/SQLServerColumnType.php` - The enum definition for SQL Server column types.  
-     - `src/SQL/Parsers` - Contains the data source parser classes for the SQL inference library features.  
-       - `src/SQL/Parsers/CsvParser.php` - The CSV data source parser class.  
-       - `src/SQL/Parsers/JsonParser.php` - The JSON data source parser class.  
-       - `src/SQL/Parsers/XmlParser.php` - The XML data source parser class.  
-       - `src/SQL/Parsers/ExcelParser.php` - The Excel data source parser class.  
-       - `src/SQL/Parsers/HttpParser.php` - The HTTP data source parser class.  
-     - `src/SQL/Models` - Contains the model classes for the library.  
-       - `src/SQL/Models/SQLColumn.php` - The model class representing a database column.  
-       - `src/SQL/Models/SQLColumnCollection.php` - The model class representing a collection of database columns.  
-   - `src/Console.php` - The console class for the library.  
-3. `tests/` - Contains the test cases for the library.  
-   - `tests/fixtures/` - Contains test fixture files used for testing the library's parsers and schema inference logic.  
-   - `tests/fixtures/data/` - Contains the actual data files used as test fixtures for the library's parsers and schema inference logic.
-   - `tests/fixtures/schema/` - Contains the expected schema objects corresponding to the data files, used for validating the library's schema inference logic.
-   - `tests/Features/` - Contains the feature test cases for the library, typically testing the integration of parsers and schema inference logic.
-4. `AGENTS.md` - The file containing information for coding agents when generating code for the library.
-5. `composer.json` - The Composer configuration file for managing dependencies and autoloading.
-6. `README.md` - The readme file, containing an overview and documentation for the library.
+This PHP library performs limited inference of the SQL column schema for a given data source and can either provide those details or a [Laravel Shift Blueprint](https://blueprint.laravelshift.com/) YAML file, which can then be used to scaffold the relevant [Laravel](https://laravel.com/) PHP framework files which implement that data model into an existing application.
 
 ## Example usage
 
 ```php
-require 'vendor/autoload.php';
 
 use ZachWatkins\InferDataSchema\SQL\Parsers\CsvParser;
 
@@ -84,6 +44,32 @@ var_dump($sqlColumnCollection);
 foreach ($sqlColumnCollection->getColumns() as $column) {
     echo $column->getName() . ': ' . $column->getType() . ' ' . implode(', ', $column->getModifiers()) . PHP_EOL;
 }
+```
+
+## Running from the CLI
+
+When running from a source checkout, pass a supported data file to `index.php`. SQL schema details are printed to the console:
+
+```sh
+php index.php --db=mysql path/to/users.csv
+```
+
+The CLI supports CSV, JSON, XML, and Excel files (`.xlsx`, `.xls`, and `.ods`). Select Laravel Shift Blueprint output with `--format=blueprint`; set the model name as needed:
+
+```sh
+php index.php --format=blueprint --blueprint-model=User path/to/users.json
+```
+
+Blueprint YAML is printed to the console by default. Add `--save` to write it beside the input file instead. For example, this saves a YAML file based on the inferred model name:
+
+```sh
+php index.php --format=blueprint --blueprint-model=User --save path/to/users.csv
+```
+
+To see all available options, run:
+
+```sh
+php index.php --help
 ```
 
 ## Dependencies

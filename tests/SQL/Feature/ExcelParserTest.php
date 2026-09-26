@@ -7,12 +7,12 @@ use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnInterface;
 use ZachWatkins\InferDataSchema\SQL\Parsers\ExcelParser;
 
 it('parses an excel workbook into an inferred mysql schema', function () {
-    $parser = new ExcelParser();
+    $parser = new ExcelParser;
     $actual = $parser->parse(
-        dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/data/test_mysql.xlsx'),
+        dirname(__DIR__).str_replace('/', DIRECTORY_SEPARATOR, '/fixtures/data/test_mysql.xlsx'),
         'mysql',
     );
-    $expected = require dirname(__DIR__) . str_replace(
+    $expected = require dirname(__DIR__).str_replace(
         '/',
         DIRECTORY_SEPARATOR,
         '/fixtures/schema/mysql.php'
@@ -31,11 +31,11 @@ it('parses an excel workbook into an inferred mysql schema', function () {
         expect($actualColumn->getName())->toBe($expectedColumn->getName());
         expect($actualColumn->getType())->toBe($expectedColumn->getType());
         $expectedModifiers = \array_map(
-            static fn(ColumnModifier $modifier): string => $modifier->value,
+            static fn (ColumnModifier $modifier): string => $modifier->value,
             $expectedColumn->getModifiers(),
         );
         $actualModifiers = \array_map(
-            static fn(ColumnModifier $modifier): string => $modifier->value,
+            static fn (ColumnModifier $modifier): string => $modifier->value,
             $actualColumn->getModifiers(),
         );
         expect($actualModifiers)->toBe(

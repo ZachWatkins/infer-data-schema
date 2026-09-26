@@ -1,8 +1,10 @@
 # Infer Data Schema
 
-**This is not intended to be used in production environments. Do not use this as-is in production environments. It is intended for development and testing purposes only.**
+**This is not intended to be used in production environments. It is only intended for development and testing purposes.**
 
-This is a PHP library which infers the SQL column schema of a data source.
+[![Test](https://github.com/ZachWatkins/infer-data-schema/actions/workflows/test.yml/badge.svg)](https://github.com/ZachWatkins/infer-data-schema/actions/workflows/test.yml) [![Audit](https://github.com/ZachWatkins/infer-data-schema/actions/workflows/audit.yml/badge.svg)](https://github.com/ZachWatkins/infer-data-schema/actions/workflows/audit.yml)
+
+This PHP library infers the SQL column schema of a data source and can either provide those details or use them to generate a Laravel Shift Blueprint YAML file, which can then be used to scaffold the corresponding Laravel files to implement that data model into an existing application.
 
 It reads a given data source, evaluates all values of all columns for the safest possible SQL column type and modifiers (unique, nullable, signed or unsigned, auto-incrementing), and generates a corresponding SQLColumnCollection object.
 

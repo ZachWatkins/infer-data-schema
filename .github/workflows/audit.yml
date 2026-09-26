@@ -1,4 +1,4 @@
-name: Test
+name: Audit
 
 on:
   push:
@@ -11,8 +11,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test:
-    name: Test (PHP 8.4)
+  audit:
+    name: Composer Validate and Audit (PHP 8.4)
     runs-on: ubuntu-latest
 
     steps:
@@ -25,8 +25,11 @@ jobs:
           php-version: 8.4
           coverage: none
 
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict
+
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
 
-      - name: Run tests (Pest)
-        run: ./vendor/bin/pest
+      - name: Run composer audit
+        run: composer audit --no-interaction

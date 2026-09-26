@@ -1,7 +1,7 @@
-name: Lint
+name: Lint Pull Request
 
 on:
-  push:
+  pull_request:
     branches: [main]
 
 concurrency:
@@ -10,7 +10,7 @@ concurrency:
 
 jobs:
   lint:
-    name: Code Style (PHP 8.5)
+    name: Code Style (PHP 8.4)
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -20,16 +20,18 @@ jobs:
         uses: actions/checkout@v5
         with:
           ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.5
+          php-version: 8.4
           coverage: none
           tools: pint
 
       - name: Run pint
-        run: pint
+        run: pint --diff=origin/main
 
       - name: Commit linted files
         uses: stefanzweifel/git-auto-commit-action@v6

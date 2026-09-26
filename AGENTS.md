@@ -1,72 +1,108 @@
 # Agent Instructions for Infer Data Schema
 
-This repository contains `infer-data-schema`, a PHP library that reads data sources (CSV, JSON, XML, Excel, HTTP) using Flow PHP ETL and infers SQL column types, modifiers, and schemas or optionally a Laravel Shift Blueprint YAML file.
+This repository is a PHP schema-inference utility for turning raw tabular data into either:
 
-See [README.md](README.md) for full project details, usage examples, and dependency links.
+- a SQL schema (`src/SQL/...`), or
+- a Laravel Shift Blueprint definition (`src/Blueprint/...`).
 
-## Language & Code Style
+The library reads source data from CSV, JSON, XML, Excel, and HTTP endpoints using Flow PHP ETL and then infers column names, data types, and modifiers by scanning the values in each column. The project is intentionally opinionated: it tries to produce the safest general-purpose schema for a target database engine or Blueprint output, while keeping parser implementations thin and consistent.
 
-- **PHP Version**: Target PHP 8.3+.
-- **Strict Types**: Always include `declare(strict_types=1);` at the top of every PHP file.
-- **Code Standard**: Follow PSR-12 coding guidelines.
-- **Type Safety**: Use explicit return types, parameter type hints, and typed properties for all methods and classes.
-- **Enums**: Group column types and modifiers using backed enums (e.g. `SQLiteColumnType`, `ColumnModifier`, `DatabaseType`).
-- **Interfaces**: Define strict interface contracts under `src/Interfaces/` before implementing new parsers or models.
+See [README.md](README.md) for a higher-level overview, usage examples, and dependency references.
 
-## Project Architecture
+## What this project does
 
-1. `.github/` - Contains GitHub-specific configuration files, such as workflows for CI/CD.  
-   - `workflows/` - Contains the GitHub Actions workflow files for CI/CD.  
-   - `workflows/lint.yml` - The GitHub Actions workflow file for running code style checks.  
-   - `workflows/build.yml` - The GitHub Actions workflow file for building and running the binary using a list of PHP versions.  
-   - `workflows/test.yml` - The GitHub Actions workflow file for running tests using a list of PHP versions.  
-2. `documentation/` - Contains the documentation files for the library, including ADRs and other relevant documentation.
-   - `documentation/adrs/` - Contains the Architecture Decision Records (ADRs) for the library.
-3. `src/` - Contains the main PHP source code.  
-   - `src/SQL/` - Contains the main SQL-related source code for the library.
-     - `src/SQL/Interfaces` - Contains the interface definitions for the library's class files.  
-     - `src/SQL/Enums` - Contains the SQL enum definitions for the library.  
-       - `src/SQL/Enums/DatabaseType.php` - The enum definition for supported database types.  
-       - `src/SQL/Enums/ColumnModifier.php` - The enum definition for SQL column modifiers (unique, nullable, signed or unsigned, auto-incrementing).  
-       - `src/SQL/Enums/SQLiteColumnType.php` - The enum definition for SQLite column types.  
-       - `src/SQL/Enums/MySQLColumnType.php` - The enum definition for MySQL column types.  
-       - `src/SQL/Enums/SQLServerColumnType.php` - The enum definition for SQL Server column types.  
-     - `src/SQL/Parsers` - Contains the data source parser classes for the SQL inference library features.  
-       - `src/SQL/Parsers/CsvParser.php` - The CSV data source parser class.  
-       - `src/SQL/Parsers/JsonParser.php` - The JSON data source parser class.  
-       - `src/SQL/Parsers/XmlParser.php` - The XML data source parser class.  
-       - `src/SQL/Parsers/ExcelParser.php` - The Excel data source parser class.  
-       - `src/SQL/Parsers/HttpParser.php` - The HTTP data source parser class.  
-     - `src/SQL/Models` - Contains the model classes for the library.  
-       - `src/SQL/Models/SQLColumn.php` - The model class representing a database column.  
-       - `src/SQL/Models/SQLColumnCollection.php` - The model class representing a collection of database columns.  
-   - `src/Console.php` - The console class for the library.  
-3. `tests/` - Contains the test cases for the library.  
-   - `tests/fixtures/` - Contains test fixture files used for testing the library's parsers and schema inference logic.  
-   - `tests/fixtures/data/` - Contains the actual data files used as test fixtures for the library's parsers and schema inference logic.
-   - `tests/fixtures/schema/` - Contains the expected schema objects corresponding to the data files, used for validating the library's schema inference logic.
-   - `tests/Features/` - Contains the feature test cases for the library, typically testing the integration of parsers and schema inference logic.
-4. `AGENTS.md` - The file containing information for coding agents when generating code for the library.
-5. `composer.json` - The Composer configuration file for managing dependencies and autoloading.
-6. `README.md` - The readme file, containing an overview and documentation for the library.
+The main goal is not generic ETL. It is schema inference from sample data.
 
-## Build & Test Commands
+- `src/SQL/Parsers/*Parser.php` load data from a source and return an instance of `SQLColumnCollection`.
+- `src/SQL/Inferrers/ColumnTypeInferrer.php` decides the SQL column type and modifiers by analyzing row values.
+- `src/SQL/Enums/*` define database-specific type families (`SQLite`, `MySQL`, `SQL Server`).
+- `src/Blueprint/Parsers/*Parser.php` do the same thing for Laravel Blueprint output rather than raw SQL.
+- `src/Blueprint/Inferrers/BlueprintColumnTypeInferrer.php` chooses Laravel column types and modifiers such as `nullable`, `unique`, `unsigned`, or `increments`.
 
-- **Install Dependencies**: `composer install`
-- **Run Tests**: `composer run test`
-- **Check Code Style**: `composer run lint`
-- **Package CLI Binary**: `composer run build`
+In other words, most code changes should be framed around one question: "How does this data source become a consistent schema object?"
 
-## Key Conventions
+## Source tree and real responsibilities
 
-- **Parser Design**: Each parser in `src/SQL/Parsers/` must convert input datasets into an instance of `SQLColumnCollection`.
-- **Modifier Detection**: Ensure column modifiers (`nullable`, `unique`, `unsigned`, `auto_increment`) are evaluated accurately across all rows in the dataset.
-- **Testing**: Write Pest unit tests under `tests/` for all new parsers, models, and type inference logic using test datasets. Use test fixtures for data source files and the schema objects they are expected to produce.
+### CLI and entry points
 
-## Coding Agents
+- `src/Console.php` is the command-line surface for the app. It accepts flags such as `--db`, `--format=sql|blueprint`, and Blueprint-specific options, then dispatches to the correct parser.
+- `index.php` is the application bootstrap that invokes the console.
+- `scripts/` contains packaging and helper scripts such as building the standalone binary.
 
-This section provides guidelines and information for coding agents when generating code for the library.
+### SQL layer
 
-All inline comments must end with a period.
+- `src/SQL/Parsers/` contains the source-specific parsers: CSV, JSON, XML, Excel, and HTTP.
+- `src/SQL/Models/SQLColumn.php` and `SQLColumnCollection.php` hold the inferred schema output.
+- `src/SQL/Interfaces/` defines parser and collection contracts.
+- `src/SQL/Inferrers/ColumnTypeInferrer.php` is the central inference logic used by all SQL parsers.
+- `src/Support/ColumnStats.php` tracks aggregate observations for each column: nullability, numeric state, date/time detection, string lengths, uniqueness, sequence detection, and value ranges.
+- `src/SQL/Enums/` defines supported database types and their column-type mappings.
 
-When writing tests, do not create anonymous functions assigned to a variable in test cases. Prefer using the `it` function provided by Pest to define test cases directly so stack traces are easier to parse. Prefer very clear test assertions with explicit expectations for each data value and aspect of the functionality being tested.
+### Blueprint layer
+
+- `src/Blueprint/Parsers/` mirrors the SQL parser structure for Blueprint output.
+- `src/Blueprint/Models/` contains Blueprint schema models.
+- `src/Blueprint/Inferrers/BlueprintColumnTypeInferrer.php` infers Laravel field types and Blueprint attributes from the same column stats.
+- `src/Blueprint/Enums/` defines Laravel type names and Blueprint annotations used in generated files.
+- `src/Blueprint/Lexers/` and related classes help convert inferred schema data into Blueprint syntax or definitions.
+
+### Data source contract
+
+All parsers follow the same pattern:
+
+1. Read rows from a source with Flow PHP ETL.
+2. Feed the rows into the relevant inferrer.
+3. Return a typed collection of inferred columns.
+
+This is the key architectural rule: parser code should stay thin and source-specific; type detection should live in the inferrer layer.
+
+## Important project conventions
+
+- Use PHP 8.3+ syntax and `declare(strict_types=1);` in all PHP files.
+- Follow PSR-12 style and use explicit type declarations on properties, parameters, and return values.
+- Prefer enums for supported types and modifiers instead of raw strings.
+- Keep interfaces and contracts in the matching namespace (`src/SQL/Interfaces` or `src/Blueprint/Interfaces`).
+- Do not create a new parser or inferrer without updating the corresponding contract and tests.
+- Prefer reusing `ColumnStats` for cross-column analysis instead of duplicating inference rules in individual parser classes.
+- Keep `src/SQL/...` and `src/Blueprint/...` behavior symmetric where possible:
+  - same source data
+  - same column discovery logic
+  - different output representation only
+
+## Working on this codebase
+
+Before adding new functionality, confirm which layer owns the behavior:
+
+- If the change is about converting a data source into rows, it belongs in a parser under `src/SQL/Parsers/` or `src/Blueprint/Parsers/`.
+- If the change is about interpreting values into a column type, it belongs in an inferrer.
+- If the change is about the emitted schema model, it belongs in the models or enums.
+- If the change affects CLI behavior or supported flags, it belongs in `src/Console.php`.
+
+## Testing expectations
+
+The project uses Pest. Add or update tests in the relevant area:
+
+- `tests/SQL/Feature/` for SQL inference and parser behavior
+- `tests/Blueprint/Feature/` for Blueprint inference and parser behavior
+- fixture files under `tests/SQL/fixtures/` and `tests/Blueprint/fixtures/` when the output depends on sample data
+
+Each test should validate real inference results from actual data, not mock-only behavior.
+
+## Build and verification commands
+
+- Install dependencies: `composer install`
+- Run the test suite: `composer run test`
+- Check code style: `composer run lint`
+- Build the packaged CLI: `composer run build`
+
+## Coding-agent guidance
+
+When making code changes, aim for:
+
+- small, focused edits
+- consistent interfaces between source parsers and inferrers
+- explicit, descriptive naming
+- docblocks on public APIs and non-trivial methods
+- regression coverage when changing inference logic
+
+The real purpose of this repo is not to be a generic framework. It is a compact, data-source-driven schema generator that infers usable SQL or Laravel Blueprint definitions from sample records. That purpose should guide all implementation choices.

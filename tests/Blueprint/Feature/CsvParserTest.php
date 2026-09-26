@@ -11,7 +11,7 @@ use ZachWatkins\InferDataSchema\Blueprint\Parsers\CsvParser;
 use ZachWatkins\InferDataSchema\Blueprint\Parsers\JsonParser;
 
 it('infers the expected Blueprint file from the MySQL CSV fixture', function () {
-    $dataFixture = dirname(__DIR__).str_replace('/', DIRECTORY_SEPARATOR, '/../fixtures/data/test_mysql.csv');
+    $dataFixture = dirname(__DIR__).str_replace('/', DIRECTORY_SEPARATOR, '/../SQL/fixtures/data/test_mysql.csv');
     $parser = new CsvParser;
     $columns = $parser->parse($dataFixture);
     $model = new BlueprintModel('Model', $columns);
@@ -24,7 +24,7 @@ it('infers the expected Blueprint file from the MySQL CSV fixture', function () 
 });
 
 it('infers the expected Blueprint Inertia web resource file from the MySQL JSON fixture', function () {
-    $dataFixture = dirname(__DIR__).str_replace('/', DIRECTORY_SEPARATOR, '/../fixtures/data/test_mysql.json');
+    $dataFixture = dirname(__DIR__).str_replace('/', DIRECTORY_SEPARATOR, '/../SQL/fixtures/data/test_mysql.json');
     $parser = new JsonParser;
     $columns = $parser->parse($dataFixture);
     $model = new BlueprintModel('Model', $columns);
@@ -42,7 +42,7 @@ it('infers the expected Blueprint Inertia web resource file from the MySQL JSON 
 });
 
 it('infers the expected Blueprint Inertia view-only web resource file from the MySQL JSON fixture', function () {
-    $dataFixture = dirname(__DIR__).str_replace('/', DIRECTORY_SEPARATOR, '/../fixtures/data/test_mysql.json');
+    $dataFixture = dirname(__DIR__).str_replace('/', DIRECTORY_SEPARATOR, '/../SQL/fixtures/data/test_mysql.json');
     $parser = new JsonParser;
     $columns = $parser->parse($dataFixture);
     $model = new BlueprintModel('Model', $columns);
@@ -59,7 +59,7 @@ it('infers the expected Blueprint Inertia view-only web resource file from the M
 });
 
 it('infers the expected Blueprint CRUD with custom methods web resource file from the MySQL JSON fixture', function () {
-    $dataFixture = dirname(__DIR__).str_replace('/', DIRECTORY_SEPARATOR, '/../fixtures/data/test_mysql.json');
+    $dataFixture = dirname(__DIR__).str_replace('/', DIRECTORY_SEPARATOR, '/../SQL/fixtures/data/test_mysql.json');
     $parser = new JsonParser;
     $columns = $parser->parse($dataFixture);
     $model = new BlueprintModel('Model', $columns);
@@ -75,7 +75,7 @@ it('infers the expected Blueprint CRUD with custom methods web resource file fro
 });
 
 it('infers the expected Blueprint API methods file from the MySQL JSON fixture', function () {
-    $dataFixture = dirname(__DIR__).str_replace('/', DIRECTORY_SEPARATOR, '/../fixtures/data/test_mysql.json');
+    $dataFixture = dirname(__DIR__).str_replace('/', DIRECTORY_SEPARATOR, '/../SQL/fixtures/data/test_mysql.json');
     $parser = new JsonParser;
     $columns = $parser->parse($dataFixture);
     $model = new BlueprintModel('Model', $columns);

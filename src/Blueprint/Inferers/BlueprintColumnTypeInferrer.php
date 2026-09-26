@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace ZachWatkins\InferDataSchema\Blueprint\Inferers;
 
-use ZachWatkins\InferDataSchema\Support\ColumnStats;
 use ZachWatkins\InferDataSchema\Blueprint\Enums\ColumnModifier;
 use ZachWatkins\InferDataSchema\Blueprint\Enums\LaravelColumnType;
-use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintColumnTypeInferrerInterface;
 use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintColumnCollectionInterface;
+use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintColumnTypeInferrerInterface;
 use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintColumn;
 use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintColumnCollection;
+use ZachWatkins\InferDataSchema\Parsers;
+use ZachWatkins\InferDataSchema\Support\ColumnStats;
 
 /**
  * Evaluates every value of every column in a stream of rows to infer the safest possible
@@ -18,7 +19,7 @@ use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintColumnCollection;
  * given database engine.
  *
  * This is the single shared inference contract used by every parser in
- * {@see \ZachWatkins\InferDataSchema\Parsers} so that type-selection behavior is
+ * {@see Parsers} so that type-selection behavior is
  * identical regardless of the data source format.
  */
 final class BlueprintColumnTypeInferrer implements BlueprintColumnTypeInferrerInterface
@@ -36,8 +37,8 @@ final class BlueprintColumnTypeInferrer implements BlueprintColumnTypeInferrerIn
             $totalRows++;
 
             foreach ($row as $column => $value) {
-                if (!isset($stats[$column])) {
-                    $stats[$column] = new ColumnStats();
+                if (! isset($stats[$column])) {
+                    $stats[$column] = new ColumnStats;
                     $order[] = $column;
                 }
 
@@ -45,7 +46,7 @@ final class BlueprintColumnTypeInferrer implements BlueprintColumnTypeInferrerIn
             }
         }
 
-        $collection = new BlueprintColumnCollection();
+        $collection = new BlueprintColumnCollection;
 
         foreach ($order as $column) {
             $columnStats = $stats[$column];
@@ -91,7 +92,7 @@ final class BlueprintColumnTypeInferrer implements BlueprintColumnTypeInferrerIn
         if ($type === LaravelColumnType::char && $stats->allStringLengthsSame) {
             return [(string) $stats->maxStringLength];
         }
-        if (\in_array($type, [LaravelColumnType::enum, LaravelColumnType::set], true) && !empty($stats->getSeenValues())) {
+        if (\in_array($type, [LaravelColumnType::enum, LaravelColumnType::set], true) && ! empty($stats->getSeenValues())) {
             return $stats->getSeenValues();
         }
 
@@ -131,7 +132,7 @@ final class BlueprintColumnTypeInferrer implements BlueprintColumnTypeInferrerIn
         $max = (int) $stats->maxValue;
         $min = (int) \abs($stats->minValue);
 
-        if (!$stats->hasNegative) {
+        if (! $stats->hasNegative) {
             if ($stats->allYear) {
                 return LaravelColumnType::year;
             }
@@ -139,18 +140,21 @@ final class BlueprintColumnTypeInferrer implements BlueprintColumnTypeInferrerIn
                 if ($min === 1 && $stats->sequenceIntact) {
                     return LaravelColumnType::tinyIncrements;
                 }
+
                 return LaravelColumnType::tinyInteger;
             }
             if ($max <= 65_535) {
                 if ($min === 1 && $stats->sequenceIntact) {
                     return LaravelColumnType::smallIncrements;
                 }
+
                 return LaravelColumnType::smallInteger;
             }
             if ($max <= 16_777_215) {
                 if ($min === 1 && $stats->sequenceIntact) {
                     return LaravelColumnType::mediumIncrements;
                 }
+
                 return LaravelColumnType::mediumInteger;
             }
             $result = bccomp((string) $max, '4294967295');
@@ -158,23 +162,25 @@ final class BlueprintColumnTypeInferrer implements BlueprintColumnTypeInferrerIn
                 if ($min === 1 && $stats->sequenceIntact) {
                     return LaravelColumnType::increments;
                 }
+
                 return LaravelColumnType::integer;
             }
             if ($min === 1 && $stats->sequenceIntact) {
                 return LaravelColumnType::bigIncrements;
             }
+
             return LaravelColumnType::bigInteger;
         }
 
-        if (-128 <= $min && $max <= 127) {
+        if ($min >= -128 && $max <= 127) {
             return LaravelColumnType::tinyInteger;
         }
 
-        if (-32_768 <= $min && $max <= 32_767) {
+        if ($min >= -32_768 && $max <= 32_767) {
             return LaravelColumnType::smallInteger;
         }
 
-        if (-8_388_608 <= $min && $max <= 8_388_607) {
+        if ($min >= -8_388_608 && $max <= 8_388_607) {
             return LaravelColumnType::mediumInteger;
         }
 

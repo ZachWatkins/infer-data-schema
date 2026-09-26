@@ -89,7 +89,7 @@ final class ColumnStats
             return;
         }
 
-        if (!\is_scalar($value)) {
+        if (! \is_scalar($value)) {
             $this->recordUnsupported($value);
 
             return;
@@ -115,7 +115,7 @@ final class ColumnStats
 
     public function isUnsigned(): bool
     {
-        return $this->nonNullSeenCount > 0 && ($this->allInt || $this->allNumeric) && !$this->hasNegative;
+        return $this->nonNullSeenCount > 0 && ($this->allInt || $this->allNumeric) && ! $this->hasNegative;
     }
 
     public function isAutoIncrement(): bool
@@ -179,7 +179,7 @@ final class ColumnStats
 
     private function recordUnsupported(mixed $value): void
     {
-        $this->trackSeen('object:' . \spl_object_id((object) $value));
+        $this->trackSeen('object:'.\spl_object_id((object) $value));
 
         $this->allBool = false;
         $this->allInt = false;
@@ -210,46 +210,46 @@ final class ColumnStats
             } elseif ($this->firstStringLength !== $stringLength) {
                 $this->allStringLengthsSame = false;
             }
-            if (!self::isJsonLike($value)) {
+            if (! self::isJsonLike($value)) {
                 $this->allJson = false;
             }
-            if (!self::isIpAddressLike($value)) {
+            if (! self::isIpAddressLike($value)) {
                 $this->allIpAddress = false;
             }
-            if (!self::isMacAddressLike($value)) {
+            if (! self::isMacAddressLike($value)) {
                 $this->allMacAddress = false;
             }
-            if (!self::isUuidLike($value)) {
+            if (! self::isUuidLike($value)) {
                 $this->allUuid = false;
             }
-            if (!self::isUlidLike($value)) {
+            if (! self::isUlidLike($value)) {
                 $this->allUlid = false;
             }
-            if ($stringLength !== 4 || !\is_numeric($value) || (int) $value < 1901 || (int) $value > 2155) {
+            if ($stringLength !== 4 || ! \is_numeric($value) || (int) $value < 1901 || (int) $value > 2155) {
                 $this->allYear = false;
             }
         }
 
-        if (!self::isBoolLike($value)) {
+        if (! self::isBoolLike($value)) {
             $this->allBool = false;
         }
 
-        if (!self::isDateLike($value)) {
+        if (! self::isDateLike($value)) {
             $this->allDate = false;
         }
 
-        if (!self::isDateTimeLike($value)) {
+        if (! self::isDateTimeLike($value)) {
             $this->allDateTime = false;
         }
 
-        if (!self::isTimeLike($value)) {
+        if (! self::isTimeLike($value)) {
             $this->allTime = false;
         }
 
         $isInt = self::isIntLike($value);
-        $isFloat = !$isInt && self::isFloatLike($value);
+        $isFloat = ! $isInt && self::isFloatLike($value);
 
-        if (!$isInt && !$isFloat) {
+        if (! $isInt && ! $isFloat) {
             $this->allInt = false;
             $this->allNumeric = false;
             $this->sequenceIntact = false;
@@ -257,7 +257,7 @@ final class ColumnStats
             return;
         }
 
-        if (!$isInt) {
+        if (! $isInt) {
             $this->allInt = false;
         }
 
@@ -278,7 +278,7 @@ final class ColumnStats
             $this->allYear = false;
         }
 
-        if (!$isInt || $value < 1901 || $value > 2155) {
+        if (! $isInt || $value < 1901 || $value > 2155) {
             $this->allYear = false;
         }
 
@@ -299,7 +299,7 @@ final class ColumnStats
 
     private function updateSequence(int $value): void
     {
-        if (!$this->sequenceBaseSet) {
+        if (! $this->sequenceBaseSet) {
             $this->sequenceBaseSet = true;
             $this->sequenceExpectedNext = $value + 1;
 
@@ -335,13 +335,13 @@ final class ColumnStats
             return true;
         }
 
-        if (!\is_string($value)) {
+        if (! \is_string($value)) {
             return false;
         }
 
         $trimmed = \trim($value);
 
-        if (!\preg_match('/^-?\d+$/', $trimmed)) {
+        if (! \preg_match('/^-?\d+$/', $trimmed)) {
             return false;
         }
 
@@ -349,7 +349,7 @@ final class ColumnStats
 
         // A "significant" leading zero (e.g. a zip code of "02134") means the value is
         // an opaque string/code, not a true integer, so it must not lose that digit.
-        return !(\strlen($digits) > 1 && $digits[0] === '0');
+        return ! (\strlen($digits) > 1 && $digits[0] === '0');
     }
 
     private static function isFloatLike(bool|int|float|string $value): bool
@@ -358,7 +358,7 @@ final class ColumnStats
             return true;
         }
 
-        if (!\is_string($value)) {
+        if (! \is_string($value)) {
             return false;
         }
 
@@ -372,7 +372,7 @@ final class ColumnStats
 
     private static function isDateLike(bool|int|float|string $value): bool
     {
-        if (!\is_string($value) || !\preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', \trim($value), $matches)) {
+        if (! \is_string($value) || ! \preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', \trim($value), $matches)) {
             return false;
         }
 
@@ -381,13 +381,13 @@ final class ColumnStats
 
     private static function isDateTimeLike(bool|int|float|string $value): bool
     {
-        if (!\is_string($value)) {
+        if (! \is_string($value)) {
             return false;
         }
 
         $pattern = '/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2}):(\d{2})(\.\d+)?(Z|[+-]\d{2}:?\d{2})?$/';
 
-        if (!\preg_match($pattern, \trim($value), $matches)) {
+        if (! \preg_match($pattern, \trim($value), $matches)) {
             return false;
         }
 
@@ -399,7 +399,7 @@ final class ColumnStats
 
     private static function isTimeLike(bool|int|float|string $value): bool
     {
-        if (!\is_string($value) || !\preg_match('/^(\d{2}):(\d{2}):(\d{2})(\.\d+)?$/', \trim($value), $matches)) {
+        if (! \is_string($value) || ! \preg_match('/^(\d{2}):(\d{2}):(\d{2})(\.\d+)?$/', \trim($value), $matches)) {
             return false;
         }
 
@@ -422,6 +422,7 @@ final class ColumnStats
         // If the string begins and ends with certain characters, it might be JSON.
         try {
             \json_decode($trimmed, true, 512, JSON_THROW_ON_ERROR);
+
             return true;
         } catch (\JsonException $e) {
             return false;

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace ZachWatkins\InferDataSchema\Blueprint\Parsers;
 
+use ZachWatkins\InferDataSchema\Blueprint\Inferers\BlueprintColumnTypeInferrer;
+use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintColumnCollectionInterface;
 use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintColumnTypeInferrerInterface;
 use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintParserInterface;
-use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintColumnCollectionInterface;
-use ZachWatkins\InferDataSchema\Blueprint\Inferers\BlueprintColumnTypeInferrer;
 
 use function Flow\ETL\Adapter\XML\from_xml;
 use function Flow\ETL\DSL\data_frame;
@@ -16,7 +16,7 @@ final class XmlParser implements BlueprintParserInterface
 {
     public function __construct(
         private readonly string $xmlNodePath = '',
-        private readonly BlueprintColumnTypeInferrerInterface $inferrer = new BlueprintColumnTypeInferrer(),
+        private readonly BlueprintColumnTypeInferrerInterface $inferrer = new BlueprintColumnTypeInferrer,
     ) {}
 
     public function parse(
@@ -28,8 +28,7 @@ final class XmlParser implements BlueprintParserInterface
     }
 
     /**
-     * @param iterable<array<string, mixed>> $rawRows
-     *
+     * @param  iterable<array<string, mixed>>  $rawRows
      * @return \Generator<int, array<string, mixed>>
      */
     private function flatten(iterable $rawRows): \Generator
@@ -44,7 +43,7 @@ final class XmlParser implements BlueprintParserInterface
     }
 
     /**
-     * @param array<string, mixed> $rawRow
+     * @param  array<string, mixed>  $rawRow
      */
     private function fragment(array $rawRow): string
     {
@@ -77,12 +76,12 @@ final class XmlParser implements BlueprintParserInterface
             }
 
             $messages = \array_map(
-                static fn(\LibXMLError $error): string => \trim($error->message),
+                static fn (\LibXMLError $error): string => \trim($error->message),
                 \libxml_get_errors(),
             );
 
             throw new \RuntimeException(
-                'Failed to parse XML fragment: ' . \implode('; ', $messages),
+                'Failed to parse XML fragment: '.\implode('; ', $messages),
             );
         } finally {
             \libxml_clear_errors();

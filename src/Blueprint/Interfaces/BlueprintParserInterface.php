@@ -10,7 +10,7 @@ namespace ZachWatkins\InferDataSchema\Blueprint\Interfaces;
 interface BlueprintParserInterface
 {
     /**
-     * @param string $source Path or URI to the data source to parse.
+     * @param  string  $source  Path or URI to the data source to parse.
      */
     public function parse(
         string $source

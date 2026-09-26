@@ -13,7 +13,7 @@ use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnInterface;
 final class SQLColumn implements SQLColumnInterface
 {
     /**
-     * @param array<int, ColumnModifier> $modifiers
+     * @param  array<int, ColumnModifier>  $modifiers
      */
     public function __construct(
         private readonly string $name,

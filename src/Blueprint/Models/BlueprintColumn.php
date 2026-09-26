@@ -14,7 +14,7 @@ use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintColumnInterface;
 final class BlueprintColumn implements BlueprintColumnInterface
 {
     /**
-     * @param array<int, ColumnModifier> $modifiers
+     * @param  array<int, ColumnModifier>  $modifiers
      */
     public function __construct(
         private readonly string $name,
@@ -40,7 +40,7 @@ final class BlueprintColumn implements BlueprintColumnInterface
 
     public function hasAttributes(): bool
     {
-        return !empty($this->attributes);
+        return ! empty($this->attributes);
     }
 
     /**
@@ -53,7 +53,7 @@ final class BlueprintColumn implements BlueprintColumnInterface
 
     public function hasModifiers(): bool
     {
-        return !empty($this->modifiers);
+        return ! empty($this->modifiers);
     }
 
     public function hasModifier(ColumnModifier $modifier): bool

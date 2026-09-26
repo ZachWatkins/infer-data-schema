@@ -20,7 +20,7 @@ final class BlueprintColumnCollection implements BlueprintColumnCollectionInterf
     private array $columns = [];
 
     /**
-     * @param iterable<BlueprintColumnInterface> $columns
+     * @param  iterable<BlueprintColumnInterface>  $columns
      */
     public function __construct(iterable $columns = [])
     {

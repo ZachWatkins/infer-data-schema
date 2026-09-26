@@ -19,7 +19,7 @@ namespace ZachWatkins\InferDataSchema\Blueprint\Interfaces;
 interface BlueprintColumnTypeInferrerInterface
 {
     /**
-     * @param iterable<array<string, mixed>> $rows Each row is an associative array keyed by column name.
+     * @param  iterable<array<string, mixed>>  $rows  Each row is an associative array keyed by column name.
      */
     public function infer(
         iterable $rows

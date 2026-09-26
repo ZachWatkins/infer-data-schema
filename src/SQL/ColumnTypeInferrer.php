@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ZachWatkins\InferDataSchema\SQL;
 
-use ZachWatkins\InferDataSchema\Support\ColumnStats;
+use ZachWatkins\InferDataSchema\Parsers;
 use ZachWatkins\InferDataSchema\SQL\Enums\ColumnModifier;
 use ZachWatkins\InferDataSchema\SQL\Enums\DatabaseType;
 use ZachWatkins\InferDataSchema\SQL\Enums\MySQLColumnType;
@@ -14,6 +14,7 @@ use ZachWatkins\InferDataSchema\SQL\Interfaces\ColumnTypeInferrerInterface;
 use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnCollectionInterface;
 use ZachWatkins\InferDataSchema\SQL\Models\SQLColumn;
 use ZachWatkins\InferDataSchema\SQL\Models\SQLColumnCollection;
+use ZachWatkins\InferDataSchema\Support\ColumnStats;
 
 /**
  * Evaluates every value of every column in a stream of rows to infer the safest possible
@@ -21,7 +22,7 @@ use ZachWatkins\InferDataSchema\SQL\Models\SQLColumnCollection;
  * given database engine.
  *
  * This is the single shared inference contract used by every parser in
- * {@see \ZachWatkins\InferDataSchema\Parsers} so that type-selection behavior is
+ * {@see Parsers} so that type-selection behavior is
  * identical regardless of the data source format.
  */
 final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
@@ -40,8 +41,8 @@ final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
             $totalRows++;
 
             foreach ($row as $column => $value) {
-                if (!isset($stats[$column])) {
-                    $stats[$column] = new ColumnStats();
+                if (! isset($stats[$column])) {
+                    $stats[$column] = new ColumnStats;
                     $order[] = $column;
                 }
 
@@ -49,7 +50,7 @@ final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
             }
         }
 
-        $collection = new SQLColumnCollection();
+        $collection = new SQLColumnCollection;
 
         foreach ($order as $column) {
             $columnStats = $stats[$column];
@@ -90,7 +91,7 @@ final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
             $type = $this->resolveType($stats, $databaseType);
             switch ($databaseType) {
                 case DatabaseType::MySQL:
-                    if (!\in_array($type, [MySQLColumnType::Boolean->value, MySQLColumnType::Bit->value])) {
+                    if (! \in_array($type, [MySQLColumnType::Boolean->value, MySQLColumnType::Bit->value])) {
                         $modifiers[] = ColumnModifier::Unsigned;
                     }
                     break;
@@ -154,7 +155,7 @@ final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
     {
         $max = (int) $stats->maxValue;
 
-        if (!$stats->hasNegative) {
+        if (! $stats->hasNegative) {
             if ($max <= 255) {
                 return MySQLColumnType::TinyInt;
             }
@@ -168,20 +169,21 @@ final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
             if ($result <= 0) {
                 return MySQLColumnType::Int;
             }
+
             return MySQLColumnType::BigInt;
         }
 
         $min = (int) \abs($stats->minValue);
 
-        if (-128 <= $min && $max <= 127) {
+        if ($min >= -128 && $max <= 127) {
             return MySQLColumnType::TinyInt;
         }
 
-        if (-32_768 <= $min && $max <= 32_767) {
+        if ($min >= -32_768 && $max <= 32_767) {
             return MySQLColumnType::SmallInt;
         }
 
-        if (-8_388_608 <= $min && $max <= 8_388_607) {
+        if ($min >= -8_388_608 && $max <= 8_388_607) {
             return MySQLColumnType::MediumInt;
         }
 
@@ -217,7 +219,7 @@ final class ColumnTypeInferrer implements ColumnTypeInferrerInterface
         }
 
         // SQL Server has no unsigned integer types; TINYINT is the sole 0-255 exception.
-        if (!$stats->hasNegative && $stats->maxValue <= 255) {
+        if (! $stats->hasNegative && $stats->maxValue <= 255) {
             return SQLServerColumnType::TinyInt;
         }
 

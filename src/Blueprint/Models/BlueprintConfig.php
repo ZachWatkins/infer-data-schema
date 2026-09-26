@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace ZachWatkins\InferDataSchema\Blueprint\Models;
 
-use ZachWatkins\InferDataSchema\Blueprint\Enums\BlueprintConfigView;
 use ZachWatkins\InferDataSchema\Blueprint\Enums\BlueprintConfigResource;
-use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintModel;
+use ZachWatkins\InferDataSchema\Blueprint\Enums\BlueprintConfigView;
 
 /**
  * @property array<int, BlueprintModel> $models
@@ -26,10 +25,8 @@ class BlueprintConfig
     /** @var array<int, string> */
     public readonly array $methods;
 
-    /** @var bool */
     public readonly bool $seeders;
 
-    /** @var BlueprintConfigView */
     public readonly BlueprintConfigView $view;
 
     public function __construct(
@@ -92,7 +89,7 @@ class BlueprintConfig
     }
 
     /**
-     * @param array<int, string> $methods
+     * @param  array<int, string>  $methods
      * @return array<int, string>
      */
     private function resolveMethods(array $methods): array
@@ -116,7 +113,7 @@ class BlueprintConfig
     /**
      * Resolves an array of resource strings, ensuring each item is a valid string.
      *
-     * @param array<int, BlueprintConfigResource> $resource
+     * @param  array<int, BlueprintConfigResource>  $resource
      * @return array<int, BlueprintConfigResource>
      */
     private function resolveResources(array $resource): array

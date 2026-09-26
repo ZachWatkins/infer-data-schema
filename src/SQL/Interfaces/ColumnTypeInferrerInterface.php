@@ -21,7 +21,7 @@ use ZachWatkins\InferDataSchema\SQL\Enums\DatabaseType;
 interface ColumnTypeInferrerInterface
 {
     /**
-     * @param iterable<array<string, mixed>> $rows Each row is an associative array keyed by column name.
+     * @param  iterable<array<string, mixed>>  $rows  Each row is an associative array keyed by column name.
      */
     public function infer(
         iterable $rows,

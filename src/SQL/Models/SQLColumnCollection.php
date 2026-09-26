@@ -20,7 +20,7 @@ final class SQLColumnCollection implements SQLColumnCollectionInterface
     private array $columns = [];
 
     /**
-     * @param iterable<SQLColumnInterface> $columns
+     * @param  iterable<SQLColumnInterface>  $columns
      */
     public function __construct(iterable $columns = [])
     {

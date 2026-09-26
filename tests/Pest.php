@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnCollectionInterface;
-use ZachWatkins\InferDataSchema\SQL\Enums\DatabaseType;
 use ZachWatkins\InferDataSchema\SQL\ColumnTypeInferrer;
+use ZachWatkins\InferDataSchema\SQL\Enums\DatabaseType;
+use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnCollectionInterface;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,9 +25,9 @@ use ZachWatkins\InferDataSchema\SQL\ColumnTypeInferrer;
 */
 
 /**
- * @param array<int, array<string, mixed>> $rows
+ * @param  array<int, array<string, mixed>>  $rows
  */
 function infer(array $rows, DatabaseType $databaseType = DatabaseType::SQLite): SQLColumnCollectionInterface
 {
-    return (new ColumnTypeInferrer())->infer($rows, $databaseType);
+    return (new ColumnTypeInferrer)->infer($rows, $databaseType);
 }

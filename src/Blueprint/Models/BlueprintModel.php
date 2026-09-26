@@ -15,7 +15,9 @@ use Doctrine\Inflector\InflectorFactory;
 class BlueprintModel
 {
     protected Inflector $inflector;
+
     public readonly BlueprintColumnCollection $columns;
+
     public function __construct(
         public string $name,
         BlueprintColumnCollection $columns
@@ -42,6 +44,7 @@ class BlueprintModel
         foreach ($this->columns as $column) {
             $names[] = $column->getName();
         }
+
         return $names;
     }
 }

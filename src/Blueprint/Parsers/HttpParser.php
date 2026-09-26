@@ -7,10 +7,10 @@ namespace ZachWatkins\InferDataSchema\Blueprint\Parsers;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
-use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintParserInterface;
-use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintColumnTypeInferrerInterface;
-use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintColumnCollectionInterface;
 use ZachWatkins\InferDataSchema\Blueprint\Inferers\BlueprintColumnTypeInferrer;
+use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintColumnCollectionInterface;
+use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintColumnTypeInferrerInterface;
+use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintParserInterface;
 
 use function Flow\ETL\Adapter\Http\from_static_http_requests;
 use function Flow\ETL\DSL\data_frame;
@@ -19,14 +19,14 @@ final class HttpParser implements BlueprintParserInterface
 {
     public function __construct(
         private readonly ClientInterface $client,
-        private readonly BlueprintColumnTypeInferrerInterface $inferrer = new BlueprintColumnTypeInferrer(),
+        private readonly BlueprintColumnTypeInferrerInterface $inferrer = new BlueprintColumnTypeInferrer,
     ) {}
 
     public function parse(
         string $source,
         string $databaseType = 'sqlite',
     ): BlueprintColumnCollectionInterface {
-        $request = (new Psr17Factory())
+        $request = (new Psr17Factory)
             ->createRequest('GET', $source)
             ->withHeader('Accept', 'application/json');
 
@@ -44,8 +44,7 @@ final class HttpParser implements BlueprintParserInterface
      * - a top-level list of associative-array records, or
      * - an associative wrapper with exactly one array-valued key containing that list.
      *
-     * @param iterable<array<string, mixed>> $rows
-     *
+     * @param  iterable<array<string, mixed>>  $rows
      * @return \Generator<array<string, mixed>>
      */
     private function flatten(iterable $rows): \Generator
@@ -53,7 +52,7 @@ final class HttpParser implements BlueprintParserInterface
         foreach ($rows as $row) {
             $body = $row['response_body'] ?? null;
 
-            if (!\is_array($body)) {
+            if (! \is_array($body)) {
                 continue;
             }
 
@@ -72,8 +71,7 @@ final class HttpParser implements BlueprintParserInterface
     }
 
     /**
-     * @param array<mixed> $body
-     *
+     * @param  array<mixed>  $body
      * @return list<array<string, mixed>>|null
      */
     private function extractRecords(array $body): ?array
@@ -90,7 +88,7 @@ final class HttpParser implements BlueprintParserInterface
             }
         }
 
-        if (\count($arrayValues) !== 1 || !$this->isRecordList($arrayValues[0])) {
+        if (\count($arrayValues) !== 1 || ! $this->isRecordList($arrayValues[0])) {
             return null;
         }
 
@@ -98,16 +96,16 @@ final class HttpParser implements BlueprintParserInterface
     }
 
     /**
-     * @param array<mixed> $value
+     * @param  array<mixed>  $value
      */
     private function isRecordList(array $value): bool
     {
-        if (!\array_is_list($value)) {
+        if (! \array_is_list($value)) {
             return false;
         }
 
         foreach ($value as $record) {
-            if (!$this->isRecord($record)) {
+            if (! $this->isRecord($record)) {
                 return false;
             }
         }
@@ -117,7 +115,7 @@ final class HttpParser implements BlueprintParserInterface
 
     private function isRecord(mixed $value): bool
     {
-        return \is_array($value) && !\array_is_list($value);
+        return \is_array($value) && ! \array_is_list($value);
     }
 
     /**

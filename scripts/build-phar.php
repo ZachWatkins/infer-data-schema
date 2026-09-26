@@ -5,13 +5,12 @@ declare(strict_types=1);
 /**
  * Build the CLI application into a PHAR archive for PHPacker.
  *
- * @param string $projectRoot The project root directory.
- * @param string $archivePath The output PHAR path.
- * @return void
+ * @param  string  $projectRoot  The project root directory.
+ * @param  string  $archivePath  The output PHAR path.
  */
 function buildPharArchive(string $projectRoot, string $archivePath, array $paths = []): void
 {
-    if (!class_exists(Phar::class)) {
+    if (! class_exists(Phar::class)) {
         throw new RuntimeException('The Phar extension is required to build the archive.');
     }
 
@@ -21,11 +20,11 @@ function buildPharArchive(string $projectRoot, string $archivePath, array $paths
 
     $archiveDirectory = dirname($archivePath);
 
-    if (!is_dir($archiveDirectory) && !mkdir($archiveDirectory, 0777, true) && !is_dir($archiveDirectory)) {
+    if (! is_dir($archiveDirectory) && ! mkdir($archiveDirectory, 0777, true) && ! is_dir($archiveDirectory)) {
         throw new RuntimeException(sprintf('Unable to create the build directory at %s.', $archiveDirectory));
     }
 
-    if (file_exists($archivePath) && !unlink($archivePath)) {
+    if (file_exists($archivePath) && ! unlink($archivePath)) {
         throw new RuntimeException(sprintf('Unable to remove the existing archive at %s.', $archivePath));
     }
 
@@ -39,10 +38,9 @@ function buildPharArchive(string $projectRoot, string $archivePath, array $paths
 /**
  * Add the application files to a PHAR archive.
  *
- * @param Phar $phar The archive instance.
- * @param string $projectRoot The project root directory.
- * @param array<int, string> $paths The project-relative files and directories to include.
- * @return void
+ * @param  Phar  $phar  The archive instance.
+ * @param  string  $projectRoot  The project root directory.
+ * @param  array<int, string>  $paths  The project-relative files and directories to include.
  */
 function addProjectFilesToPhar(Phar $phar, string $projectRoot, array $paths): void
 {
@@ -53,7 +51,7 @@ function addProjectFilesToPhar(Phar $phar, string $projectRoot, array $paths): v
     }
 
     foreach ($paths as $path) {
-        $absolutePath = $resolvedProjectRoot . DIRECTORY_SEPARATOR . $path;
+        $absolutePath = $resolvedProjectRoot.DIRECTORY_SEPARATOR.$path;
 
         if (is_dir($absolutePath)) {
             $iterator = new RecursiveIteratorIterator(
@@ -62,7 +60,7 @@ function addProjectFilesToPhar(Phar $phar, string $projectRoot, array $paths): v
             );
 
             foreach ($iterator as $fileInfo) {
-                if (!$fileInfo->isFile()) {
+                if (! $fileInfo->isFile()) {
                     continue;
                 }
 
@@ -74,7 +72,7 @@ function addProjectFilesToPhar(Phar $phar, string $projectRoot, array $paths): v
             continue;
         }
 
-        if (!is_file($absolutePath)) {
+        if (! is_file($absolutePath)) {
             throw new RuntimeException(sprintf('Required build input not found at %s.', $absolutePath));
         }
 
@@ -83,16 +81,16 @@ function addProjectFilesToPhar(Phar $phar, string $projectRoot, array $paths): v
 }
 
 try {
-    buildPharArchive(getcwd(), getcwd() . '/.phar/infer-data-schema.phar', [
+    buildPharArchive(getcwd(), getcwd().'/.phar/infer-data-schema.phar', [
         'src',
         'vendor',
         'index.php',
         'composer.json',
     ]);
 
-    fwrite(STDOUT, 'Built .phar/infer-data-schema.phar' . PHP_EOL);
+    fwrite(STDOUT, 'Built .phar/infer-data-schema.phar'.PHP_EOL);
 } catch (Throwable $exception) {
-    fwrite(STDERR, 'Error: ' . $exception->getMessage() . PHP_EOL);
+    fwrite(STDERR, 'Error: '.$exception->getMessage().PHP_EOL);
 
     exit(1);
 }

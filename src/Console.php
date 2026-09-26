@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace ZachWatkins\InferDataSchema;
 
-use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintParserInterface;
-use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintModel;
-use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintConfig;
-use ZachWatkins\InferDataSchema\Blueprint\Lexers\BlueprintFileLexer;
 use ZachWatkins\InferDataSchema\Blueprint\Enums\BlueprintConfigResource;
+use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintParserInterface;
+use ZachWatkins\InferDataSchema\Blueprint\Lexers\BlueprintFileLexer;
+use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintConfig;
+use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintModel;
 use ZachWatkins\InferDataSchema\SQL\Enums\ColumnModifier;
 use ZachWatkins\InferDataSchema\SQL\Enums\DatabaseType;
 use ZachWatkins\InferDataSchema\SQL\Interfaces\ParserInterface as SQLParserInterface;
@@ -17,7 +17,7 @@ use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnInterface;
 
 final class Console
 {
-    public const HELP = "Infer data schema from various sources into selected formats. By Zach Watkins.
+    public const HELP = 'Infer data schema from various sources into selected formats. By Zach Watkins.
 Usage: {filename} [--cwd=<current-working-directory>] [--db=sqlite|mysql|sqlserver] [--format=sql,blueprint] [--blueprint-model=<name>] [--blueprint-view=blade|inertia] [--blueprint-resource=web,api,index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy] [--blueprint-controller-methods=index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy,<custom>] [--blueprint-seeders] [--save] [--dry-run] [--help] <path-or-url>
 Options:
   [--db=]                 Database type. Accepts: sqlite, mysql, sqlserver.
@@ -40,7 +40,8 @@ Options:
                           api.show, api.destroy, <custom>. Default: none.
   [--save]                Save the output to a file.
   [--help]                Display this help message.
-";
+';
+
     private string $filename = 'index.php';
 
     /**
@@ -59,9 +60,9 @@ Options:
     private array $parserClasses;
 
     /**
-     * @param resource|null $stdout
-     * @param resource|null $stderr
-     * @param array<string, class-string>|null $parserClasses
+     * @param  resource|null  $stdout
+     * @param  resource|null  $stderr
+     * @param  array<string, class-string>|null  $parserClasses
      */
     public function __construct($stdout = null, $stderr = null, ?array $parserClasses = null)
     {
@@ -88,16 +89,16 @@ Options:
 
         $runningPhar = \Phar::running(false);
         if ($runningPhar !== '') {
-            if ('infer-laravel-blueprint' === $runningPhar) {
+            if ($runningPhar === 'infer-laravel-blueprint') {
                 $this->filename = basename($runningPhar);
             }
-        } elseif (isset($_SERVER['argv'][0]) && !empty($_SERVER['argv'][0]) && 'infer-laravel-blueprint' === basename($_SERVER['argv'][0])) {
+        } elseif (isset($_SERVER['argv'][0]) && ! empty($_SERVER['argv'][0]) && basename($_SERVER['argv'][0]) === 'infer-laravel-blueprint') {
             $this->filename = basename($_SERVER['argv'][0]);
         }
     }
 
     /**
-     * @param array<int, string> $argv
+     * @param  array<int, string>  $argv
      */
     public function run(array $argv): int
     {
@@ -126,7 +127,7 @@ Options:
                 $requestedDatabaseType = DatabaseType::tryFrom(\strtolower(\substr($argument, 5)));
 
                 if ($requestedDatabaseType === null) {
-                    $this->writeUsage('Error: Invalid database type specified: ' . \substr($argument, 5));
+                    $this->writeUsage('Error: Invalid database type specified: '.\substr($argument, 5));
 
                     return 1;
                 }
@@ -138,14 +139,15 @@ Options:
 
             if (\str_starts_with($argument, '--cwd=')) {
                 $currentWorkingDirectory = \substr($argument, 6);
+
                 continue;
             }
 
             if (\str_starts_with($argument, '--format=')) {
                 $requestedFormat = \strtolower(\substr($argument, 9));
 
-                if (!\in_array($requestedFormat, ['sql', 'blueprint'], true)) {
-                    $this->writeUsage('Error: Invalid format specified: ' . $requestedFormat);
+                if (! \in_array($requestedFormat, ['sql', 'blueprint'], true)) {
+                    $this->writeUsage('Error: Invalid format specified: '.$requestedFormat);
 
                     return 1;
                 }
@@ -157,26 +159,31 @@ Options:
 
             if (\str_starts_with($argument, '--blueprint-model=')) {
                 $blueprintOptions['model'] = \substr($argument, 18);
+
                 continue;
             }
 
             if (\str_starts_with($argument, '--blueprint-seeders')) {
                 $blueprintOptions['seeders'] = true;
+
                 continue;
             }
 
             if (\str_starts_with($argument, '--save')) {
                 $save = true;
+
                 continue;
             }
 
             if (\str_starts_with($argument, '--blueprint-view=')) {
                 $blueprintOptions['view'] = \substr($argument, 17);
+
                 continue;
             }
 
             if (\str_starts_with($argument, '--blueprint-controller-methods=')) {
                 $blueprintOptions['methods'] = \array_map('trim', \explode(',', \substr($argument, 25)));
+
                 continue;
             }
 
@@ -189,16 +196,18 @@ Options:
                         $blueprintOptions['resources'][] = $resolved;
                     }
                 }
+
                 continue;
             }
 
             if (\str_starts_with($argument, '--dry-run')) {
                 $dryRun = true;
+
                 continue;
             }
 
             if (\str_starts_with($argument, '--') || $source !== null) {
-                $this->writeUsage('Error: Unexpected argument: ' . $argument);
+                $this->writeUsage('Error: Unexpected argument: '.$argument);
 
                 return 1;
             }
@@ -220,27 +229,30 @@ Options:
             return 1;
         }
 
-        if (!\str_starts_with($source, '/') && !\preg_match('/^[a-zA-Z]:\\\\/', $source)) {
-            if (!file_exists($source)) {
-                if (is_string($currentWorkingDirectory) && !empty($currentWorkingDirectory)) {
-                    $resolved = $currentWorkingDirectory . \DIRECTORY_SEPARATOR . $source;
+        if (! \str_starts_with($source, '/') && ! \preg_match('/^[a-zA-Z]:\\\\/', $source)) {
+            if (! file_exists($source)) {
+                if (is_string($currentWorkingDirectory) && ! empty($currentWorkingDirectory)) {
+                    $resolved = $currentWorkingDirectory.\DIRECTORY_SEPARATOR.$source;
                     if (file_exists($resolved)) {
                         $source = $resolved;
                     } else {
                         $this->writeError(sprintf('File path \'%s\' could not be found relative to the current working directory at %s. Provide an absolute path or use the --cwd option.', $source, $currentWorkingDirectory));
+
                         return 1;
                     }
                 } else {
                     $this->writeError(sprintf('File path \'%s\' could not be found relative to the current working directory at %s. Provide an absolute path or use the --cwd option.', $source, getcwd()));
+
                     return 1;
                 }
-            } elseif (!is_string($currentWorkingDirectory) || empty($currentWorkingDirectory)) {
+            } elseif (! is_string($currentWorkingDirectory) || empty($currentWorkingDirectory)) {
                 $currentWorkingDirectory = \dirname($source);
             }
-        } elseif (!file_exists($source)) {
+        } elseif (! file_exists($source)) {
             $this->writeError(sprintf('File path \'%s\' could not be found.', $source));
+
             return 1;
-        } elseif (!is_string($currentWorkingDirectory) || empty($currentWorkingDirectory)) {
+        } elseif (! is_string($currentWorkingDirectory) || empty($currentWorkingDirectory)) {
             $currentWorkingDirectory = \dirname($source);
         }
 
@@ -252,7 +264,7 @@ Options:
             return 1;
         }
 
-        if (!\class_exists($parserClass)) {
+        if (! \class_exists($parserClass)) {
             $this->writeError(\sprintf('Parser %s is not available.', $parserClass));
 
             return 1;
@@ -260,20 +272,20 @@ Options:
 
         if (\is_a($parserClass, SQLParserInterface::class, true)) {
             /** @var SQLParserInterface $parser */
-            $parser = new $parserClass();
+            $parser = new $parserClass;
             $columns = $parser->parse($source, $databaseType->value);
 
-            if (!$dryRun) {
+            if (! $dryRun) {
                 $this->writeSQLColumns($columns);
             }
         } elseif (\is_a($parserClass, BlueprintParserInterface::class, true)) {
             /** @var BlueprintParserInterface $parser */
-            $parser = new $parserClass();
+            $parser = new $parserClass;
             $columns = $parser->parse($source);
             $model = new BlueprintModel($blueprintOptions['model'] ?? null, $columns);
 
-            if (!$dryRun) {
-                $lexer = new BlueprintFileLexer();
+            if (! $dryRun) {
+                $lexer = new BlueprintFileLexer;
                 $blueprintContent = $lexer->toString(
                     new BlueprintConfig(
                         models: [$model],
@@ -283,13 +295,13 @@ Options:
                         view: $blueprintOptions['view'],
                     )
                 );
-                if (!$save) {
+                if (! $save) {
                     $this->writeToStream(
                         $this->stdout,
                         $blueprintContent
                     );
                 } else {
-                    $destinationPath = realpath($currentWorkingDirectory) . DIRECTORY_SEPARATOR . $model->tableNameSingular . '-blueprint.yaml';
+                    $destinationPath = realpath($currentWorkingDirectory).DIRECTORY_SEPARATOR.$model->tableNameSingular.'-blueprint.yaml';
                     file_put_contents($destinationPath, $blueprintContent);
                     $this->writeToStream(
                         $this->stdout,
@@ -324,9 +336,9 @@ Options:
 
     private function writeUsage(string $message = ''): void
     {
-        $output = 'Usage: ' . str_replace('{filename}', $this->filename, self::HELP) . "\n";
+        $output = 'Usage: '.str_replace('{filename}', $this->filename, self::HELP)."\n";
         if ($message) {
-            $output = $message .  "\n" . $output;
+            $output = $message."\n".$output;
         }
         $this->writeToStream(
             $this->stderr,
@@ -337,7 +349,7 @@ Options:
     private function writeSQLColumns(SQLColumnCollectionInterface $columns): void
     {
         foreach ($columns->getColumns() as $column) {
-            $this->writeToStream($this->stdout, $this->formatSQLColumn($column) . "\n");
+            $this->writeToStream($this->stdout, $this->formatSQLColumn($column)."\n");
         }
     }
 
@@ -346,7 +358,7 @@ Options:
         $modifiers = \implode(
             ' ',
             \array_map(
-                static fn(ColumnModifier $modifier): string => $modifier->value,
+                static fn (ColumnModifier $modifier): string => $modifier->value,
                 $column->getModifiers(),
             )
         );
@@ -360,11 +372,11 @@ Options:
 
     private function writeError(string $message): void
     {
-        $this->writeToStream($this->stderr, $message . "\n");
+        $this->writeToStream($this->stderr, $message."\n");
     }
 
     /**
-     * @param resource $stream
+     * @param  resource  $stream
      */
     private function writeToStream($stream, string $message): void
     {

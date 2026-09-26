@@ -17,9 +17,9 @@ class BlueprintModelController
         protected bool $resource = false,
     ) {
         $invalidMethods = array_diff($methodsParam, self::METHODS);
-        if (!empty($invalidMethods)) {
+        if (! empty($invalidMethods)) {
             throw new \RuntimeException(
-                "Invalid controller methods: " . implode(', ', $invalidMethods) . ". Accepts: " . implode(', ', self::METHODS)
+                'Invalid controller methods: '.implode(', ', $invalidMethods).'. Accepts: '.implode(', ', self::METHODS)
             );
         }
 
@@ -37,19 +37,19 @@ class BlueprintModelController
         foreach ($methodsParam as $method) {
             switch ($method) {
                 case 'resource':
-                    if (!isset($tree['resource'])) {
+                    if (! isset($tree['resource'])) {
                         $tree['resource'] = [];
                     }
                     $tree['resource'][] = true;
                     break;
                 case 'resource:api':
-                    if (!isset($tree['resource'])) {
+                    if (! isset($tree['resource'])) {
                         $tree['resource'] = [];
                     }
                     $tree['resource'][] = 'api';
                     break;
                 case 'resource:web':
-                    if (!isset($tree['resource'])) {
+                    if (! isset($tree['resource'])) {
                         $tree['resource'] = [];
                     }
                     $tree['resource'][] = 'web';
@@ -70,14 +70,14 @@ class BlueprintModelController
                         default => sprintf('%s.create with:%s', $this->model->tableNamePlural, $this->model->tableNameSingular),
                     };
                     $tree['create'] = [
-                        $renderKey => $renderValue
+                        $renderKey => $renderValue,
                     ];
                     break;
                 case 'store':
                     $tree['store'] = [
                         'validate' => implode(', ', $this->model->columnNames()),
                         'save' => $this->model->tableNameSingular,
-                        'redirect' => sprintf('%s.index', $this->model->tableNamePlural)
+                        'redirect' => sprintf('%s.index', $this->model->tableNamePlural),
                     ];
                     break;
                 case 'show':
@@ -87,7 +87,7 @@ class BlueprintModelController
                     };
                     $tree['show'] = [
                         'find' => sprintf('%s.id', $this->model->tableNameSingular),
-                        $renderKey => $renderValue
+                        $renderKey => $renderValue,
                     ];
                     break;
                 case 'edit':
@@ -97,7 +97,7 @@ class BlueprintModelController
                     };
                     $tree['edit'] = [
                         'find' => sprintf('%s.id', $this->model->tableNameSingular),
-                        $renderKey => $renderValue
+                        $renderKey => $renderValue,
                     ];
                     break;
                 case 'update':
@@ -105,7 +105,7 @@ class BlueprintModelController
                         'validate' => implode(', ', $this->model->columnNames()),
                         'find' => sprintf('%s.id', $this->model->tableNameSingular),
                         'save' => $this->model->tableNameSingular,
-                        'redirect' => sprintf('%s.index', $this->model->tableNamePlural)
+                        'redirect' => sprintf('%s.index', $this->model->tableNamePlural),
                     ];
                     break;
                 case 'destroy':
@@ -117,7 +117,7 @@ class BlueprintModelController
                 case 'api.index':
                     $tree['api.index'] = [
                         'query' => 'all',
-                        'resource' => sprintf('collection:%s', $this->model->tableNamePlural)
+                        'resource' => sprintf('collection:%s', $this->model->tableNamePlural),
                     ];
                     break;
                 case 'api.store':
@@ -145,7 +145,7 @@ class BlueprintModelController
                     $tree['api.destroy'] = [
                         'find' => sprintf('%s.id', $this->model->tableNameSingular),
                         'delete' => $this->model->tableNameSingular,
-                        'redirect' => sprintf('%s.index', $this->model->tableNamePlural)
+                        'redirect' => sprintf('%s.index', $this->model->tableNamePlural),
                     ];
                     break;
                 case 'invokable':
@@ -153,6 +153,7 @@ class BlueprintModelController
                     break;
             }
         }
+
         return $tree;
     }
 }

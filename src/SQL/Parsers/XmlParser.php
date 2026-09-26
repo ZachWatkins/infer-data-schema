@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace ZachWatkins\InferDataSchema\SQL\Parsers;
 
+use ZachWatkins\InferDataSchema\SQL\ColumnTypeInferrer;
 use ZachWatkins\InferDataSchema\SQL\Enums\DatabaseType;
 use ZachWatkins\InferDataSchema\SQL\Interfaces\ColumnTypeInferrerInterface;
 use ZachWatkins\InferDataSchema\SQL\Interfaces\ParserInterface;
 use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnCollectionInterface;
-use ZachWatkins\InferDataSchema\SQL\ColumnTypeInferrer;
 
 use function Flow\ETL\Adapter\XML\from_xml;
 use function Flow\ETL\DSL\data_frame;
@@ -17,17 +17,17 @@ final class XmlParser implements ParserInterface
 {
     public function __construct(
         private readonly string $xmlNodePath = '',
-        private readonly ColumnTypeInferrerInterface $inferrer = new ColumnTypeInferrer(),
+        private readonly ColumnTypeInferrerInterface $inferrer = new ColumnTypeInferrer,
     ) {}
 
     public function parse(
         string $source,
         string $databaseType = 'sqlite',
     ): SQLColumnCollectionInterface {
-        if (!in_array($databaseType, array_map(fn($case) => $case->value, DatabaseType::cases()), true)) {
+        if (! in_array($databaseType, array_map(fn ($case) => $case->value, DatabaseType::cases()), true)) {
             throw new \InvalidArgumentException(
-                "Invalid database type: $databaseType, accepts: " . implode(', ', array_map(
-                    fn($case) => $case->value,
+                "Invalid database type: $databaseType, accepts: ".implode(', ', array_map(
+                    fn ($case) => $case->value,
                     DatabaseType::cases()
                 ))
             );
@@ -39,8 +39,7 @@ final class XmlParser implements ParserInterface
     }
 
     /**
-     * @param iterable<array<string, mixed>> $rawRows
-     *
+     * @param  iterable<array<string, mixed>>  $rawRows
      * @return \Generator<int, array<string, mixed>>
      */
     private function flatten(iterable $rawRows): \Generator
@@ -55,7 +54,7 @@ final class XmlParser implements ParserInterface
     }
 
     /**
-     * @param array<string, mixed> $rawRow
+     * @param  array<string, mixed>  $rawRow
      */
     private function fragment(array $rawRow): string
     {
@@ -88,12 +87,12 @@ final class XmlParser implements ParserInterface
             }
 
             $messages = \array_map(
-                static fn(\LibXMLError $error): string => \trim($error->message),
+                static fn (\LibXMLError $error): string => \trim($error->message),
                 \libxml_get_errors(),
             );
 
             throw new \RuntimeException(
-                'Failed to parse XML fragment: ' . \implode('; ', $messages),
+                'Failed to parse XML fragment: '.\implode('; ', $messages),
             );
         } finally {
             \libxml_clear_errors();

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace ZachWatkins\InferDataSchema\Blueprint\Lexers;
 
-use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintConfig;
-use ZachWatkins\InferDataSchema\Blueprint\Enums\BlueprintConfigView;
 use ZachWatkins\InferDataSchema\Blueprint\Enums\BlueprintConfigResource;
+use ZachWatkins\InferDataSchema\Blueprint\Enums\BlueprintConfigView;
+use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintConfig;
 use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintModel;
 
 class BlueprintFileLexer
@@ -43,8 +43,9 @@ class BlueprintFileLexer
         }
         if ($tree['seeders']) {
             $output .= "\n";
-            $output .= "seeders: " . \implode(', ', $tree['seeders']) . "\n";
+            $output .= 'seeders: '.\implode(', ', $tree['seeders'])."\n";
         }
+
         return $output;
     }
 
@@ -60,7 +61,7 @@ class BlueprintFileLexer
             foreach ($model->columns as $column) {
                 $values = [$column->getType()->value];
                 if ($column->hasAttributes()) {
-                    $values[0] .= ':' . implode(',', $column->getAttributes());
+                    $values[0] .= ':'.implode(',', $column->getAttributes());
                 }
                 if ($column->hasModifiers()) {
                     foreach ($column->getModifiers() as $modifier) {
@@ -70,7 +71,7 @@ class BlueprintFileLexer
                 $tree['models'][$model->name][$column->getName()] = implode(' ', $values);
             }
             $controller = $this->getControllerTree($model, $config);
-            if (!empty($controller)) {
+            if (! empty($controller)) {
                 $tree['controllers'][$model->name] = $controller;
             }
         }
@@ -79,6 +80,7 @@ class BlueprintFileLexer
                 $tree['seeders'][] = $model->name;
             }
         }
+
         return $tree;
     }
 
@@ -141,7 +143,7 @@ class BlueprintFileLexer
         ];
         $result = [];
         if ($config->resources) {
-            $resources = \implode(', ', \array_filter(\array_map(fn($resource) => $resource->value, $config->resources)));
+            $resources = \implode(', ', \array_filter(\array_map(fn ($resource) => $resource->value, $config->resources)));
             if ($resources) {
                 $result['resource'] = $resources;
             }
@@ -155,12 +157,13 @@ class BlueprintFileLexer
         $result = $this->resolveModelControllerPlaceholders($result, $model);
         $customMethods = \array_diff($config->methods, BlueprintConfigResource::webMethods(), BlueprintConfigResource::apiMethods());
         foreach ($customMethods as $method) {
-            if (!isset($result[$method])) {
+            if (! isset($result[$method])) {
                 $result[$method] = [
-                    '# <action>' => '<parameters>'
+                    '# <action>' => '<parameters>',
                 ];
             }
         }
+
         return $result;
     }
 
@@ -222,7 +225,7 @@ class BlueprintFileLexer
         $result = [];
         if ($config->resources) {
             // Extract web-related resource declarations and move them to the controllers, since Laravel Shift Blueprint does not resolve these shorthands for Inertia views at this time.
-            $filteredResources = array_flip(array_map(fn($resource) => $resource->value, $config->resources));
+            $filteredResources = array_flip(array_map(fn ($resource) => $resource->value, $config->resources));
             $webResourceMethods = [];
             if (isset($filteredResources['web'])) {
                 $webResourceMethods = array_flip(BlueprintConfigResource::webMethods());
@@ -231,16 +234,16 @@ class BlueprintFileLexer
             // Look at each resource declaration and move web methods to extractedResourceMethods.
             foreach (BlueprintConfigResource::webMethods() as $method) {
                 if (isset($filteredResources[$method])) {
-                    if (!isset($webResourceMethods[$method])) {
+                    if (! isset($webResourceMethods[$method])) {
                         $webResourceMethods[$method] = true;
                     }
                     unset($filteredResources[$method]);
                 }
             }
-            if (!empty($filteredResources)) {
+            if (! empty($filteredResources)) {
                 $result['resource'] = implode(', ', array_keys($filteredResources));
             }
-            if (!empty($webResourceMethods)) {
+            if (! empty($webResourceMethods)) {
                 foreach (\array_keys($template) as $method) {
                     if (isset($webResourceMethods[$method])) {
                         $result[$method] = $template[$method];
@@ -270,12 +273,13 @@ class BlueprintFileLexer
         $result = $this->resolveModelControllerPlaceholders($result, $model);
         $customMethods = \array_diff($config->methods, BlueprintConfigResource::webMethods(), BlueprintConfigResource::apiMethods());
         foreach ($customMethods as $method) {
-            if (!isset($result[$method])) {
+            if (! isset($result[$method])) {
                 $result[$method] = [
-                    '# <action>' => '<parameters>'
+                    '# <action>' => '<parameters>',
                 ];
             }
         }
+
         return $result;
     }
 
@@ -303,6 +307,7 @@ class BlueprintFileLexer
                 }
             }
         }
+
         return $tree;
     }
 
@@ -320,6 +325,7 @@ class BlueprintFileLexer
         if (str_contains($parameters, '[columns]')) {
             $parameters = str_replace('[columns]', implode(', ', $model->columnNames()), $parameters);
         }
+
         return $parameters;
     }
 
@@ -336,6 +342,7 @@ class BlueprintFileLexer
                 }
             }
         }
+
         return $tree;
     }
 }

@@ -7,11 +7,11 @@ namespace ZachWatkins\InferDataSchema\SQL\Parsers;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
+use ZachWatkins\InferDataSchema\SQL\ColumnTypeInferrer;
 use ZachWatkins\InferDataSchema\SQL\Enums\DatabaseType;
 use ZachWatkins\InferDataSchema\SQL\Interfaces\ColumnTypeInferrerInterface;
 use ZachWatkins\InferDataSchema\SQL\Interfaces\ParserInterface;
 use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnCollectionInterface;
-use ZachWatkins\InferDataSchema\SQL\ColumnTypeInferrer;
 
 use function Flow\ETL\Adapter\Http\from_static_http_requests;
 use function Flow\ETL\DSL\data_frame;
@@ -20,18 +20,18 @@ final class HttpParser implements ParserInterface
 {
     public function __construct(
         private readonly ClientInterface $client,
-        private readonly ColumnTypeInferrerInterface $inferrer = new ColumnTypeInferrer(),
+        private readonly ColumnTypeInferrerInterface $inferrer = new ColumnTypeInferrer,
     ) {}
 
     public function parse(
         string $source,
         string $databaseType = 'sqlite',
     ): SQLColumnCollectionInterface {
-        if (!in_array($databaseType, array_map(fn($case) => $case->value, DatabaseType::cases()), true)) {
-            throw new \InvalidArgumentException("Invalid database type: $databaseType, accepts: " . implode(', ', array_map(fn($case) => $case->value, DatabaseType::cases())));
+        if (! in_array($databaseType, array_map(fn ($case) => $case->value, DatabaseType::cases()), true)) {
+            throw new \InvalidArgumentException("Invalid database type: $databaseType, accepts: ".implode(', ', array_map(fn ($case) => $case->value, DatabaseType::cases())));
         }
         $databaseType = DatabaseType::from($databaseType);
-        $request = (new Psr17Factory())
+        $request = (new Psr17Factory)
             ->createRequest('GET', $source)
             ->withHeader('Accept', 'application/json');
 
@@ -49,8 +49,7 @@ final class HttpParser implements ParserInterface
      * - a top-level list of associative-array records, or
      * - an associative wrapper with exactly one array-valued key containing that list.
      *
-     * @param iterable<array<string, mixed>> $rows
-     *
+     * @param  iterable<array<string, mixed>>  $rows
      * @return \Generator<array<string, mixed>>
      */
     private function flatten(iterable $rows): \Generator
@@ -58,7 +57,7 @@ final class HttpParser implements ParserInterface
         foreach ($rows as $row) {
             $body = $row['response_body'] ?? null;
 
-            if (!\is_array($body)) {
+            if (! \is_array($body)) {
                 continue;
             }
 
@@ -77,8 +76,7 @@ final class HttpParser implements ParserInterface
     }
 
     /**
-     * @param array<mixed> $body
-     *
+     * @param  array<mixed>  $body
      * @return list<array<string, mixed>>|null
      */
     private function extractRecords(array $body): ?array
@@ -95,7 +93,7 @@ final class HttpParser implements ParserInterface
             }
         }
 
-        if (\count($arrayValues) !== 1 || !$this->isRecordList($arrayValues[0])) {
+        if (\count($arrayValues) !== 1 || ! $this->isRecordList($arrayValues[0])) {
             return null;
         }
 
@@ -103,16 +101,16 @@ final class HttpParser implements ParserInterface
     }
 
     /**
-     * @param array<mixed> $value
+     * @param  array<mixed>  $value
      */
     private function isRecordList(array $value): bool
     {
-        if (!\array_is_list($value)) {
+        if (! \array_is_list($value)) {
             return false;
         }
 
         foreach ($value as $record) {
-            if (!$this->isRecord($record)) {
+            if (! $this->isRecord($record)) {
                 return false;
             }
         }
@@ -122,7 +120,7 @@ final class HttpParser implements ParserInterface
 
     private function isRecord(mixed $value): bool
     {
-        return \is_array($value) && !\array_is_list($value);
+        return \is_array($value) && ! \array_is_list($value);
     }
 
     /**

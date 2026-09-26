@@ -76,12 +76,12 @@ final class XmlParser implements BlueprintParserInterface
             }
 
             $messages = \array_map(
-                static fn(\LibXMLError $error): string => \trim($error->message),
+                static fn (\LibXMLError $error): string => \trim($error->message),
                 \libxml_get_errors(),
             );
 
             throw new \RuntimeException(
-                'Failed to parse XML fragment: ' . \implode('; ', $messages),
+                'Failed to parse XML fragment: '.\implode('; ', $messages),
             );
         } finally {
             \libxml_clear_errors();

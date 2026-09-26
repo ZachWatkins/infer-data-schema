@@ -49,7 +49,8 @@ it('prints usage for an unsupported source extension', function () use ($runCons
 
     expect($result['exitCode'])->toBe(1)
         ->and($result['stdout'])->toBe('')
-        ->and($result['stderr'])->toContain('File path \'dataset.sql\' could not be found relative to the current working directory at C:\Users\watki\repositories\infer-data-schema. Provide an absolute path or use the --cwd option');
+        ->and($result['stderr'])->toContain('File path \'dataset.sql\' could not be found relative to the current working directory at')
+        ->and($result['stderr'])->toContain('. Provide an absolute path or use the --cwd option');
 })->group('sql', 'console');
 
 it('rejects http and https sources from the cli', function (string $source) use ($runConsole) {

@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Generate test HTTP file.
+ * Generate test JSON file.
  */
 
-namespace Tests\SQL\Fixtures\Build\File;
+namespace Tests\SQL\Fixtures\Generators;
 
-class TestHttpFileGenerator
+class TestJsonFileGenerator
 {
     public function generate(string $fileName, array $data): void
     {

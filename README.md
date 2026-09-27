@@ -85,6 +85,33 @@ This library uses the following dependencies:
 - `flow-php/etl-adapter-http` - The Flow PHP ETL HTTP adapter, required for parsing HTTP data sources.
 - `pestphp/pest` - The Pest PHP testing framework, required for running the test cases.
 
+## Development
+
+To build the test fixtures after making changes to the library, run the following command:
+
+```sh
+composer test:build
+```
+
+To build the library as a standalone executable CLI application, run the following command:
+
+```sh
+composer build
+```
+
+To install the standalone executable CLI application as a system-wide GitHub Copilot agent skill, run the following command:
+
+```sh
+composer install:skill
+```
+
+If you use a different coding agent, you can run these commands replacing "path" with the folder you want to install the skill to:
+
+```sh
+composer build
+php scripts/install-skill.php --destination={path}
+```
+
 ## Additional Resources
 
 - [PHP](https://www.php.net/)

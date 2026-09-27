@@ -4,13 +4,13 @@
  * Generates the test data set.
  */
 
-namespace Tests\SQL\Fixtures\Build;
+namespace Tests\SQL\Fixtures\Generators;
 
 use DateTime;
 use Random\Randomizer;
 use Random\Engine\Mt19937;
 
-class SQLServerTestDataGenerator
+class MySQLTestDataGenerator
 {
     const SEED = 12345;
     private DateTime $dateTimeSeed;
@@ -28,12 +28,14 @@ class SQLServerTestDataGenerator
     public function generate(int $length = 10): array
     {
         $columns = [
-            'bit' => $this->generateBitColumn($length),
-            'bit_nullable' => $this->generateBitColumn($length, nullable: true),
             'tinyint' => $this->generateTinyIntColumn($length),
             'tinyint_nullable' => $this->generateTinyIntColumn($length, nullable: true),
             'tinyint_unique' => $this->generateTinyIntColumn($length, unique: true),
             'tinyint_nullable_unique' => $this->generateTinyIntColumn($length, nullable: true, unique: true),
+            'tinyint_unsigned' => $this->generateTinyIntColumn($length, unsigned: true),
+            'tinyint_unsigned_nullable' => $this->generateTinyIntColumn($length, unsigned: true, nullable: true),
+            'tinyint_unsigned_unique' => $this->generateTinyIntColumn($length, unsigned: true, unique: true),
+            'tinyint_unsigned_nullable_unique' => $this->generateTinyIntColumn($length, unsigned: true, nullable: true, unique: true),
             'smallint' => $this->generateSmallIntColumn($length),
             'smallint_nullable' => $this->generateSmallIntColumn($length, nullable: true),
             'smallint_unique' => $this->generateSmallIntColumn($length, unique: true),
@@ -42,6 +44,14 @@ class SQLServerTestDataGenerator
             'smallint_unsigned_nullable' => $this->generateSmallIntColumn($length, unsigned: true, nullable: true),
             'smallint_unsigned_unique' => $this->generateSmallIntColumn($length, unsigned: true, unique: true),
             'smallint_unsigned_nullable_unique' => $this->generateSmallIntColumn($length, unsigned: true, nullable: true, unique: true),
+            'mediumint' => $this->generateMediumIntColumn($length),
+            'mediumint_nullable' => $this->generateMediumIntColumn($length, nullable: true),
+            'mediumint_unique' => $this->generateMediumIntColumn($length, unique: true),
+            'mediumint_nullable_unique' => $this->generateMediumIntColumn($length, nullable: true, unique: true),
+            'mediumint_unsigned' => $this->generateMediumIntColumn($length, unsigned: true),
+            'mediumint_unsigned_nullable' => $this->generateMediumIntColumn($length, unsigned: true, nullable: true),
+            'mediumint_unsigned_unique' => $this->generateMediumIntColumn($length, unsigned: true, unique: true),
+            'mediumint_unsigned_nullable_unique' => $this->generateMediumIntColumn($length, unsigned: true, nullable: true, unique: true),
             'int' => $this->generateIntColumn($length),
             'int_nullable' => $this->generateIntColumn($length, nullable: true),
             'int_unique' => $this->generateIntColumn($length, unique: true),
@@ -127,18 +137,23 @@ class SQLServerTestDataGenerator
         return $values;
     }
 
-    protected function generateTinyIntColumn(int $length, bool $nullable = false, bool $unique = false): array
+    protected function generateTinyIntColumn(int $length, bool $unsigned = false, bool $nullable = false, bool $unique = false): array
     {
-        $unsignedTinyIntMin = 0;
-        $unsignedTinyIntMax = 255;
-        return $this->generateNumericColumn($length, $unsignedTinyIntMin, $unsignedTinyIntMax, $nullable, $unique);
+        if ($unsigned) {
+            $unsignedTinyIntMin = 0;
+            $unsignedTinyIntMax = 255;
+            return $this->generateNumericColumn($length, $unsignedTinyIntMin, $unsignedTinyIntMax, $nullable, $unique);
+        }
+        $signedTinyIntMin = -128;
+        $signedTinyIntMax = 127;
+        return $this->generateNumericColumn($length, $signedTinyIntMin, $signedTinyIntMax, $nullable, $unique);
     }
 
     protected function generateSmallIntColumn(int $length, bool $unsigned = false, bool $nullable = false, bool $unique = false): array
     {
         if ($unsigned) {
             $unsignedSmallIntMin = 0;
-            $unsignedSmallIntMax = 32767;
+            $unsignedSmallIntMax = 65535;
             return $this->generateNumericColumn($length, $unsignedSmallIntMin, $unsignedSmallIntMax, $nullable, $unique);
         }
         $signedSmallIntMin = -32768;
@@ -146,11 +161,23 @@ class SQLServerTestDataGenerator
         return $this->generateNumericColumn($length, $signedSmallIntMin, $signedSmallIntMax, $nullable, $unique);
     }
 
+    protected function generateMediumIntColumn(int $length, bool $unsigned = false, bool $nullable = false, bool $unique = false): array
+    {
+        if ($unsigned) {
+            $unsignedMediumIntMin = 0;
+            $unsignedMediumIntMax = 16777215;
+            return $this->generateNumericColumn($length, $unsignedMediumIntMin, $unsignedMediumIntMax, $nullable, $unique);
+        }
+        $signedMediumIntMin = -8388608;
+        $signedMediumIntMax = 8388607;
+        return $this->generateNumericColumn($length, $signedMediumIntMin, $signedMediumIntMax, $nullable, $unique);
+    }
+
     protected function generateIntColumn(int $length, bool $unsigned = false, bool $nullable = false, bool $unique = false): array
     {
         if ($unsigned) {
             $unsignedIntMin = 0;
-            $unsignedIntMax = 2147483647;
+            $unsignedIntMax = 4_294_967_295;
             return $this->generateNumericColumn($length, $unsignedIntMin, $unsignedIntMax, $nullable, $unique);
         }
         $signedIntMin = -2147483648;
@@ -162,7 +189,7 @@ class SQLServerTestDataGenerator
     {
         if ($unsigned) {
             // Minimize the generated numeric limit to avoid PHP's max int conversion issues.
-            $unsignedIntMax = 2147483647;
+            $unsignedIntMax = 4294967295;
             $unsignedBigIntMin = $unsignedIntMax + 1;
             $unsignedBigIntMax = $unsignedIntMax + 1 + $length;
             return $this->generateNumericColumn($length, $unsignedBigIntMin, $unsignedBigIntMax, $nullable, $unique);

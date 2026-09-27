@@ -30,6 +30,10 @@
     ],
     "scripts": {
         "test": "pest",
+        "test:build": [
+            "@php scripts/build-test-fixtures-blueprint.php",
+            "@php scripts/build-test-fixtures-sql.php"
+        ],
         "lint": "pint --test --parallel --max-processes=4",
         "lint:fix": "pint --parallel --max-processes=4",
         "build": [

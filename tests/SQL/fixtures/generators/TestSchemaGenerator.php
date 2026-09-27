@@ -4,7 +4,7 @@
  * Generates test fixture schema files using the source data.
  */
 
-namespace Tests\SQL\Fixtures\Build;
+namespace Tests\SQL\Fixtures\Generators;
 
 use ZachWatkins\InferDataSchema\SQL\Parsers\JsonParser;
 use ZachWatkins\InferDataSchema\SQL\Enums\ColumnModifier;

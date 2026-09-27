@@ -4,7 +4,7 @@
  * Generates test fixture schema files using the source data.
  */
 
-namespace Tests\Blueprint\Fixtures\Build;
+namespace Tests\Blueprint\Fixtures\Generators;
 
 use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintParserInterface;
 use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintModel;

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+mapfile -d '' -t staged_php_files < <(git diff --cached --name-only --diff-filter=ACMR -z -- '*.php')
+
+if ((${#staged_php_files[@]} == 0)); then
+	exit 0
+fi
+
+./vendor/bin/pint --repair --format=txt -- "${staged_php_files[@]}"

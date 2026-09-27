@@ -6,6 +6,7 @@ namespace ZachWatkins\InferLaravelBlueprint\Blueprint\Parsers;
 
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\StreamInterface;
 use ZachWatkins\InferLaravelBlueprint\Blueprint\Inferrers\BlueprintColumnTypeInferrer;
 use ZachWatkins\InferLaravelBlueprint\Blueprint\Interfaces\BlueprintColumnCollectionInterface;
 use ZachWatkins\InferLaravelBlueprint\Blueprint\Interfaces\BlueprintColumnTypeInferrerInterface;
@@ -75,10 +76,7 @@ final class HttpParser implements BlueprintParserInterface
         if ($responseBody->isSeekable()) {
             $responseBody->rewind();
         }
-        $content = $responseBody->getContents();
-        if (\strlen($content) > $this->maxResponseBytes) {
-            throw HttpResponseSizeLimitException::forSizes((string) \strlen($content), $this->maxResponseBytes);
-        }
+        $content = $this->readResponseBody($responseBody);
 
         if ($this->parser === null) {
             $body = \json_decode($content, true, 512, \JSON_THROW_ON_ERROR);
@@ -126,6 +124,34 @@ final class HttpParser implements BlueprintParserInterface
             || (\strlen($normalizedLength) === \strlen($limit) && \strcmp($normalizedLength, $limit) > 0)) {
             throw HttpResponseSizeLimitException::forSizes($normalizedLength, $this->maxResponseBytes);
         }
+    }
+
+    /**
+     * Reads no more than the configured maximum plus one byte, so unknown-length bodies stay bounded.
+     */
+    private function readResponseBody(StreamInterface $body): string
+    {
+        $content = '';
+
+        while (! $body->eof()) {
+            $remainingBytes = $this->maxResponseBytes - \strlen($content);
+            $chunk = $body->read(\min(8192, \max(1, $remainingBytes + 1)));
+
+            if ($chunk === '') {
+                if ($body->eof()) {
+                    break;
+                }
+
+                throw new \RuntimeException('Unable to read the HTTP response body.');
+            }
+
+            $content .= $chunk;
+            if (\strlen($content) > $this->maxResponseBytes) {
+                throw HttpResponseSizeLimitException::forSizes((string) \strlen($content), $this->maxResponseBytes);
+            }
+        }
+
+        return $content;
     }
 
     /**

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Blueprint\Features;
 
+use GuzzleHttp\Psr7\PumpStream;
 use Nyholm\Psr7\Response;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
@@ -221,6 +222,34 @@ it('rejects an oversized GET body when HEAD has no content length', function () 
     expect(fn () => $parser->parse('https://example.com/users.json'))
         ->toThrow(HttpResponseSizeLimitException::class);
     expect($client->methods)->toBe(['HEAD', 'GET']);
+});
+
+it('stops reading an unknown-length response as soon as the limit is exceeded', function () {
+    $bytesRead = 0;
+    $body = new PumpStream(function (int $length) use (&$bytesRead): string {
+        $chunk = \substr(\str_repeat('x', 100), $bytesRead, $length);
+        $bytesRead += \strlen($chunk);
+
+        return $chunk;
+    });
+
+    $client = new class($body) implements ClientInterface
+    {
+        public function __construct(private readonly PumpStream $body) {}
+
+        public function sendRequest(RequestInterface $request): ResponseInterface
+        {
+            return $request->getMethod() === 'HEAD'
+                ? new Response(200)
+                : new Response(200, ['Content-Type' => 'application/json'], $this->body);
+        }
+    };
+
+    $parser = new HttpParser($client, maxResponseBytes: 4);
+
+    expect(fn () => $parser->parse('https://example.com/users.json'))
+        ->toThrow(HttpResponseSizeLimitException::class);
+    expect($bytesRead)->toBe(5);
 });
 
 it('rejects an invalid HTTP timeout', function () use ($runConsole) {

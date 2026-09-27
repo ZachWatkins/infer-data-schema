@@ -57,7 +57,7 @@ it('prints usage when no source argument is provided', function () use ($runCons
 
     expect($result['exitCode'])->toBe(1)
         ->and($result['stdout'])->toBe('')
-        ->and($result['stderr'])->toContain('[--cwd=<current-working-directory>] [--db=sqlite|mysql|sqlserver] [--format=sql,blueprint] [--blueprint-model=<name>] [--blueprint-view=blade|inertia] [--blueprint-resource=web,api,index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy] [--blueprint-controller-methods=index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy,<custom>] [--blueprint-seeders] [--http-header=<name>:<value>] [--http-timeout=<seconds>] [--save] [--dry-run] [--help] <path-or-url>')
+        ->and($result['stderr'])->toContain(Console::help())
         ->and($result['stderr'])->toContain('Default: 30 seconds. Accepts: 1-3600.');
 });
 

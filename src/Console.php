@@ -23,7 +23,7 @@ use ZachWatkins\InferLaravelBlueprint\SQL\Interfaces\SQLColumnInterface;
 
 final class Console
 {
-    public const HELP = 'Infer data schema from various sources into selected formats. By Zach Watkins.
+    public const HELP = 'Infer a Laravel Shift Blueprint file from various data sources. By Zach Watkins.
 Usage: {filename} [--cwd=<current-working-directory>] [--db=sqlite|mysql|sqlserver] [--format=sql,blueprint] [--blueprint-model=<name>] [--blueprint-view=blade|inertia] [--blueprint-resource=web,api,index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy] [--blueprint-controller-methods=index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy,<custom>] [--blueprint-seeders] [--http-header=<name>:<value>] [--http-timeout=<seconds>] [--save] [--dry-run] [--help] <path-or-url>
 
 Options:
@@ -57,6 +57,15 @@ Options:
     private const DEFAULT_HTTP_TIMEOUT = 30;
 
     private const MAX_HTTP_RESPONSE_BYTES = 67108864;
+
+    /**
+     * @var list<string>
+     */
+    private const CREDENTIAL_HTTP_HEADERS = [
+        'authorization',
+        'proxy-authorization',
+        'cookie',
+    ];
 
     private string $filename = 'index.php';
 
@@ -124,7 +133,7 @@ Options:
     {
         $source = null;
         $databaseType = DatabaseType::MySQL;
-        $currentWorkingDirectory = null;
+        $currentWorkingDirectory = getcwd();
         $dryRun = false;
         $format = 'blueprint';
         $blueprintOptions = [
@@ -191,6 +200,12 @@ Options:
                 $separator = \strpos($header, ':');
                 $name = $separator === false ? '' : \trim(\substr($header, 0, $separator));
                 $value = $separator === false ? '' : \trim(\substr($header, $separator + 1));
+
+                if (\in_array(\strtolower($name), self::CREDENTIAL_HTTP_HEADERS, true)) {
+                    $this->writeUsage('Error: Credential HTTP headers are not allowed.');
+
+                    return 1;
+                }
 
                 if (\preg_match('/^[!#$%&\'*+.^_`|~0-9A-Za-z-]+$/', $name) !== 1 || \preg_match('/[\r\n]/', $value) === 1) {
                     $this->writeUsage('Error: Invalid HTTP header. Use --http-header=<name>:<value>.');

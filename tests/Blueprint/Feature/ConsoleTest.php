@@ -100,7 +100,6 @@ it('outputs blueprint YAML from an HTTP source using an injected client', functi
         'infer-laravel-blueprint',
         '--format=blueprint',
         '--blueprint-model=Model',
-        '--http-header=Authorization: Bearer test-token',
         '--http-header=Accept: application/vnd.example+json',
         '--http-timeout=5',
         'https://example.com/users',
@@ -111,8 +110,7 @@ it('outputs blueprint YAML from an HTTP source using an injected client', functi
         ->and(\rtrim($result['stdout']))->toBe(\rtrim(file_get_contents($blueprintFixturePath)))
         ->and($client->lastRequest)->not->toBeNull()
         ->and($client->lastRequest->getMethod())->toBe('GET')
-        ->and($client->lastRequest->getHeaderLine('Accept'))->toBe('application/vnd.example+json')
-        ->and($client->lastRequest->getHeaderLine('Authorization'))->toBe('Bearer test-token');
+        ->and($client->lastRequest->getHeaderLine('Accept'))->toBe('application/vnd.example+json');
 
     $outputDirectory = \dirname($httpFixturePath);
     $expectedSavePath = realpath($outputDirectory).DIRECTORY_SEPARATOR.'model-blueprint.yaml';
@@ -127,6 +125,21 @@ it('outputs blueprint YAML from an HTTP source using an injected client', functi
     expect($saveResult['exitCode'])->toBe(0)
         ->and($saveResult['stdout'])->toBe('Blueprint file saved to '.$expectedSavePath)
         ->and(\rtrim(file_get_contents($expectedSavePath)))->toBe(\rtrim(file_get_contents($blueprintFixturePath)));
+});
+
+it('rejects credential HTTP headers', function () use ($runConsole) {
+    foreach (['Authorization', 'Proxy-Authorization', 'Cookie'] as $headerName) {
+        $result = $runConsole([
+            'infer-laravel-blueprint',
+            '--blueprint-model=Model',
+            '--http-header='.$headerName.': secret',
+            'https://example.com/users',
+        ]);
+
+        expect($result['exitCode'])->toBe(1)
+            ->and($result['stdout'])->toBe('')
+            ->and($result['stderr'])->toContain('Credential HTTP headers are not allowed.');
+    }
 });
 
 it('rejects an oversized response from HEAD without requesting its body', function () use ($runConsole) {

@@ -24,7 +24,7 @@ Options:
                           Default: mysql.
   [--cwd=]                Set the current working directory.
   [--dry-run]             Perform a trial run without making any changes.
-  [--format=]             Output format. Accepts: sql, blueprint. Default: sql.
+  [--format=]             Output format. Accepts: sql, blueprint. Default: blueprint.
   [--blueprint-model=]    Specify the Blueprint model name.
   [--blueprint-seeders]   Include seeders in Blueprint output.
   [--blueprint-view=]     Set the Blueprint view type. Accepts: blade, inertia.
@@ -103,10 +103,10 @@ Options:
     public function run(array $argv): int
     {
         $source = null;
-        $databaseType = DatabaseType::SQLite;
+        $databaseType = DatabaseType::MySQL;
         $currentWorkingDirectory = null;
         $dryRun = false;
-        $format = 'sql';
+        $format = 'blueprint';
         $blueprintOptions = [
             'model' => null,
             'seeders' => false,
@@ -279,10 +279,15 @@ Options:
                 $this->writeSQLColumns($columns);
             }
         } elseif (\is_a($parserClass, BlueprintParserInterface::class, true)) {
+            if (! is_string($blueprintOptions['model']) || empty($blueprintOptions['model'])) {
+                $this->writeError('Error: The --blueprint-model option must be provided and must be a non-empty string.');
+
+                return 1;
+            }
             /** @var BlueprintParserInterface $parser */
             $parser = new $parserClass;
             $columns = $parser->parse($source);
-            $model = new BlueprintModel($blueprintOptions['model'] ?? null, $columns);
+            $model = new BlueprintModel($blueprintOptions['model'], $columns);
 
             if (! $dryRun) {
                 $lexer = new BlueprintFileLexer;

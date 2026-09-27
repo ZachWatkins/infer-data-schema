@@ -10,8 +10,8 @@ class TestHttpFileGenerator
 {
     public function generate(string $fileName, array $data): void
     {
-        $directory = __DIR__ . '/../../data/';
+        $directory = __DIR__.'/../../data/';
         $json = json_encode($data, JSON_THROW_ON_ERROR);
-        file_put_contents($directory . $fileName, $json);
+        file_put_contents($directory.$fileName, $json);
     }
 }

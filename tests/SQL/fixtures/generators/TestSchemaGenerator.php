@@ -6,19 +6,19 @@
 
 namespace Tests\SQL\Fixtures\Generators;
 
-use ZachWatkins\InferDataSchema\SQL\Parsers\JsonParser;
 use ZachWatkins\InferDataSchema\SQL\Enums\ColumnModifier;
 use ZachWatkins\InferDataSchema\SQL\Enums\MySQLColumnType;
 use ZachWatkins\InferDataSchema\SQL\Enums\SQLiteColumnType;
 use ZachWatkins\InferDataSchema\SQL\Enums\SQLServerColumnType;
+use ZachWatkins\InferDataSchema\SQL\Parsers\JsonParser;
 
 class TestSchemaGenerator
 {
     public function generateMySQL(string $dataFileName, string $schemaFileName): void
     {
-        $parser = new JsonParser();
-        $directory = __DIR__ . '/../data/';
-        $filePath = $directory . $dataFileName;
+        $parser = new JsonParser;
+        $directory = __DIR__.'/../data/';
+        $filePath = $directory.$dataFileName;
         $schema = $parser->parse($filePath, 'mysql');
         $columns = $schema->getColumns();
 
@@ -77,11 +77,11 @@ class TestSchemaGenerator
                 MySQLColumnType::Varchar->value => 'Varchar',
                 MySQLColumnType::Text->value => 'Text',
                 MySQLColumnType::Json->value => 'Json',
-                default => throw new \InvalidArgumentException('Unknown column type: ' . $column->getType()),
+                default => throw new \InvalidArgumentException('Unknown column type: '.$column->getType()),
             };
-            $output[] = '    new SQLColumn(\'' . $column->getName() . '\', MySQLColumnType::' . $columnType . '->value';
+            $output[] = '    new SQLColumn(\''.$column->getName().'\', MySQLColumnType::'.$columnType.'->value';
             $modifiers = $column->getModifiers();
-            if (!empty($modifiers)) {
+            if (! empty($modifiers)) {
                 $output[array_key_last($output)] .= ', [';
                 foreach ($column->getModifiers() as $modifier) {
                     $mod = match ($modifier) {
@@ -89,9 +89,9 @@ class TestSchemaGenerator
                         ColumnModifier::Unsigned => 'Unsigned',
                         ColumnModifier::AutoIncrement => 'AutoIncrement',
                         ColumnModifier::Nullable => 'Nullable',
-                        default => throw new \InvalidArgumentException('Unknown modifier: ' . $modifier->value),
+                        default => throw new \InvalidArgumentException('Unknown modifier: '.$modifier->value),
                     };
-                    $output[] = '        ColumnModifier::' . $mod . ',';
+                    $output[] = '        ColumnModifier::'.$mod.',';
                 }
                 $output[array_key_last($output)] .= "\n    ]";
             }
@@ -100,14 +100,14 @@ class TestSchemaGenerator
         $output[] = ']);';
         $output[] = '';
 
-        file_put_contents(__DIR__ . '/../schema/' . $schemaFileName, implode("\n", $output));
+        file_put_contents(__DIR__.'/../schema/'.$schemaFileName, implode("\n", $output));
     }
 
     public function generateSQLite(string $dataFileName, string $schemaFileName): void
     {
-        $parser = new JsonParser();
-        $directory = __DIR__ . '/../data/';
-        $filePath = $directory . $dataFileName;
+        $parser = new JsonParser;
+        $directory = __DIR__.'/../data/';
+        $filePath = $directory.$dataFileName;
         $schema = $parser->parse($filePath, 'sqlite');
         $columns = $schema->getColumns();
 
@@ -155,11 +155,11 @@ class TestSchemaGenerator
                 SQLiteColumnType::Numeric->value => 'Numeric',
                 SQLiteColumnType::Real->value => 'Real',
                 SQLiteColumnType::Text->value => 'Text',
-                default => throw new \InvalidArgumentException('Unknown column type: ' . $column->getType()),
+                default => throw new \InvalidArgumentException('Unknown column type: '.$column->getType()),
             };
-            $output[] = '    new SQLColumn(\'' . $column->getName() . '\', SQLiteColumnType::' . $columnType . '->value';
+            $output[] = '    new SQLColumn(\''.$column->getName().'\', SQLiteColumnType::'.$columnType.'->value';
             $modifiers = $column->getModifiers();
-            if (!empty($modifiers)) {
+            if (! empty($modifiers)) {
                 $output[array_key_last($output)] .= ', [';
                 foreach ($column->getModifiers() as $modifier) {
                     $mod = match ($modifier) {
@@ -167,9 +167,9 @@ class TestSchemaGenerator
                         ColumnModifier::Unsigned => 'Unsigned',
                         ColumnModifier::AutoIncrement => 'AutoIncrement',
                         ColumnModifier::Nullable => 'Nullable',
-                        default => throw new \InvalidArgumentException('Unknown modifier: ' . $modifier->value),
+                        default => throw new \InvalidArgumentException('Unknown modifier: '.$modifier->value),
                     };
-                    $output[] = '        ColumnModifier::' . $mod . ',';
+                    $output[] = '        ColumnModifier::'.$mod.',';
                 }
                 $output[array_key_last($output)] .= "\n    ]";
             }
@@ -178,14 +178,14 @@ class TestSchemaGenerator
         $output[] = ']);';
         $output[] = '';
 
-        file_put_contents(__DIR__ . '/../schema/' . $schemaFileName, implode("\n", $output));
+        file_put_contents(__DIR__.'/../schema/'.$schemaFileName, implode("\n", $output));
     }
 
     public function generateSQLServer(string $dataFileName, string $schemaFileName): void
     {
-        $parser = new JsonParser();
-        $directory = __DIR__ . '/../data/';
-        $filePath = $directory . $dataFileName;
+        $parser = new JsonParser;
+        $directory = __DIR__.'/../data/';
+        $filePath = $directory.$dataFileName;
         $schema = $parser->parse($filePath, 'sqlserver');
         $columns = $schema->getColumns();
 
@@ -244,11 +244,11 @@ class TestSchemaGenerator
                 SQLServerColumnType::NVarchar->value => 'NVarchar',
                 SQLServerColumnType::Json->value => 'Json',
                 SQLServerColumnType::XML->value => 'XML',
-                default => throw new \InvalidArgumentException('Unknown column type: ' . $column->getType()),
+                default => throw new \InvalidArgumentException('Unknown column type: '.$column->getType()),
             };
-            $output[] = '    new SQLColumn(\'' . $column->getName() . '\', SQLServerColumnType::' . $columnType . '->value';
+            $output[] = '    new SQLColumn(\''.$column->getName().'\', SQLServerColumnType::'.$columnType.'->value';
             $modifiers = $column->getModifiers();
-            if (!empty($modifiers)) {
+            if (! empty($modifiers)) {
                 $output[array_key_last($output)] .= ', [';
                 foreach ($column->getModifiers() as $modifier) {
                     $mod = match ($modifier) {
@@ -256,9 +256,9 @@ class TestSchemaGenerator
                         ColumnModifier::Unsigned => 'Unsigned',
                         ColumnModifier::AutoIncrement => 'AutoIncrement',
                         ColumnModifier::Nullable => 'Nullable',
-                        default => throw new \InvalidArgumentException('Unknown modifier: ' . $modifier->value),
+                        default => throw new \InvalidArgumentException('Unknown modifier: '.$modifier->value),
                     };
-                    $output[] = '        ColumnModifier::' . $mod . ',';
+                    $output[] = '        ColumnModifier::'.$mod.',';
                 }
                 $output[array_key_last($output)] .= "\n    ]";
             }
@@ -267,6 +267,6 @@ class TestSchemaGenerator
         $output[] = ']);';
         $output[] = '';
 
-        file_put_contents(__DIR__ . '/../schema/' . $schemaFileName, implode("\n", $output));
+        file_put_contents(__DIR__.'/../schema/'.$schemaFileName, implode("\n", $output));
     }
 }

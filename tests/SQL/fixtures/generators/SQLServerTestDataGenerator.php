@@ -7,14 +7,17 @@
 namespace Tests\SQL\Fixtures\Generators;
 
 use DateTime;
-use Random\Randomizer;
 use Random\Engine\Mt19937;
+use Random\Randomizer;
 
 class SQLServerTestDataGenerator
 {
     const SEED = 12345;
+
     private DateTime $dateTimeSeed;
+
     private Randomizer $randomizer;
+
     public function __construct()
     {
         $engine = new Mt19937(self::SEED);
@@ -110,6 +113,7 @@ class SQLServerTestDataGenerator
                 $values[$i][$columnName] = $columnValues[$i];
             }
         }
+
         return $values;
     }
 
@@ -124,6 +128,7 @@ class SQLServerTestDataGenerator
                 $values[0] = null;
             }
         }
+
         return $values;
     }
 
@@ -131,6 +136,7 @@ class SQLServerTestDataGenerator
     {
         $unsignedTinyIntMin = 0;
         $unsignedTinyIntMax = 255;
+
         return $this->generateNumericColumn($length, $unsignedTinyIntMin, $unsignedTinyIntMax, $nullable, $unique);
     }
 
@@ -139,10 +145,12 @@ class SQLServerTestDataGenerator
         if ($unsigned) {
             $unsignedSmallIntMin = 0;
             $unsignedSmallIntMax = 32767;
+
             return $this->generateNumericColumn($length, $unsignedSmallIntMin, $unsignedSmallIntMax, $nullable, $unique);
         }
         $signedSmallIntMin = -32768;
         $signedSmallIntMax = 32767;
+
         return $this->generateNumericColumn($length, $signedSmallIntMin, $signedSmallIntMax, $nullable, $unique);
     }
 
@@ -151,10 +159,12 @@ class SQLServerTestDataGenerator
         if ($unsigned) {
             $unsignedIntMin = 0;
             $unsignedIntMax = 2147483647;
+
             return $this->generateNumericColumn($length, $unsignedIntMin, $unsignedIntMax, $nullable, $unique);
         }
         $signedIntMin = -2147483648;
         $signedIntMax = 2147483647;
+
         return $this->generateNumericColumn($length, $signedIntMin, $signedIntMax, $nullable, $unique);
     }
 
@@ -165,6 +175,7 @@ class SQLServerTestDataGenerator
             $unsignedIntMax = 2147483647;
             $unsignedBigIntMin = $unsignedIntMax + 1;
             $unsignedBigIntMax = $unsignedIntMax + 1 + $length;
+
             return $this->generateNumericColumn($length, $unsignedBigIntMin, $unsignedBigIntMax, $nullable, $unique);
         }
         // Do two chunks of numbers - one chunk as negative values, and another chunk as positive values.
@@ -180,6 +191,7 @@ class SQLServerTestDataGenerator
         if (count($merged) > $length) {
             $merged = array_slice($merged, 0, $length);
         }
+
         return $merged;
     }
 
@@ -198,8 +210,8 @@ class SQLServerTestDataGenerator
             $nulledIndex = 0;
             $values[$nulledIndex] = null;
         }
-        if (!$unique && $length > 1) {
-            if (null === $nulledIndex) {
+        if (! $unique && $length > 1) {
+            if ($nulledIndex === null) {
                 $values[0] = $values[1];
             } elseif ($length > 2) {
                 if ($nulledIndex === 0) {
@@ -211,6 +223,7 @@ class SQLServerTestDataGenerator
                 }
             }
         }
+
         return $values;
     }
 
@@ -226,8 +239,8 @@ class SQLServerTestDataGenerator
             $nulledIndex = 0;
             $values[$nulledIndex] = null;
         }
-        if (!$unique && $length > 1) {
-            if (null === $nulledIndex) {
+        if (! $unique && $length > 1) {
+            if ($nulledIndex === null) {
                 $values[0] = $values[1];
             } elseif ($length > 2) {
                 if ($nulledIndex === 0) {
@@ -239,6 +252,7 @@ class SQLServerTestDataGenerator
                 }
             }
         }
+
         return $values;
     }
 
@@ -247,12 +261,13 @@ class SQLServerTestDataGenerator
         $values = array_fill(0, $length, true);
         if ($nullable) {
             $values[0] = null;
-            if (!$unique && $length > 2) {
+            if (! $unique && $length > 2) {
                 $values[1] = $values[2];
             }
-        } elseif (!$unique && $length > 1) {
+        } elseif (! $unique && $length > 1) {
             $values[0] = $values[1];
         }
+
         return $values;
     }
 
@@ -261,8 +276,9 @@ class SQLServerTestDataGenerator
         $charColumnMinLength = 0;
         $charColumnMaxLength = 255;
         if ($charLength < $charColumnMinLength || $charLength > $charColumnMaxLength) {
-            throw new \InvalidArgumentException('CHAR length must be between ' . $charColumnMinLength . ' and ' . $charColumnMaxLength . '.');
+            throw new \InvalidArgumentException('CHAR length must be between '.$charColumnMinLength.' and '.$charColumnMaxLength.'.');
         }
+
         return $this->generateStringColumn($length, $charLength, $charLength, $nullable, $unique);
     }
 
@@ -272,8 +288,9 @@ class SQLServerTestDataGenerator
         $varcharColumnMaxLength = 65535;
 
         if ($varcharLength < $varcharColumnMinLength || $varcharLength > $varcharColumnMaxLength) {
-            throw new \InvalidArgumentException('VARCHAR length must be between ' . $varcharColumnMinLength . ' and ' . $varcharColumnMaxLength . '.');
+            throw new \InvalidArgumentException('VARCHAR length must be between '.$varcharColumnMinLength.' and '.$varcharColumnMaxLength.'.');
         }
+
         return $this->generateStringColumn($length, 0, $varcharLength, $nullable, $unique);
     }
 
@@ -287,12 +304,13 @@ class SQLServerTestDataGenerator
         }
         if ($nullable) {
             $values[0] = null;
-            if (!$unique && $length > 2) {
+            if (! $unique && $length > 2) {
                 $values[1] = $values[2];
             }
-        } elseif (!$unique && $length > 1) {
+        } elseif (! $unique && $length > 1) {
             $values[0] = $values[1];
         }
+
         return $values;
     }
 
@@ -309,12 +327,13 @@ class SQLServerTestDataGenerator
         }
         if ($nullable) {
             $values[0] = null;
-            if (!$unique && $length > 2) {
+            if (! $unique && $length > 2) {
                 $values[1] = $values[2];
             }
-        } elseif (!$unique && $length > 1) {
+        } elseif (! $unique && $length > 1) {
             $values[0] = $values[1];
         }
+
         return $values;
     }
 
@@ -326,12 +345,13 @@ class SQLServerTestDataGenerator
         }
         if ($nullable) {
             $values[0] = null;
-            if (!$unique && $length > 2) {
+            if (! $unique && $length > 2) {
                 $values[1] = $values[2];
             }
-        } elseif (!$unique && $length > 1) {
+        } elseif (! $unique && $length > 1) {
             $values[0] = $values[1];
         }
+
         return $values;
     }
 
@@ -343,12 +363,13 @@ class SQLServerTestDataGenerator
         }
         if ($nullable) {
             $values[0] = null;
-            if (!$unique && $length > 2) {
+            if (! $unique && $length > 2) {
                 $values[1] = $values[2];
             }
-        } elseif (!$unique && $length > 1) {
+        } elseif (! $unique && $length > 1) {
             $values[0] = $values[1];
         }
+
         return $values;
     }
 
@@ -360,12 +381,13 @@ class SQLServerTestDataGenerator
         }
         if ($nullable) {
             $values[0] = null;
-            if (!$unique && $length > 2) {
+            if (! $unique && $length > 2) {
                 $values[1] = $values[2];
             }
-        } elseif (!$unique && $length > 1) {
+        } elseif (! $unique && $length > 1) {
             $values[0] = $values[1];
         }
+
         return $values;
     }
 
@@ -377,12 +399,13 @@ class SQLServerTestDataGenerator
         }
         if ($nullable) {
             $values[0] = null;
-            if (!$unique && $length > 2) {
+            if (! $unique && $length > 2) {
                 $values[1] = $values[2];
             }
-        } elseif (!$unique && $length > 1) {
+        } elseif (! $unique && $length > 1) {
             $values[0] = $values[1];
         }
+
         return $values;
     }
 
@@ -394,12 +417,13 @@ class SQLServerTestDataGenerator
         }
         if ($nullable) {
             $values[0] = null;
-            if (!$unique && $length > 2) {
+            if (! $unique && $length > 2) {
                 $values[1] = $values[2];
             }
-        } elseif (!$unique && $length > 1) {
+        } elseif (! $unique && $length > 1) {
             $values[0] = $values[1];
         }
+
         return $values;
     }
 }

@@ -6,11 +6,14 @@
 
 namespace Tests\SQL\Fixtures\Generators;
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 class TestXlsxFileGenerator
 {
     public function generate(string $fileName, array $data): void
     {
-        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $spreadsheet = new Spreadsheet;
         $spreadsheet->getProperties()
             ->setCreator('FixedUser')
             ->setLastModifiedBy('FixedUser')
@@ -18,13 +21,13 @@ class TestXlsxFileGenerator
             ->setModified(strtotime('2026-01-01 00:00:00'));
         $sheet = $spreadsheet->getActiveSheet();
 
-        if (!empty($data)) {
+        if (! empty($data)) {
             $sheet->fromArray(array_keys($data[0]), null, 'A1');
             $sheet->fromArray($data, null, 'A2', true);
         }
 
-        $directory = __DIR__ . '/../../data/';
-        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-        $writer->save($directory . $fileName);
+        $directory = __DIR__.'/../../data/';
+        $writer = new Xlsx($spreadsheet);
+        $writer->save($directory.$fileName);
     }
 }

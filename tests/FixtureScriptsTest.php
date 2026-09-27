@@ -5,7 +5,7 @@ describe('fixture build scripts', function () {
         $root = dirname(__DIR__);
 
         foreach (['scripts/build-fixtures.php', 'scripts/build-blueprint-fixtures.php'] as $script) {
-            $scriptPath = $root . DIRECTORY_SEPARATOR . $script;
+            $scriptPath = $root.DIRECTORY_SEPARATOR.$script;
             expect(file_exists($scriptPath))->toBeTrue();
 
             $command = sprintf('php %s 2>&1', escapeshellarg($scriptPath));

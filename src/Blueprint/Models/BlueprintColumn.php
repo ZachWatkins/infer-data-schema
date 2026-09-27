@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\Blueprint\Models;
+namespace ZachWatkins\InferLaravelBlueprint\Blueprint\Models;
 
-use ZachWatkins\InferDataSchema\Blueprint\Enums\ColumnModifier;
-use ZachWatkins\InferDataSchema\Blueprint\Enums\LaravelColumnType;
-use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintColumnInterface;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Enums\ColumnModifier;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Enums\LaravelColumnType;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Interfaces\BlueprintColumnInterface;
 
 /**
  * An immutable representation of a single inferred SQL column.

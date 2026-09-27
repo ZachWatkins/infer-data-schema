@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use ZachWatkins\InferDataSchema\Console;
+use ZachWatkins\InferLaravelBlueprint\Console;
 
 $runConsole = static function (array $argv, ?array $parserClasses = null): array {
     $stdout = \fopen('php://temp', 'w+');
@@ -37,7 +37,7 @@ afterEach(function () {
 });
 
 it('prints usage when no source argument is provided', function () use ($runConsole) {
-    $result = $runConsole(['infer-data-schema']);
+    $result = $runConsole(['infer-laravel-blueprint']);
 
     expect($result['exitCode'])->toBe(1)
         ->and($result['stdout'])->toBe('')
@@ -45,7 +45,7 @@ it('prints usage when no source argument is provided', function () use ($runCons
 })->group('sql', 'console');
 
 it('prints usage for an unsupported source extension', function () use ($runConsole) {
-    $result = $runConsole(['infer-data-schema', 'dataset.sql']);
+    $result = $runConsole(['infer-laravel-blueprint', 'dataset.sql']);
 
     expect($result['exitCode'])->toBe(1)
         ->and($result['stdout'])->toBe('')
@@ -54,7 +54,7 @@ it('prints usage for an unsupported source extension', function () use ($runCons
 })->group('sql', 'console');
 
 it('rejects http and https sources from the cli', function (string $source) use ($runConsole) {
-    $result = $runConsole(['infer-data-schema', $source, '--cwd='.getcwd()]);
+    $result = $runConsole(['infer-laravel-blueprint', $source, '--cwd='.getcwd()]);
 
     expect($result['exitCode'])->toBe(1)
         ->and($result['stdout'])->toBe('')
@@ -70,7 +70,7 @@ it('rejects http and https sources from the cli', function (string $source) use 
 it('fails gracefully when the resolved parser class is unavailable', function () use ($runConsole) {
     file_put_contents('dataset.csv', 'id,name\n1,John Doe');
     $result = $runConsole(
-        ['infer-data-schema', 'dataset.csv', '--cwd='.getcwd()],
+        ['infer-laravel-blueprint', 'dataset.csv', '--format=sql', '--cwd='.getcwd()],
         [
             'sql' => ['csv' => '\Tests\Fixtures\MissingCsvParser'],
         ]

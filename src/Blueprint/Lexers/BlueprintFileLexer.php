@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\Blueprint\Lexers;
+namespace ZachWatkins\InferLaravelBlueprint\Blueprint\Lexers;
 
-use ZachWatkins\InferDataSchema\Blueprint\Enums\BlueprintConfigResource;
-use ZachWatkins\InferDataSchema\Blueprint\Enums\BlueprintConfigView;
-use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintConfig;
-use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintModel;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Enums\BlueprintConfigResource;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Enums\BlueprintConfigView;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Models\BlueprintConfig;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Models\BlueprintModel;
 
 class BlueprintFileLexer
 {

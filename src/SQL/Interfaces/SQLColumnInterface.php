@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\SQL\Interfaces;
+namespace ZachWatkins\InferLaravelBlueprint\SQL\Interfaces;
 
-use ZachWatkins\InferDataSchema\SQL\Enums\ColumnModifier;
+use ZachWatkins\InferLaravelBlueprint\SQL\Enums\ColumnModifier;
 
 /**
  * Represents a single inferred SQL column definition.

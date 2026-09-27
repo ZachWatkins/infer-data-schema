@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use ZachWatkins\InferDataSchema\SQL\Enums\ColumnModifier;
-use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnCollectionInterface;
-use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnInterface;
-use ZachWatkins\InferDataSchema\SQL\Parsers\JsonParser;
+use ZachWatkins\InferLaravelBlueprint\SQL\Enums\ColumnModifier;
+use ZachWatkins\InferLaravelBlueprint\SQL\Interfaces\SQLColumnCollectionInterface;
+use ZachWatkins\InferLaravelBlueprint\SQL\Interfaces\SQLColumnInterface;
+use ZachWatkins\InferLaravelBlueprint\SQL\Parsers\JsonParser;
 
 it('infers the expected MySQL schema from JSON basic fixture', function () {
     /** @var SQLColumnCollectionInterface $expected */

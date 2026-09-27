@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use ZachWatkins\InferDataSchema\SQL\Enums\ColumnModifier;
-use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnInterface;
-use ZachWatkins\InferDataSchema\SQL\Parsers\ExcelParser;
+use ZachWatkins\InferLaravelBlueprint\SQL\Enums\ColumnModifier;
+use ZachWatkins\InferLaravelBlueprint\SQL\Interfaces\SQLColumnInterface;
+use ZachWatkins\InferLaravelBlueprint\SQL\Parsers\ExcelParser;
 
 it('parses an excel workbook into an inferred mysql schema', function () {
     $parser = new ExcelParser;

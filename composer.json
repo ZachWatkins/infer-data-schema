@@ -1,5 +1,5 @@
 {
-    "name": "zachwatkins/infer-data-schema",
+    "name": "zachwatkins/infer-laravel-blueprint",
     "description": "Infers the SQL column schema of a data source (CSV, JSON, XML, Excel, HTTP).",
     "type": "library",
     "license": "MIT",
@@ -17,7 +17,7 @@
     },
     "autoload": {
         "psr-4": {
-            "ZachWatkins\\InferDataSchema\\": "src/"
+            "ZachWatkins\\InferLaravelBlueprint\\": "src/"
         }
     },
     "autoload-dev": {
@@ -26,7 +26,7 @@
         }
     },
     "bin": [
-        "bin/infer-data-schema"
+        "bin/infer-laravel-blueprint"
     ],
     "scripts": {
         "test": "pest",

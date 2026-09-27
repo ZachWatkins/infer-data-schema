@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\Blueprint\Parsers;
+namespace ZachWatkins\InferLaravelBlueprint\Blueprint\Parsers;
 
-use ZachWatkins\InferDataSchema\Blueprint\Inferrers\BlueprintColumnTypeInferrer;
-use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintColumnCollectionInterface;
-use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintColumnTypeInferrerInterface;
-use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintParserInterface;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Inferrers\BlueprintColumnTypeInferrer;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Interfaces\BlueprintColumnCollectionInterface;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Interfaces\BlueprintColumnTypeInferrerInterface;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Interfaces\BlueprintParserInterface;
 
 use function Flow\ETL\Adapter\Excel\DSL\from_excel;
 use function Flow\ETL\DSL\data_frame;

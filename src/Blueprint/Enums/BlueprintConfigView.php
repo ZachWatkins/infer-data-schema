@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\Blueprint\Enums;
+namespace ZachWatkins\InferLaravelBlueprint\Blueprint\Enums;
 
 /**
  * Rendering targets supported when generating a Laravel Blueprint YAML file.

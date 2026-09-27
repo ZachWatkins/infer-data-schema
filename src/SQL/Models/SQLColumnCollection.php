@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\SQL\Models;
+namespace ZachWatkins\InferLaravelBlueprint\SQL\Models;
 
-use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnCollectionInterface;
-use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnInterface;
+use ZachWatkins\InferLaravelBlueprint\SQL\Interfaces\SQLColumnCollectionInterface;
+use ZachWatkins\InferLaravelBlueprint\SQL\Interfaces\SQLColumnInterface;
 
 /**
  * An ordered collection of inferred SQL columns.

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\SQL\Interfaces;
+namespace ZachWatkins\InferLaravelBlueprint\SQL\Interfaces;
 
 /**
  * Represents an ordered collection of inferred SQL columns.

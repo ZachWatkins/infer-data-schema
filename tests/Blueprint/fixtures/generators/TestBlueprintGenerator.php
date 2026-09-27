@@ -6,10 +6,10 @@
 
 namespace Tests\Blueprint\Fixtures\Generators;
 
-use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintParserInterface;
-use ZachWatkins\InferDataSchema\Blueprint\Lexers\BlueprintFileLexer;
-use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintConfig;
-use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintModel;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Interfaces\BlueprintParserInterface;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Lexers\BlueprintFileLexer;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Models\BlueprintConfig;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Models\BlueprintModel;
 
 class TestBlueprintGenerator
 {
@@ -38,7 +38,7 @@ class TestBlueprintGenerator
         if (! $extension) {
             throw new \InvalidArgumentException("Unable to determine the file extension for $dataFileName");
         }
-        $className = '\\ZachWatkins\\InferDataSchema\\Blueprint\\Parsers\\'.ucfirst($extension).'Parser';
+        $className = '\\ZachWatkins\\InferLaravelBlueprint\\Blueprint\\Parsers\\'.ucfirst($extension).'Parser';
         if (! class_exists($className)) {
             throw new \InvalidArgumentException("Parser class $className does not exist for file extension $extension");
         }

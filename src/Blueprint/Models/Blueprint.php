@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\Blueprint\Models;
+namespace ZachWatkins\InferLaravelBlueprint\Blueprint\Models;
 
 /**
  * This class contains the data necessary to represent a Laravel Shift Blueprint model.

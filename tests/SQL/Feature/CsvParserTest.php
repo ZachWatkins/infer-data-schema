@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use ZachWatkins\InferDataSchema\SQL\Enums\ColumnModifier;
-use ZachWatkins\InferDataSchema\SQL\Enums\DatabaseType;
-use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnCollectionInterface;
-use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnInterface;
-use ZachWatkins\InferDataSchema\SQL\Parsers\CsvParser;
+use ZachWatkins\InferLaravelBlueprint\SQL\Enums\ColumnModifier;
+use ZachWatkins\InferLaravelBlueprint\SQL\Enums\DatabaseType;
+use ZachWatkins\InferLaravelBlueprint\SQL\Interfaces\SQLColumnCollectionInterface;
+use ZachWatkins\InferLaravelBlueprint\SQL\Interfaces\SQLColumnInterface;
+use ZachWatkins\InferLaravelBlueprint\SQL\Parsers\CsvParser;
 
 it('infers the expected MySQL schema from CSV basic fixture', function () {
     /** @var SQLColumnCollectionInterface $expected */

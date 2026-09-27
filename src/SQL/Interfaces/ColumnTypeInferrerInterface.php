@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\SQL\Interfaces;
+namespace ZachWatkins\InferLaravelBlueprint\SQL\Interfaces;
 
-use ZachWatkins\InferDataSchema\SQL\Enums\DatabaseType;
+use ZachWatkins\InferLaravelBlueprint\SQL\Enums\DatabaseType;
 
 /**
  * Infers a {@see SQLColumnCollectionInterface} from a stream of data rows.

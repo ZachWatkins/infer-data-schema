@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\Blueprint\Inferrers;
+namespace ZachWatkins\InferLaravelBlueprint\Blueprint\Inferrers;
 
-use ZachWatkins\InferDataSchema\Blueprint\Enums\ColumnModifier;
-use ZachWatkins\InferDataSchema\Blueprint\Enums\LaravelColumnType;
-use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintColumnCollectionInterface;
-use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintColumnTypeInferrerInterface;
-use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintColumn;
-use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintColumnCollection;
-use ZachWatkins\InferDataSchema\Parsers;
-use ZachWatkins\InferDataSchema\Support\ColumnStats;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Enums\ColumnModifier;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Enums\LaravelColumnType;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Interfaces\BlueprintColumnCollectionInterface;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Interfaces\BlueprintColumnTypeInferrerInterface;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Models\BlueprintColumn;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Models\BlueprintColumnCollection;
+use ZachWatkins\InferLaravelBlueprint\Parsers;
+use ZachWatkins\InferLaravelBlueprint\Support\ColumnStats;
 
 /**
  * Evaluates every value of every column in a stream of rows to infer the safest possible

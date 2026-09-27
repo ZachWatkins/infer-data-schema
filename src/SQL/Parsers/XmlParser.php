@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\SQL\Parsers;
+namespace ZachWatkins\InferLaravelBlueprint\SQL\Parsers;
 
-use ZachWatkins\InferDataSchema\SQL\Enums\DatabaseType;
-use ZachWatkins\InferDataSchema\SQL\Inferrers\ColumnTypeInferrer;
-use ZachWatkins\InferDataSchema\SQL\Interfaces\ColumnTypeInferrerInterface;
-use ZachWatkins\InferDataSchema\SQL\Interfaces\ParserInterface;
-use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnCollectionInterface;
+use ZachWatkins\InferLaravelBlueprint\SQL\Enums\DatabaseType;
+use ZachWatkins\InferLaravelBlueprint\SQL\Inferrers\ColumnTypeInferrer;
+use ZachWatkins\InferLaravelBlueprint\SQL\Interfaces\ColumnTypeInferrerInterface;
+use ZachWatkins\InferLaravelBlueprint\SQL\Interfaces\ParserInterface;
+use ZachWatkins\InferLaravelBlueprint\SQL\Interfaces\SQLColumnCollectionInterface;
 
 use function Flow\ETL\Adapter\XML\from_xml;
 use function Flow\ETL\DSL\data_frame;

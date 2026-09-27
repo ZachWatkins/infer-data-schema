@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\Blueprint\Interfaces;
+namespace ZachWatkins\InferLaravelBlueprint\Blueprint\Interfaces;
 
 /**
  * Infers a {@see BlueprintColumnCollectionInterface} from a stream of data rows.

@@ -106,3 +106,5 @@ When making code changes, aim for:
 - regression coverage when changing inference logic
 
 The real purpose of this repo is not to be a generic framework. It is a compact, data-source-driven schema generator that infers usable SQL or Laravel Blueprint definitions from sample records. That purpose should guide all implementation choices.
+
+When making changes to `README.md`, instead make those changes to `scripts/build-readme.php` and run `composer build:readme`.

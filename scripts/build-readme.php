@@ -1,3 +1,15 @@
+<?php
+
+declare(strict_types=1);
+
+use ZachWatkins\InferDataSchema\Blueprint\Lexers\BlueprintFileLexer;
+use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintConfig;
+use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintModel;
+use ZachWatkins\InferDataSchema\Blueprint\Parsers\CsvParser;
+
+require __DIR__.'/../vendor/autoload.php';
+
+$template = <<<README
 # Infer Data Schema
 
 **This is not intended to be used in production environments. It is only intended for development and testing purposes.**
@@ -13,56 +25,13 @@ You can use the `index.php` file from the command line to create a Laravel Shift
 Given the following example CSV file:
 
 ```csv
-id,name,locale,birthdate,accept_terms
-1,"John Doe",en-US,1990-01-01,true
-2,"Jane Smith",en-GB,1992-02-02,false
-3,"Monica Lee",fr-FR,1994-05-05,true
-4,"Bob Mitchell",en-CA,1985-03-03,true
-5,"Alice Johnson",en-AU,1993-04-04,false
-6,"Carlos Gomez",es-MX,1988-06-06,true
-7,"Akira Tanaka",ja-JP,1991-07-07,false
-8,"Hans Schmidt",de-DE,1983-08-08,true
-9,"Rahul Sharma",en-IN,1995-09-09,false
+%s
 ```
 
 Running `php index.php --blueprint-model=User path/to/users.csv` will produce the following result:
 
 ```yaml
-models:
-  User:
-    id: tinyIncrements unique unsigned auto_increment
-    name: tinyText unique
-    locale: char:5 unique
-    birthdate: date unique
-    accept_terms: boolean
-
-controllers:
-  User:
-    index:
-      query: all:users
-      inertia: User/Index with:users
-    create:
-      inertia: User/Create
-    store:
-      validate: id, name, locale, birthdate, accept_terms
-      save: user
-      flash: user.id
-      redirect: users.index
-    show:
-      inertia: User/Show with:user
-    edit:
-      inertia: User/Edit with:user
-    update:
-      validate: id, name, locale, birthdate, accept_terms
-      update: user
-      flash: user.id
-      redirect: users.index
-    destroy:
-      delete: user
-      redirect: users.index
-
-seeders: User
-
+%s
 ```
 
 Blueprint YAML is printed to the console by default. Add `--save` to write it to `user-blueprint.yaml` instead:
@@ -110,55 +79,21 @@ use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintConfig;
 use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintModel;
 use ZachWatkins\InferDataSchema\Blueprint\Parsers\CsvParser;
 
-$parser = new CsvParser();
-$blueprintColumnCollection = $parser->parse('path/to/your/file.csv');
-$model = new BlueprintModel('Model', $blueprintColumnCollection);
-$config = new BlueprintConfig(
-    models: [$model],
+\$parser = new CsvParser();
+\$blueprintColumnCollection = \$parser->parse('path/to/your/file.csv');
+\$model = new BlueprintModel('Model', \$blueprintColumnCollection);
+\$config = new BlueprintConfig(
+    models: [\$model],
     resources: ['web'],
     seeders: true,
     view: 'inertia',
 );
-$lexer = new BlueprintFileLexer;
-$result = $lexer->toString($config);
+\$lexer = new BlueprintFileLexer;
+\$result = \$lexer->toString(\$config);
 
-file_put_contents('user-blueprint.yaml', $result);
+file_put_contents('user-blueprint.yaml', \$result);
 
-// models:
-//   User:
-//     id: tinyIncrements unique unsigned auto_increment
-//     name: tinyText unique
-//     locale: char:5 unique
-//     birthdate: date unique
-//     accept_terms: boolean
-//
-// controllers:
-//   User:
-//     index:
-//       query: all:users
-//       inertia: User/Index with:users
-//     create:
-//       inertia: User/Create
-//     store:
-//       validate: id, name, locale, birthdate, accept_terms
-//       save: user
-//       flash: user.id
-//       redirect: users.index
-//     show:
-//       inertia: User/Show with:user
-//     edit:
-//       inertia: User/Edit with:user
-//     update:
-//       validate: id, name, locale, birthdate, accept_terms
-//       update: user
-//       flash: user.id
-//       redirect: users.index
-//     destroy:
-//       delete: user
-//       redirect: users.index
-//
-// seeders: User
-//
+%s
 ```
 
 ## Development
@@ -170,6 +105,12 @@ git config core.hooksPath .githooks
 ```
 
 The hook runs Pint with `--repair --format=txt` on staged PHP files. If Pint changes a file, it exits with a nonzero status; review and stage the formatting changes before retrying the commit.
+
+To build this readme file, run the following command:
+
+```sh
+composer build:readme
+```
 
 To build the test fixtures after making changes to the library, run the following command:
 
@@ -207,3 +148,36 @@ php scripts/install-skill.php --destination=path
 - [Flow PHP ETL HTTP Adapter](https://flow-php.com/documentation/components/adapters/http/)
 - [Pest PHP](https://pestphp.com/docs/introduction)
 - [SQL Server Data Types](https://learn.microsoft.com/en-us/sql/t-sql/data-types/data-types-transact-sql)
+README;
+
+// Create the test file indicating users from multiple countries: US, Canada, Australia, France, Mexico, Japan, Germany, India.
+$exampleFile = 'id,name,locale,birthdate,accept_terms
+1,"John Doe",en-US,1990-01-01,true
+2,"Jane Smith",en-GB,1992-02-02,false
+3,"Monica Lee",fr-FR,1994-05-05,true
+4,"Bob Mitchell",en-CA,1985-03-03,true
+5,"Alice Johnson",en-AU,1993-04-04,false
+6,"Carlos Gomez",es-MX,1988-06-06,true
+7,"Akira Tanaka",ja-JP,1991-07-07,false
+8,"Hans Schmidt",de-DE,1983-08-08,true
+9,"Rahul Sharma",en-IN,1995-09-09,false';
+file_put_contents('test.csv', $exampleFile);
+
+$blueprintColumns = (new CsvParser)->parse('test.csv');
+$model = new BlueprintModel('User', $blueprintColumns);
+$config = new BlueprintConfig(
+    models: [$model],
+    resources: ['web'],
+    seeders: true,
+    view: 'inertia',
+);
+$lexer = new BlueprintFileLexer;
+$blueprintOutput = $lexer->toString($config);
+$blueprintOutputEscaped = preg_replace('/\/\/ (\n)/m', '//$1', '// '.preg_replace('/(\n)/m', '$1// ', $blueprintOutput));
+$blueprintOutputEscaped = rtrim($blueprintOutputEscaped);
+
+unlink('test.csv');
+
+$readme = sprintf($template, $exampleFile, $blueprintOutput, $blueprintOutputEscaped);
+
+file_put_contents('README.md', $readme);

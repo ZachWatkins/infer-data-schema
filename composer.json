@@ -42,6 +42,7 @@
             "composer install",
             "phpacker build"
         ],
+        "build:readme": "php scripts/build-readme.php",
         "install:skill": [
             "composer install --no-dev",
             "@php -d phar.readonly=0 scripts/build-phar.php",

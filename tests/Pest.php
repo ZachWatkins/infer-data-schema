@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use ZachWatkins\InferDataSchema\SQL\Enums\DatabaseType;
-use ZachWatkins\InferDataSchema\SQL\Inferrers\ColumnTypeInferrer;
-use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnCollectionInterface;
+use ZachWatkins\InferLaravelBlueprint\SQL\Enums\DatabaseType;
+use ZachWatkins\InferLaravelBlueprint\SQL\Inferrers\ColumnTypeInferrer;
+use ZachWatkins\InferLaravelBlueprint\SQL\Interfaces\SQLColumnCollectionInterface;
 
 /*
 |--------------------------------------------------------------------------

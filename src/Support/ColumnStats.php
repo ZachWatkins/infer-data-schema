@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\Support;
+namespace ZachWatkins\InferLaravelBlueprint\Support;
 
 /**
  * Mutable accumulator of per-column value statistics, built incrementally while

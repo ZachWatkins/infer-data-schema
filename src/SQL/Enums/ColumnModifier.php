@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\SQL\Enums;
+namespace ZachWatkins\InferLaravelBlueprint\SQL\Enums;
 
 /**
  * Modifiers that describe additional constraints or attributes of a SQL column,

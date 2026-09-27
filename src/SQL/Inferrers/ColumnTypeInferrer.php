@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\SQL\Inferrers;
+namespace ZachWatkins\InferLaravelBlueprint\SQL\Inferrers;
 
-use ZachWatkins\InferDataSchema\Parsers;
-use ZachWatkins\InferDataSchema\SQL\Enums\ColumnModifier;
-use ZachWatkins\InferDataSchema\SQL\Enums\DatabaseType;
-use ZachWatkins\InferDataSchema\SQL\Enums\MySQLColumnType;
-use ZachWatkins\InferDataSchema\SQL\Enums\SQLiteColumnType;
-use ZachWatkins\InferDataSchema\SQL\Enums\SQLServerColumnType;
-use ZachWatkins\InferDataSchema\SQL\Interfaces\ColumnTypeInferrerInterface;
-use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnCollectionInterface;
-use ZachWatkins\InferDataSchema\SQL\Models\SQLColumn;
-use ZachWatkins\InferDataSchema\SQL\Models\SQLColumnCollection;
-use ZachWatkins\InferDataSchema\Support\ColumnStats;
+use ZachWatkins\InferLaravelBlueprint\Parsers;
+use ZachWatkins\InferLaravelBlueprint\SQL\Enums\ColumnModifier;
+use ZachWatkins\InferLaravelBlueprint\SQL\Enums\DatabaseType;
+use ZachWatkins\InferLaravelBlueprint\SQL\Enums\MySQLColumnType;
+use ZachWatkins\InferLaravelBlueprint\SQL\Enums\SQLiteColumnType;
+use ZachWatkins\InferLaravelBlueprint\SQL\Enums\SQLServerColumnType;
+use ZachWatkins\InferLaravelBlueprint\SQL\Interfaces\ColumnTypeInferrerInterface;
+use ZachWatkins\InferLaravelBlueprint\SQL\Interfaces\SQLColumnCollectionInterface;
+use ZachWatkins\InferLaravelBlueprint\SQL\Models\SQLColumn;
+use ZachWatkins\InferLaravelBlueprint\SQL\Models\SQLColumnCollection;
+use ZachWatkins\InferLaravelBlueprint\Support\ColumnStats;
 
 /**
  * Evaluates every value of every column in a stream of rows to infer the safest possible

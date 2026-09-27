@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\SQL\Enums;
+namespace ZachWatkins\InferLaravelBlueprint\SQL\Enums;
 
 /**
  * SQLite column types.

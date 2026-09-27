@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-use ZachWatkins\InferDataSchema\Blueprint\Enums\BlueprintConfigResource;
-use ZachWatkins\InferDataSchema\Blueprint\Enums\BlueprintConfigView;
-use ZachWatkins\InferDataSchema\Blueprint\Lexers\BlueprintFileLexer;
-use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintConfig;
-use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintModel;
-use ZachWatkins\InferDataSchema\Blueprint\Parsers\CsvParser;
-use ZachWatkins\InferDataSchema\Blueprint\Parsers\JsonParser;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Enums\BlueprintConfigResource;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Enums\BlueprintConfigView;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Lexers\BlueprintFileLexer;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Models\BlueprintConfig;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Models\BlueprintModel;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Parsers\CsvParser;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Parsers\JsonParser;
 
 it('infers the expected Blueprint file from the MySQL CSV fixture', function () {
     $dataFixture = dirname(__DIR__).str_replace('/', DIRECTORY_SEPARATOR, '/../SQL/fixtures/data/test_mysql.csv');

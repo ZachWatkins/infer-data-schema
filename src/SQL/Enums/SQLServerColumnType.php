@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\SQL\Enums;
+namespace ZachWatkins\InferLaravelBlueprint\SQL\Enums;
 
 /**
  * SQL Server (Transact-SQL) column types commonly used for schema inference.

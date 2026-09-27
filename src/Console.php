@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema;
+namespace ZachWatkins\InferLaravelBlueprint;
 
-use ZachWatkins\InferDataSchema\Blueprint\Enums\BlueprintConfigResource;
-use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintParserInterface;
-use ZachWatkins\InferDataSchema\Blueprint\Lexers\BlueprintFileLexer;
-use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintConfig;
-use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintModel;
-use ZachWatkins\InferDataSchema\SQL\Enums\ColumnModifier;
-use ZachWatkins\InferDataSchema\SQL\Enums\DatabaseType;
-use ZachWatkins\InferDataSchema\SQL\Interfaces\ParserInterface as SQLParserInterface;
-use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnCollectionInterface;
-use ZachWatkins\InferDataSchema\SQL\Interfaces\SQLColumnInterface;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Enums\BlueprintConfigResource;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Interfaces\BlueprintParserInterface;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Lexers\BlueprintFileLexer;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Models\BlueprintConfig;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Models\BlueprintModel;
+use ZachWatkins\InferLaravelBlueprint\SQL\Enums\ColumnModifier;
+use ZachWatkins\InferLaravelBlueprint\SQL\Enums\DatabaseType;
+use ZachWatkins\InferLaravelBlueprint\SQL\Interfaces\ParserInterface as SQLParserInterface;
+use ZachWatkins\InferLaravelBlueprint\SQL\Interfaces\SQLColumnCollectionInterface;
+use ZachWatkins\InferLaravelBlueprint\SQL\Interfaces\SQLColumnInterface;
 
 final class Console
 {
@@ -70,20 +70,20 @@ Options:
         $this->stderr = $stderr ?? \STDERR;
         $this->parserClasses = $parserClasses ?? [
             'sql' => [
-                'csv' => '\ZachWatkins\InferDataSchema\SQL\Parsers\CsvParser',
-                'json' => '\ZachWatkins\InferDataSchema\SQL\Parsers\JsonParser',
-                'xml' => '\ZachWatkins\InferDataSchema\SQL\Parsers\XmlParser',
-                'xlsx' => '\ZachWatkins\InferDataSchema\SQL\Parsers\ExcelParser',
-                'xls' => '\ZachWatkins\InferDataSchema\SQL\Parsers\ExcelParser',
-                'ods' => '\ZachWatkins\InferDataSchema\SQL\Parsers\ExcelParser',
+                'csv' => '\ZachWatkins\InferLaravelBlueprint\SQL\Parsers\CsvParser',
+                'json' => '\ZachWatkins\InferLaravelBlueprint\SQL\Parsers\JsonParser',
+                'xml' => '\ZachWatkins\InferLaravelBlueprint\SQL\Parsers\XmlParser',
+                'xlsx' => '\ZachWatkins\InferLaravelBlueprint\SQL\Parsers\ExcelParser',
+                'xls' => '\ZachWatkins\InferLaravelBlueprint\SQL\Parsers\ExcelParser',
+                'ods' => '\ZachWatkins\InferLaravelBlueprint\SQL\Parsers\ExcelParser',
             ],
             'blueprint' => [
-                'csv' => '\ZachWatkins\InferDataSchema\Blueprint\Parsers\CsvParser',
-                'json' => '\ZachWatkins\InferDataSchema\Blueprint\Parsers\JsonParser',
-                'xml' => '\ZachWatkins\InferDataSchema\Blueprint\Parsers\XmlParser',
-                'xlsx' => '\ZachWatkins\InferDataSchema\Blueprint\Parsers\ExcelParser',
-                'xls' => '\ZachWatkins\InferDataSchema\Blueprint\Parsers\ExcelParser',
-                'ods' => '\ZachWatkins\InferDataSchema\Blueprint\Parsers\ExcelParser',
+                'csv' => '\ZachWatkins\InferLaravelBlueprint\Blueprint\Parsers\CsvParser',
+                'json' => '\ZachWatkins\InferLaravelBlueprint\Blueprint\Parsers\JsonParser',
+                'xml' => '\ZachWatkins\InferLaravelBlueprint\Blueprint\Parsers\XmlParser',
+                'xlsx' => '\ZachWatkins\InferLaravelBlueprint\Blueprint\Parsers\ExcelParser',
+                'xls' => '\ZachWatkins\InferLaravelBlueprint\Blueprint\Parsers\ExcelParser',
+                'ods' => '\ZachWatkins\InferLaravelBlueprint\Blueprint\Parsers\ExcelParser',
             ],
         ];
 

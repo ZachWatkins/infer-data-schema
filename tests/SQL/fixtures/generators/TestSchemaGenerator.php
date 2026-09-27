@@ -6,11 +6,11 @@
 
 namespace Tests\SQL\Fixtures\Generators;
 
-use ZachWatkins\InferDataSchema\SQL\Enums\ColumnModifier;
-use ZachWatkins\InferDataSchema\SQL\Enums\MySQLColumnType;
-use ZachWatkins\InferDataSchema\SQL\Enums\SQLiteColumnType;
-use ZachWatkins\InferDataSchema\SQL\Enums\SQLServerColumnType;
-use ZachWatkins\InferDataSchema\SQL\Parsers\JsonParser;
+use ZachWatkins\InferLaravelBlueprint\SQL\Enums\ColumnModifier;
+use ZachWatkins\InferLaravelBlueprint\SQL\Enums\MySQLColumnType;
+use ZachWatkins\InferLaravelBlueprint\SQL\Enums\SQLiteColumnType;
+use ZachWatkins\InferLaravelBlueprint\SQL\Enums\SQLServerColumnType;
+use ZachWatkins\InferLaravelBlueprint\SQL\Parsers\JsonParser;
 
 class TestSchemaGenerator
 {
@@ -25,10 +25,10 @@ class TestSchemaGenerator
         // Example output:
         // declare(strict_types=1);
 
-        // use ZachWatkins\InferDataSchema\SQL\Enums\ColumnModifier;
-        // use ZachWatkins\InferDataSchema\SQL\Enums\MySQLColumnType;
-        // use ZachWatkins\InferDataSchema\Models\SQLColumn;
-        // use ZachWatkins\InferDataSchema\Models\SQLColumnCollection;
+        // use ZachWatkins\InferLaravelBlueprint\SQL\Enums\ColumnModifier;
+        // use ZachWatkins\InferLaravelBlueprint\SQL\Enums\MySQLColumnType;
+        // use ZachWatkins\InferLaravelBlueprint\Models\SQLColumn;
+        // use ZachWatkins\InferLaravelBlueprint\Models\SQLColumnCollection;
 
         // return new SQLColumnCollection([
         //     new SQLColumn('id', MySQLColumnType::TinyInt->value, [
@@ -52,10 +52,10 @@ class TestSchemaGenerator
             '',
             'declare(strict_types=1);',
             '',
-            'use ZachWatkins\InferDataSchema\SQL\Enums\ColumnModifier;',
-            'use ZachWatkins\InferDataSchema\SQL\Enums\MySQLColumnType;',
-            'use ZachWatkins\InferDataSchema\SQL\Models\SQLColumn;',
-            'use ZachWatkins\InferDataSchema\SQL\Models\SQLColumnCollection;',
+            'use ZachWatkins\InferLaravelBlueprint\SQL\Enums\ColumnModifier;',
+            'use ZachWatkins\InferLaravelBlueprint\SQL\Enums\MySQLColumnType;',
+            'use ZachWatkins\InferLaravelBlueprint\SQL\Models\SQLColumn;',
+            'use ZachWatkins\InferLaravelBlueprint\SQL\Models\SQLColumnCollection;',
             '',
             'return new SQLColumnCollection([',
         ];
@@ -114,10 +114,10 @@ class TestSchemaGenerator
         // Example output:
         // declare(strict_types=1);
 
-        // use ZachWatkins\InferDataSchema\SQL\Enums\ColumnModifier;
-        // use ZachWatkins\InferDataSchema\SQL\Enums\MySQLColumnType;
-        // use ZachWatkins\InferDataSchema\Models\SQLColumn;
-        // use ZachWatkins\InferDataSchema\Models\SQLColumnCollection;
+        // use ZachWatkins\InferLaravelBlueprint\SQL\Enums\ColumnModifier;
+        // use ZachWatkins\InferLaravelBlueprint\SQL\Enums\MySQLColumnType;
+        // use ZachWatkins\InferLaravelBlueprint\Models\SQLColumn;
+        // use ZachWatkins\InferLaravelBlueprint\Models\SQLColumnCollection;
 
         // return new SQLColumnCollection([
         //     new SQLColumn('id', SQLiteColumnType::TinyInt->value, [
@@ -141,10 +141,10 @@ class TestSchemaGenerator
             '',
             'declare(strict_types=1);',
             '',
-            'use ZachWatkins\InferDataSchema\SQL\Enums\ColumnModifier;',
-            'use ZachWatkins\InferDataSchema\SQL\Enums\SQLiteColumnType;',
-            'use ZachWatkins\InferDataSchema\SQL\Models\SQLColumn;',
-            'use ZachWatkins\InferDataSchema\SQL\Models\SQLColumnCollection;',
+            'use ZachWatkins\InferLaravelBlueprint\SQL\Enums\ColumnModifier;',
+            'use ZachWatkins\InferLaravelBlueprint\SQL\Enums\SQLiteColumnType;',
+            'use ZachWatkins\InferLaravelBlueprint\SQL\Models\SQLColumn;',
+            'use ZachWatkins\InferLaravelBlueprint\SQL\Models\SQLColumnCollection;',
             '',
             'return new SQLColumnCollection([',
         ];
@@ -192,10 +192,10 @@ class TestSchemaGenerator
         // Example output:
         // declare(strict_types=1);
 
-        // use ZachWatkins\InferDataSchema\SQL\Enums\ColumnModifier;
-        // use ZachWatkins\InferDataSchema\SQL\Enums\MySQLColumnType;
-        // use ZachWatkins\InferDataSchema\Models\SQLColumn;
-        // use ZachWatkins\InferDataSchema\Models\SQLColumnCollection;
+        // use ZachWatkins\InferLaravelBlueprint\SQL\Enums\ColumnModifier;
+        // use ZachWatkins\InferLaravelBlueprint\SQL\Enums\MySQLColumnType;
+        // use ZachWatkins\InferLaravelBlueprint\Models\SQLColumn;
+        // use ZachWatkins\InferLaravelBlueprint\Models\SQLColumnCollection;
 
         // return new SQLColumnCollection([
         //     new SQLColumn('id', SQLServerColumnType::TinyInt->value, [
@@ -219,10 +219,10 @@ class TestSchemaGenerator
             '',
             'declare(strict_types=1);',
             '',
-            'use ZachWatkins\InferDataSchema\SQL\Enums\ColumnModifier;',
-            'use ZachWatkins\InferDataSchema\SQL\Enums\SQLServerColumnType;',
-            'use ZachWatkins\InferDataSchema\SQL\Models\SQLColumn;',
-            'use ZachWatkins\InferDataSchema\SQL\Models\SQLColumnCollection;',
+            'use ZachWatkins\InferLaravelBlueprint\SQL\Enums\ColumnModifier;',
+            'use ZachWatkins\InferLaravelBlueprint\SQL\Enums\SQLServerColumnType;',
+            'use ZachWatkins\InferLaravelBlueprint\SQL\Models\SQLColumn;',
+            'use ZachWatkins\InferLaravelBlueprint\SQL\Models\SQLColumnCollection;',
             '',
             'return new SQLColumnCollection([',
         ];

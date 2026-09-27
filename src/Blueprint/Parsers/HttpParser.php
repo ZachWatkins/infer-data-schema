@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\Blueprint\Parsers;
+namespace ZachWatkins\InferLaravelBlueprint\Blueprint\Parsers;
 
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
-use ZachWatkins\InferDataSchema\Blueprint\Inferrers\BlueprintColumnTypeInferrer;
-use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintColumnCollectionInterface;
-use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintColumnTypeInferrerInterface;
-use ZachWatkins\InferDataSchema\Blueprint\Interfaces\BlueprintParserInterface;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Inferrers\BlueprintColumnTypeInferrer;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Interfaces\BlueprintColumnCollectionInterface;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Interfaces\BlueprintColumnTypeInferrerInterface;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Interfaces\BlueprintParserInterface;
 
 use function Flow\ETL\Adapter\Http\from_static_http_requests;
 use function Flow\ETL\DSL\data_frame;

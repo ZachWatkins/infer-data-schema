@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use ZachWatkins\InferDataSchema\SQL\Enums\ColumnModifier;
-use ZachWatkins\InferDataSchema\SQL\Enums\DatabaseType;
-use ZachWatkins\InferDataSchema\SQL\Enums\MySQLColumnType;
-use ZachWatkins\InferDataSchema\SQL\Enums\SQLiteColumnType;
-use ZachWatkins\InferDataSchema\SQL\Enums\SQLServerColumnType;
+use ZachWatkins\InferLaravelBlueprint\SQL\Enums\ColumnModifier;
+use ZachWatkins\InferLaravelBlueprint\SQL\Enums\DatabaseType;
+use ZachWatkins\InferLaravelBlueprint\SQL\Enums\MySQLColumnType;
+use ZachWatkins\InferLaravelBlueprint\SQL\Enums\SQLiteColumnType;
+use ZachWatkins\InferLaravelBlueprint\SQL\Enums\SQLServerColumnType;
 
 it('infers an auto-incrementing, unsigned, unique integer id column', function () {
     $columns = infer([

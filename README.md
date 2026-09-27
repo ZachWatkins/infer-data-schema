@@ -2,7 +2,7 @@
 
 **This is not intended to be used in production environments. It is only intended for development and testing purposes.**
 
-[![Test](https://github.com/ZachWatkins/infer-data-schema/actions/workflows/test.yml/badge.svg)](https://github.com/ZachWatkins/infer-data-schema/actions/workflows/test.yml) [![Audit](https://github.com/ZachWatkins/infer-data-schema/actions/workflows/audit.yml/badge.svg)](https://github.com/ZachWatkins/infer-data-schema/actions/workflows/audit.yml)
+[![Test](https://github.com/ZachWatkins/infer-laravel-blueprint/actions/workflows/test.yml/badge.svg)](https://github.com/ZachWatkins/infer-laravel-blueprint/actions/workflows/test.yml) [![Audit](https://github.com/ZachWatkins/infer-laravel-blueprint/actions/workflows/audit.yml/badge.svg)](https://github.com/ZachWatkins/infer-laravel-blueprint/actions/workflows/audit.yml)
 
 This PHP library performs limited inference of the SQL column schema for a given data source and can either provide those details or a [Laravel Shift Blueprint](https://blueprint.laravelshift.com/) YAML file, which can then be used to scaffold the relevant [Laravel](https://laravel.com/) PHP framework files which implement that data model into an existing application.
 
@@ -105,10 +105,10 @@ php scripts/install-skill.php --destination=path
 You can use the library to customize how the values from data sources are parsed:
 
 ```php
-use ZachWatkins\InferDataSchema\Blueprint\Lexers\BlueprintFileLexer;
-use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintConfig;
-use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintModel;
-use ZachWatkins\InferDataSchema\Blueprint\Parsers\CsvParser;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Lexers\BlueprintFileLexer;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Models\BlueprintConfig;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Models\BlueprintModel;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Parsers\CsvParser;
 
 $parser = new CsvParser();
 $blueprintColumnCollection = $parser->parse('path/to/your/file.csv');

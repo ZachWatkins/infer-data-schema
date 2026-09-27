@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\Blueprint\Enums;
+namespace ZachWatkins\InferLaravelBlueprint\Blueprint\Enums;
 
 /**
  * Controller resource types supported by the Laravel Shift Blueprint YAML file.

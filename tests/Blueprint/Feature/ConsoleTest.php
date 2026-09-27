@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Blueprint\Features;
 
-use ZachWatkins\InferDataSchema\Console;
+use ZachWatkins\InferLaravelBlueprint\Console;
 
 $runConsole = static function (array $argv, ?array $parserClasses = null): array {
     $stdout = \fopen('php://temp', 'w+');
@@ -40,7 +40,7 @@ afterEach(function () {
 });
 
 it('prints usage when no source argument is provided', function () use ($runConsole) {
-    $result = $runConsole(['infer-data-schema']);
+    $result = $runConsole(['infer-laravel-blueprint']);
 
     expect($result['exitCode'])->toBe(1)
         ->and($result['stdout'])->toBe('')
@@ -51,7 +51,7 @@ it('outputs blueprint YAML file contents to the console if --save is not provide
     $dataFixturePath = __DIR__.str_replace('/', DIRECTORY_SEPARATOR, '/../../SQL/fixtures/data/test_mysql.csv');
     $blueprintFixturePath = __DIR__.str_replace('/', DIRECTORY_SEPARATOR, '/../fixtures/blueprint/test_mysql_basic.yaml');
 
-    $result = $runConsole(['infer-data-schema', '--format=blueprint', '--blueprint-model=Model', $dataFixturePath]);
+    $result = $runConsole(['infer-laravel-blueprint', '--format=blueprint', '--blueprint-model=Model', $dataFixturePath]);
 
     $expectedOutput = file_get_contents($blueprintFixturePath);
 
@@ -65,7 +65,7 @@ it('saves a blueprint YAML file to disk in same folder as data source if --save 
     $dataFixturePath = __DIR__.str_replace('/', DIRECTORY_SEPARATOR, '/../../SQL/fixtures/data/test_mysql.csv');
     $expectedSavePath = __DIR__.str_replace('/', DIRECTORY_SEPARATOR, '/../../SQL/fixtures/data/model-blueprint.yaml');
     $blueprintFixturePath = __DIR__.str_replace('/', DIRECTORY_SEPARATOR, '/../fixtures/blueprint/test_mysql_basic.yaml');
-    $result = $runConsole(['infer-data-schema', '--format=blueprint', '--blueprint-model=Model', '--save', $dataFixturePath]);
+    $result = $runConsole(['infer-laravel-blueprint', '--format=blueprint', '--blueprint-model=Model', '--save', $dataFixturePath]);
     expect(file_exists(realpath($expectedSavePath)))->toBeTrue();
     expect($result['exitCode'])->toBe(0)
         ->and($result['stdout'])->toContain('Blueprint file saved to '.realpath($expectedSavePath))

@@ -81,14 +81,14 @@ function addProjectFilesToPhar(Phar $phar, string $projectRoot, array $paths): v
 }
 
 try {
-    buildPharArchive(getcwd(), getcwd().'/.phar/infer-data-schema.phar', [
+    buildPharArchive(getcwd(), getcwd().'/.phar/infer-laravel-blueprint.phar', [
         'src',
         'vendor',
         'index.php',
         'composer.json',
     ]);
 
-    fwrite(STDOUT, 'Built .phar/infer-data-schema.phar'.PHP_EOL);
+    fwrite(STDOUT, 'Built .phar/infer-laravel-blueprint.phar'.PHP_EOL);
 } catch (Throwable $exception) {
     fwrite(STDERR, 'Error: '.$exception->getMessage().PHP_EOL);
 

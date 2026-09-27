@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use ZachWatkins\InferDataSchema\Models\SQLColumn;
-use ZachWatkins\InferDataSchema\Models\SQLColumnCollection;
-use ZachWatkins\InferDataSchema\SQL\Enums\ColumnModifier;
-use ZachWatkins\InferDataSchema\SQL\Enums\SQLiteColumnType;
+use ZachWatkins\InferLaravelBlueprint\Models\SQLColumn;
+use ZachWatkins\InferLaravelBlueprint\Models\SQLColumnCollection;
+use ZachWatkins\InferLaravelBlueprint\SQL\Enums\ColumnModifier;
+use ZachWatkins\InferLaravelBlueprint\SQL\Enums\SQLiteColumnType;
 
 return new SQLColumnCollection([
     new SQLColumn('bit', SQLiteColumnType::Integer->value, [

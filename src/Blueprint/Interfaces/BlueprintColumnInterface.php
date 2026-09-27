@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\Blueprint\Interfaces;
+namespace ZachWatkins\InferLaravelBlueprint\Blueprint\Interfaces;
 
-use ZachWatkins\InferDataSchema\Blueprint\Enums\ColumnModifier;
-use ZachWatkins\InferDataSchema\Blueprint\Enums\LaravelColumnType;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Enums\ColumnModifier;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Enums\LaravelColumnType;
 
 /**
  * Represents a single inferred Laravel Shift Blueprint column definition.

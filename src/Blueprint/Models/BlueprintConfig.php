@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\Blueprint\Models;
+namespace ZachWatkins\InferLaravelBlueprint\Blueprint\Models;
 
-use ZachWatkins\InferDataSchema\Blueprint\Enums\BlueprintConfigResource;
-use ZachWatkins\InferDataSchema\Blueprint\Enums\BlueprintConfigView;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Enums\BlueprintConfigResource;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Enums\BlueprintConfigView;
 
 /**
  * @property array<int, BlueprintModel> $models

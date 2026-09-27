@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 use Tests\Blueprint\Fixtures\Generators\TestBlueprintGenerator;
-use ZachWatkins\InferDataSchema\Blueprint\Enums\BlueprintConfigResource;
-use ZachWatkins\InferDataSchema\Blueprint\Enums\BlueprintConfigView;
-use ZachWatkins\InferDataSchema\Blueprint\Models\BlueprintConfig;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Enums\BlueprintConfigResource;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Enums\BlueprintConfigView;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Models\BlueprintConfig;
 
 require_once __DIR__.'/../vendor/autoload.php';
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ZachWatkins\InferDataSchema\SQL\Interfaces;
+namespace ZachWatkins\InferLaravelBlueprint\SQL\Interfaces;
 
 /**
  * Reads a data source and infers its SQL column schema.

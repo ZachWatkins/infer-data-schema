@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace ZachWatkins\InferLaravelBlueprint;
 
+use Http\Discovery\Psr18ClientDiscovery;
+use Psr\Http\Client\ClientInterface;
 use ZachWatkins\InferLaravelBlueprint\Blueprint\Enums\BlueprintConfigResource;
 use ZachWatkins\InferLaravelBlueprint\Blueprint\Interfaces\BlueprintParserInterface;
 use ZachWatkins\InferLaravelBlueprint\Blueprint\Lexers\BlueprintFileLexer;
 use ZachWatkins\InferLaravelBlueprint\Blueprint\Models\BlueprintConfig;
 use ZachWatkins\InferLaravelBlueprint\Blueprint\Models\BlueprintModel;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Parsers\HttpParser as BlueprintHttpParser;
 use ZachWatkins\InferLaravelBlueprint\SQL\Enums\ColumnModifier;
 use ZachWatkins\InferLaravelBlueprint\SQL\Enums\DatabaseType;
 use ZachWatkins\InferLaravelBlueprint\SQL\Interfaces\ParserInterface as SQLParserInterface;
@@ -18,13 +21,15 @@ use ZachWatkins\InferLaravelBlueprint\SQL\Interfaces\SQLColumnInterface;
 final class Console
 {
     public const HELP = 'Infer data schema from various sources into selected formats. By Zach Watkins.
-Usage: {filename} [--cwd=<current-working-directory>] [--db=sqlite|mysql|sqlserver] [--format=sql,blueprint] [--blueprint-model=<name>] [--blueprint-view=blade|inertia] [--blueprint-resource=web,api,index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy] [--blueprint-controller-methods=index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy,<custom>] [--blueprint-seeders] [--save] [--dry-run] [--help] <path-or-url>
+Usage: {filename} [--cwd=<current-working-directory>] [--db=sqlite|mysql|sqlserver] [--format=sql,blueprint] [--blueprint-model=<name>] [--blueprint-view=blade|inertia] [--blueprint-resource=web,api,index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy] [--blueprint-controller-methods=index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy,<custom>] [--blueprint-seeders] [--http-header=<name>:<value>] [--save] [--dry-run] [--help] <path-or-url>
+
 Options:
   [--db=]                 Database type. Accepts: sqlite, mysql, sqlserver.
                           Default: mysql.
   [--cwd=]                Set the current working directory.
   [--dry-run]             Perform a trial run without making any changes.
-  [--format=]             Output format. Accepts: sql, blueprint. Default: blueprint.
+  [--format=]             Output format. Accepts: sql, blueprint.
+                          Default: blueprint.
   [--blueprint-model=]    Specify the Blueprint model name.
   [--blueprint-seeders]   Include seeders in Blueprint output.
   [--blueprint-view=]     Set the Blueprint view type. Accepts: blade, inertia.
@@ -38,6 +43,8 @@ Options:
                           Accepts: index, create, store, edit, update, show,
                           destroy, api.index, api.store, api.store, api.update,
                           api.show, api.destroy, <custom>. Default: none.
+  [--http-header=]        Add a request header for an HTTP Blueprint source.
+                          May be specified more than once.
   [--save]                Save the output to a file.
   [--help]                Display this help message.
 ';
@@ -59,15 +66,19 @@ Options:
      */
     private array $parserClasses;
 
+    private ?ClientInterface $httpClient;
+
     /**
      * @param  resource|null  $stdout
      * @param  resource|null  $stderr
      * @param  array<string, class-string>|null  $parserClasses
+     * @param  ClientInterface|null  $httpClient  Optional PSR-18 client for HTTP sources.
      */
-    public function __construct($stdout = null, $stderr = null, ?array $parserClasses = null)
+    public function __construct($stdout = null, $stderr = null, ?array $parserClasses = null, ?ClientInterface $httpClient = null)
     {
         $this->stdout = $stdout ?? \STDOUT;
         $this->stderr = $stderr ?? \STDERR;
+        $this->httpClient = $httpClient;
         $this->parserClasses = $parserClasses ?? [
             'sql' => [
                 'csv' => '\ZachWatkins\InferLaravelBlueprint\SQL\Parsers\CsvParser',
@@ -114,6 +125,8 @@ Options:
             'methods' => [],
             'resources' => [],
         ];
+        /** @var list<array{string, string}> $httpHeaders */
+        $httpHeaders = [];
         $save = false;
 
         foreach (\array_slice($argv, 1) as $argument) {
@@ -159,6 +172,23 @@ Options:
 
             if (\str_starts_with($argument, '--blueprint-model=')) {
                 $blueprintOptions['model'] = \substr($argument, 18);
+
+                continue;
+            }
+
+            if (\str_starts_with($argument, '--http-header=')) {
+                $header = \substr($argument, 14);
+                $separator = \strpos($header, ':');
+                $name = $separator === false ? '' : \trim(\substr($header, 0, $separator));
+                $value = $separator === false ? '' : \trim(\substr($header, $separator + 1));
+
+                if (\preg_match('/^[!#$%&\'*+.^_`|~0-9A-Za-z-]+$/', $name) !== 1 || \preg_match('/[\r\n]/', $value) === 1) {
+                    $this->writeUsage('Error: Invalid HTTP header. Use --http-header=<name>:<value>.');
+
+                    return 1;
+                }
+
+                $httpHeaders[] = [$name, $value];
 
                 continue;
             }
@@ -221,39 +251,43 @@ Options:
             return 1;
         }
 
-        if ($this->isHttpSource($source)) {
-            $this->writeError(
-                'HttpParser requires programmatic PSR-18 client injection and is not supported directly from the CLI in this version.'
-            );
+        $isHttpSource = $this->isHttpSource($source);
 
-            return 1;
-        }
+        if ($isHttpSource) {
+            if ($format !== 'blueprint') {
+                $this->writeError(
+                    'HTTP sources are supported only with --format=blueprint.'
+                );
 
-        if (! \str_starts_with($source, '/') && ! \preg_match('/^[a-zA-Z]:\\\\/', $source)) {
-            if (! file_exists($source)) {
-                if (is_string($currentWorkingDirectory) && ! empty($currentWorkingDirectory)) {
-                    $resolved = $currentWorkingDirectory.\DIRECTORY_SEPARATOR.$source;
-                    if (file_exists($resolved)) {
-                        $source = $resolved;
+                return 1;
+            }
+        } else {
+            if (! \str_starts_with($source, '/') && ! \preg_match('/^[a-zA-Z]:\\\\/', $source)) {
+                if (! file_exists($source)) {
+                    if (is_string($currentWorkingDirectory) && ! empty($currentWorkingDirectory)) {
+                        $resolved = $currentWorkingDirectory.\DIRECTORY_SEPARATOR.$source;
+                        if (file_exists($resolved)) {
+                            $source = $resolved;
+                        } else {
+                            $this->writeError(sprintf('File path \'%s\' could not be found relative to the current working directory at %s. Provide an absolute path or use the --cwd option.', $source, $currentWorkingDirectory));
+
+                            return 1;
+                        }
                     } else {
-                        $this->writeError(sprintf('File path \'%s\' could not be found relative to the current working directory at %s. Provide an absolute path or use the --cwd option.', $source, $currentWorkingDirectory));
+                        $this->writeError(sprintf('File path \'%s\' could not be found relative to the current working directory at %s. Provide an absolute path or use the --cwd option.', $source, getcwd()));
 
                         return 1;
                     }
-                } else {
-                    $this->writeError(sprintf('File path \'%s\' could not be found relative to the current working directory at %s. Provide an absolute path or use the --cwd option.', $source, getcwd()));
-
-                    return 1;
+                } elseif (! is_string($currentWorkingDirectory) || empty($currentWorkingDirectory)) {
+                    $currentWorkingDirectory = \dirname($source);
                 }
+            } elseif (! file_exists($source)) {
+                $this->writeError(sprintf('File path \'%s\' could not be found.', $source));
+
+                return 1;
             } elseif (! is_string($currentWorkingDirectory) || empty($currentWorkingDirectory)) {
                 $currentWorkingDirectory = \dirname($source);
             }
-        } elseif (! file_exists($source)) {
-            $this->writeError(sprintf('File path \'%s\' could not be found.', $source));
-
-            return 1;
-        } elseif (! is_string($currentWorkingDirectory) || empty($currentWorkingDirectory)) {
-            $currentWorkingDirectory = \dirname($source);
         }
 
         $parserClass = $this->resolveParserClass($format, $source);
@@ -285,7 +319,15 @@ Options:
                 return 1;
             }
             /** @var BlueprintParserInterface $parser */
-            $parser = new $parserClass;
+            $parser = $isHttpSource
+                ? new BlueprintHttpParser(
+                    $this->httpClient ?? $this->createHttpClient(),
+                    parser: new $parserClass,
+                    sourceExtension: $this->sourceExtension($source) ?? 'json',
+                    accept: $this->resolveHttpAccept($this->sourceExtension($source) ?? 'json'),
+                    headers: $httpHeaders,
+                )
+                : new $parserClass;
             $columns = $parser->parse($source);
             $model = new BlueprintModel($blueprintOptions['model'], $columns);
 
@@ -306,7 +348,13 @@ Options:
                         $blueprintContent
                     );
                 } else {
-                    $destinationPath = realpath($currentWorkingDirectory).DIRECTORY_SEPARATOR.$model->tableNameSingular.'-blueprint.yaml';
+                    $outputDirectory = realpath($currentWorkingDirectory ?? getcwd());
+                    if ($outputDirectory === false) {
+                        $this->writeError('Error: Unable to resolve the output directory.');
+
+                        return 1;
+                    }
+                    $destinationPath = $outputDirectory.DIRECTORY_SEPARATOR.$model->tableNameSingular.'-blueprint.yaml';
                     file_put_contents($destinationPath, $blueprintContent);
                     $this->writeToStream(
                         $this->stdout,
@@ -325,14 +373,51 @@ Options:
 
     private function isHttpSource(string $source): bool
     {
+        $source = \strtolower($source);
+
         return \str_starts_with($source, 'http://') || \str_starts_with($source, 'https://');
+    }
+
+    /**
+     * Resolves a source extension, using the URL path rather than its query string.
+     */
+    private function sourceExtension(string $source): ?string
+    {
+        $path = $this->isHttpSource($source) ? \parse_url($source, \PHP_URL_PATH) : $source;
+        $extension = \strtolower(\pathinfo(\is_string($path) ? $path : $source, \PATHINFO_EXTENSION));
+
+        return $extension === '' ? null : $extension;
+    }
+
+    /**
+     * Resolves the default media type requested for a supported HTTP source extension.
+     */
+    private function resolveHttpAccept(string $extension): string
+    {
+        return match ($extension) {
+            'csv' => 'text/csv',
+            'json' => 'application/json',
+            'xml' => 'application/xml',
+            'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'xls' => 'application/vnd.ms-excel',
+            'ods' => 'application/vnd.oasis.opendocument.spreadsheet',
+            default => 'application/octet-stream',
+        };
+    }
+
+    /**
+     * Creates the default PSR-18 transport used for CLI HTTP requests.
+     */
+    private function createHttpClient(): ClientInterface
+    {
+        return Psr18ClientDiscovery::find();
     }
 
     private function resolveParserClass(string $format, string $source): ?string
     {
-        $extension = \strtolower(\pathinfo($source, \PATHINFO_EXTENSION));
+        $extension = $this->sourceExtension($source) ?? ($this->isHttpSource($source) ? 'json' : null);
 
-        if ($extension === '') {
+        if ($extension === null) {
             return null;
         }
 
@@ -341,7 +426,7 @@ Options:
 
     private function writeUsage(string $message = ''): void
     {
-        $output = 'Usage: '.str_replace('{filename}', $this->filename, self::HELP)."\n";
+        $output = str_replace('{filename}', $this->filename, self::HELP);
         if ($message) {
             $output = $message."\n".$output;
         }

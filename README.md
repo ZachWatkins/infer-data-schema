@@ -77,7 +77,13 @@ To use this file with Laravel Shift Blueprint in an existing Laravel application
 php artisan blueprint:build user-blueprint.yaml
 ```
 
-The CLI supports CSV, JSON, XML, and Excel files (`.xlsx`, `.xls`, and `.ods`).
+The CLI supports CSV, JSON, XML, and Excel files (`.xlsx`, `.xls`, and `.ods`). With `--format=blueprint`, it also accepts an HTTP or HTTPS URL. The URL path extension selects the matching parser and default `Accept` header (`text/csv`, `application/json`, `application/xml`, or the matching spreadsheet media type); query strings do not affect format detection. URLs without an extension default to JSON. HTTP sources use a single GET request. Add or override request headers with repeatable `--http-header=<name>:<value>` options:
+
+```sh
+php index.php --blueprint-model=User --http-header="Authorization: Bearer token" https://api.example.com/users
+```
+
+Blueprint YAML is printed to the console by default. With `--save`, HTTP output is written to the current working directory, or the directory specified by `--cwd`.
 
 To see all available options, run:
 
@@ -170,6 +176,12 @@ git config core.hooksPath .githooks
 ```
 
 The hook runs Pint with `--repair --format=txt` on staged PHP files. If Pint changes a file, it exits with a nonzero status; review and stage the formatting changes before retrying the commit.
+
+To build this readme file, run the following command:
+
+```sh
+composer build:readme
+```
 
 To build the test fixtures after making changes to the library, run the following command:
 

@@ -23,7 +23,7 @@ use ZachWatkins\InferLaravelBlueprint\SQL\Interfaces\SQLColumnInterface;
 
 final class Console
 {
-    public const HELP = 'Infer a Laravel Shift Blueprint file from various data sources. By Zach Watkins.
+    private const HELP = 'Infer a Laravel Shift Blueprint file from various data sources. By Zach Watkins.
 Usage: {filename} [--blueprint-controller-methods=index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy,<custom>] [--blueprint-model=<name>] [--blueprint-resource=web,api,index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy] [--blueprint-seeders]  [--blueprint-view=blade|inertia] [--cwd=<current-working-directory>] [--data-selector=<selector>] [--db=mysql|sqlite|sqlserver] [--dry-run] [--format=blueprint,sql] [--http-header=<name>:<value>] [--http-timeout=<seconds>] [--save] [--help] <path-or-url>
 
 Options:
@@ -49,7 +49,8 @@ Options:
   [--format=]             Output format. Accepts: sql, blueprint.
                           Default: blueprint.
   [--http-header=]        Add a request header for an HTTP Blueprint source.
-                          May be specified more than once.
+                          May be specified more than once. Rejects credential
+                          headers: Authorization, Proxy-Authorization, Cookie.
   [--http-timeout=]       Set the timeout in seconds for each HTTP request.
                           Default: 30 seconds. Accepts: 1-3600.
   [--save]                Save the output to a file.

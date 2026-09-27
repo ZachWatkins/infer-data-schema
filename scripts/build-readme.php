@@ -186,6 +186,6 @@ $blueprintOutputEscaped = rtrim($blueprintOutputEscaped);
 
 unlink('test.csv');
 
-$readme = sprintf($template, $exampleFile, $blueprintOutput, Console::HELP, $blueprintOutputEscaped);
+$readme = sprintf($template, $exampleFile, $blueprintOutput, Console::help(), $blueprintOutputEscaped);
 
 file_put_contents('README.md', $readme);

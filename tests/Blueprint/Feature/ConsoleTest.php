@@ -13,6 +13,8 @@ use ZachWatkins\InferLaravelBlueprint\Blueprint\Models\BlueprintConfig;
 use ZachWatkins\InferLaravelBlueprint\Blueprint\Models\BlueprintModel;
 use ZachWatkins\InferLaravelBlueprint\Blueprint\Parsers\CsvParser;
 use ZachWatkins\InferLaravelBlueprint\Blueprint\Parsers\ExcelParser;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Parsers\HttpParser;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Parsers\HttpResponseSizeLimitException;
 use ZachWatkins\InferLaravelBlueprint\Blueprint\Parsers\JsonParser;
 use ZachWatkins\InferLaravelBlueprint\Blueprint\Parsers\XmlParser;
 use ZachWatkins\InferLaravelBlueprint\Console;
@@ -55,7 +57,8 @@ it('prints usage when no source argument is provided', function () use ($runCons
 
     expect($result['exitCode'])->toBe(1)
         ->and($result['stdout'])->toBe('')
-        ->and($result['stderr'])->toContain('[--cwd=<current-working-directory>] [--db=sqlite|mysql|sqlserver] [--format=sql,blueprint] [--blueprint-model=<name>] [--blueprint-view=blade|inertia] [--blueprint-resource=web,api,index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy] [--blueprint-controller-methods=index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy,<custom>] [--blueprint-seeders] [--http-header=<name>:<value>] [--save] [--dry-run] [--help] <path-or-url>');
+        ->and($result['stderr'])->toContain('[--cwd=<current-working-directory>] [--db=sqlite|mysql|sqlserver] [--format=sql,blueprint] [--blueprint-model=<name>] [--blueprint-view=blade|inertia] [--blueprint-resource=web,api,index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy] [--blueprint-controller-methods=index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy,<custom>] [--blueprint-seeders] [--http-header=<name>:<value>] [--http-timeout=<seconds>] [--save] [--dry-run] [--help] <path-or-url>')
+        ->and($result['stderr'])->toContain('Default: 30 seconds. Accepts: 1-3600.');
 });
 
 it('outputs blueprint YAML file contents to the console if --save is not provided', function () use ($runConsole) {
@@ -99,12 +102,13 @@ it('outputs blueprint YAML from an HTTP source using an injected client', functi
         '--blueprint-model=Model',
         '--http-header=Authorization: Bearer test-token',
         '--http-header=Accept: application/vnd.example+json',
+        '--http-timeout=5',
         'https://example.com/users',
     ], httpClient: $client);
 
     expect($result['exitCode'])->toBe(0)
         ->and($result['stderr'])->toBe('')
-        ->and($result['stdout'])->toBe(file_get_contents($blueprintFixturePath))
+        ->and(\rtrim($result['stdout']))->toBe(\rtrim(file_get_contents($blueprintFixturePath)))
         ->and($client->lastRequest)->not->toBeNull()
         ->and($client->lastRequest->getMethod())->toBe('GET')
         ->and($client->lastRequest->getHeaderLine('Accept'))->toBe('application/vnd.example+json')
@@ -122,7 +126,70 @@ it('outputs blueprint YAML from an HTTP source using an injected client', functi
 
     expect($saveResult['exitCode'])->toBe(0)
         ->and($saveResult['stdout'])->toBe('Blueprint file saved to '.$expectedSavePath)
-        ->and(file_get_contents($expectedSavePath))->toBe(file_get_contents($blueprintFixturePath));
+        ->and(\rtrim(file_get_contents($expectedSavePath)))->toBe(\rtrim(file_get_contents($blueprintFixturePath)));
+});
+
+it('rejects an oversized response from HEAD without requesting its body', function () use ($runConsole) {
+    $client = new class implements ClientInterface
+    {
+        /** @var list<string> */
+        public array $methods = [];
+
+        public function sendRequest(RequestInterface $request): ResponseInterface
+        {
+            $this->methods[] = $request->getMethod();
+
+            return $request->getMethod() === 'HEAD'
+                ? new Response(200, ['Content-Length' => (string) PHP_INT_MAX])
+                : new Response(200, ['Content-Type' => 'application/json'], '[]');
+        }
+    };
+
+    $result = $runConsole([
+        'infer-laravel-blueprint',
+        '--blueprint-model=Model',
+        'https://example.com/large.json',
+    ], httpClient: $client);
+
+    expect($result['exitCode'])->toBe(1)
+        ->and($result['stdout'])->toBe('')
+        ->and($result['stderr'])->toContain('exceeds the safe limit')
+        ->and($client->methods)->toBe(['HEAD']);
+});
+
+it('rejects an oversized GET body when HEAD has no content length', function () {
+    $client = new class implements ClientInterface
+    {
+        /** @var list<string> */
+        public array $methods = [];
+
+        public function sendRequest(RequestInterface $request): ResponseInterface
+        {
+            $this->methods[] = $request->getMethod();
+
+            return $request->getMethod() === 'HEAD'
+                ? new Response(200)
+                : new Response(200, ['Content-Type' => 'application/json'], '[{"id":1}]');
+        }
+    };
+
+    $parser = new HttpParser($client, maxResponseBytes: 4);
+
+    expect(fn () => $parser->parse('https://example.com/users.json'))
+        ->toThrow(HttpResponseSizeLimitException::class);
+    expect($client->methods)->toBe(['HEAD', 'GET']);
+});
+
+it('rejects an invalid HTTP timeout', function () use ($runConsole) {
+    $result = $runConsole([
+        'infer-laravel-blueprint',
+        '--blueprint-model=Model',
+        '--http-timeout=0',
+        'https://example.com/users.json',
+    ]);
+
+    expect($result['exitCode'])->toBe(1)
+        ->and($result['stderr'])->toContain('HTTP timeout must be an integer between 1 and 3600 seconds.');
 });
 
 it('selects a matching parser and Accept header for an HTTP file URL', function () use ($runConsole) {
@@ -189,5 +256,5 @@ it('saves a blueprint YAML file to disk in same folder as data source if --save 
     expect($result['exitCode'])->toBe(0)
         ->and($result['stdout'])->toContain('Blueprint file saved to '.realpath($expectedSavePath))
         ->and(file_exists(realpath($expectedSavePath)))->toBeTrue()
-        ->and(file_get_contents(realpath($expectedSavePath)))->toBe(file_get_contents($blueprintFixturePath));
+        ->and(\rtrim(file_get_contents(realpath($expectedSavePath))))->toBe(\rtrim(file_get_contents($blueprintFixturePath)));
 });

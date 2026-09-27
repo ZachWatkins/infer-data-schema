@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace ZachWatkins\InferLaravelBlueprint;
 
-use Http\Discovery\Psr18ClientDiscovery;
+use Http\Client\Curl\Client as CurlClient;
+use Nyholm\Psr7\Factory\Psr17Factory;
+use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use ZachWatkins\InferLaravelBlueprint\Blueprint\Enums\BlueprintConfigResource;
 use ZachWatkins\InferLaravelBlueprint\Blueprint\Interfaces\BlueprintParserInterface;
@@ -12,6 +14,7 @@ use ZachWatkins\InferLaravelBlueprint\Blueprint\Lexers\BlueprintFileLexer;
 use ZachWatkins\InferLaravelBlueprint\Blueprint\Models\BlueprintConfig;
 use ZachWatkins\InferLaravelBlueprint\Blueprint\Models\BlueprintModel;
 use ZachWatkins\InferLaravelBlueprint\Blueprint\Parsers\HttpParser as BlueprintHttpParser;
+use ZachWatkins\InferLaravelBlueprint\Blueprint\Parsers\HttpResponseSizeLimitException;
 use ZachWatkins\InferLaravelBlueprint\SQL\Enums\ColumnModifier;
 use ZachWatkins\InferLaravelBlueprint\SQL\Enums\DatabaseType;
 use ZachWatkins\InferLaravelBlueprint\SQL\Interfaces\ParserInterface as SQLParserInterface;
@@ -21,7 +24,7 @@ use ZachWatkins\InferLaravelBlueprint\SQL\Interfaces\SQLColumnInterface;
 final class Console
 {
     public const HELP = 'Infer data schema from various sources into selected formats. By Zach Watkins.
-Usage: {filename} [--cwd=<current-working-directory>] [--db=sqlite|mysql|sqlserver] [--format=sql,blueprint] [--blueprint-model=<name>] [--blueprint-view=blade|inertia] [--blueprint-resource=web,api,index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy] [--blueprint-controller-methods=index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy,<custom>] [--blueprint-seeders] [--http-header=<name>:<value>] [--save] [--dry-run] [--help] <path-or-url>
+Usage: {filename} [--cwd=<current-working-directory>] [--db=sqlite|mysql|sqlserver] [--format=sql,blueprint] [--blueprint-model=<name>] [--blueprint-view=blade|inertia] [--blueprint-resource=web,api,index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy] [--blueprint-controller-methods=index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy,<custom>] [--blueprint-seeders] [--http-header=<name>:<value>] [--http-timeout=<seconds>] [--save] [--dry-run] [--help] <path-or-url>
 
 Options:
   [--db=]                 Database type. Accepts: sqlite, mysql, sqlserver.
@@ -45,9 +48,15 @@ Options:
                           api.show, api.destroy, <custom>. Default: none.
   [--http-header=]        Add a request header for an HTTP Blueprint source.
                           May be specified more than once.
+  [--http-timeout=]       Set the timeout in seconds for each HTTP request.
+                          Default: 30 seconds. Accepts: 1-3600.
   [--save]                Save the output to a file.
   [--help]                Display this help message.
 ';
+
+    private const DEFAULT_HTTP_TIMEOUT = 30;
+
+    private const MAX_HTTP_RESPONSE_BYTES = 67108864;
 
     private string $filename = 'index.php';
 
@@ -127,6 +136,7 @@ Options:
         ];
         /** @var list<array{string, string}> $httpHeaders */
         $httpHeaders = [];
+        $httpTimeout = self::DEFAULT_HTTP_TIMEOUT;
         $save = false;
 
         foreach (\array_slice($argv, 1) as $argument) {
@@ -193,6 +203,18 @@ Options:
                 continue;
             }
 
+            if (\str_starts_with($argument, '--http-timeout=')) {
+                $requestedTimeout = \filter_var(\substr($argument, 15), \FILTER_VALIDATE_INT);
+                if (! \is_int($requestedTimeout) || $requestedTimeout < 1 || $requestedTimeout > 3600) {
+                    $this->writeUsage('Error: HTTP timeout must be an integer between 1 and 3600 seconds.');
+
+                    return 1;
+                }
+
+                $httpTimeout = $requestedTimeout;
+
+                continue;
+            }
             if (\str_starts_with($argument, '--blueprint-seeders')) {
                 $blueprintOptions['seeders'] = true;
 
@@ -319,16 +341,27 @@ Options:
                 return 1;
             }
             /** @var BlueprintParserInterface $parser */
-            $parser = $isHttpSource
-                ? new BlueprintHttpParser(
-                    $this->httpClient ?? $this->createHttpClient(),
+            if ($isHttpSource) {
+                $maxResponseBytes = $this->maxHttpResponseBytes();
+                $parser = new BlueprintHttpParser(
+                    $this->httpClient ?? $this->createHttpClient($httpTimeout, $maxResponseBytes),
                     parser: new $parserClass,
                     sourceExtension: $this->sourceExtension($source) ?? 'json',
                     accept: $this->resolveHttpAccept($this->sourceExtension($source) ?? 'json'),
                     headers: $httpHeaders,
-                )
-                : new $parserClass;
-            $columns = $parser->parse($source);
+                    maxResponseBytes: $maxResponseBytes,
+                );
+            } else {
+                $parser = new $parserClass;
+            }
+
+            try {
+                $columns = $parser->parse($source);
+            } catch (HttpResponseSizeLimitException|ClientExceptionInterface $exception) {
+                $this->writeError($exception->getMessage());
+
+                return 1;
+            }
             $model = new BlueprintModel($blueprintOptions['model'], $columns);
 
             if (! $dryRun) {
@@ -408,9 +441,38 @@ Options:
     /**
      * Creates the default PSR-18 transport used for CLI HTTP requests.
      */
-    private function createHttpClient(): ClientInterface
+    private function createHttpClient(int $timeout, int $maxResponseBytes): ClientInterface
     {
-        return Psr18ClientDiscovery::find();
+        $factory = new Psr17Factory;
+
+        return new CurlClient($factory, $factory, [
+            \CURLOPT_CONNECTTIMEOUT => $timeout,
+            \CURLOPT_MAXFILESIZE_LARGE => $maxResponseBytes,
+            \CURLOPT_TIMEOUT => $timeout,
+        ]);
+    }
+
+    /**
+     * Limits response bodies to at most one quarter of PHP's memory limit, capped at 64 MiB.
+     */
+    private function maxHttpResponseBytes(): int
+    {
+        $memoryLimit = \ini_get('memory_limit');
+        if (! \is_string($memoryLimit) || $memoryLimit === '' || $memoryLimit === '-1') {
+            return self::MAX_HTTP_RESPONSE_BYTES;
+        }
+
+        $memoryLimitBytes = \ini_parse_quantity($memoryLimit);
+        if ($memoryLimitBytes <= 0) {
+            return self::MAX_HTTP_RESPONSE_BYTES;
+        }
+
+        $availableMemoryBytes = $memoryLimitBytes - \memory_get_usage(true);
+        if ($availableMemoryBytes <= 0) {
+            return 1;
+        }
+
+        return \min(self::MAX_HTTP_RESPONSE_BYTES, \max(1, \intdiv($availableMemoryBytes, 4)));
     }
 
     private function resolveParserClass(string $format, string $source): ?string

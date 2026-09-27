@@ -17,6 +17,10 @@ final class HttpParser implements BlueprintParserInterface
 
     /**
      * @param  list<array{string, string}>  $headers
+     * @param  BlueprintParserInterface|null  $parser  File parser used for non-JSON response formats.
+     * @param  string  $sourceExtension  Extension used for the temporary response file.
+     * @param  string  $accept  Default HTTP Accept media type.
+     * @param  int  $maxResponseBytes  Maximum response body size in bytes.
      */
     public function __construct(
         private readonly ClientInterface $client,
@@ -25,6 +29,7 @@ final class HttpParser implements BlueprintParserInterface
         private readonly string $sourceExtension = 'json',
         private readonly string $accept = 'application/json',
         private readonly array $headers = [],
+        private readonly int $maxResponseBytes = 67108864,
     ) {
         $this->parser = $parser;
     }
@@ -49,16 +54,28 @@ final class HttpParser implements BlueprintParserInterface
             $request = $request->withAddedHeader($name, $value);
         }
 
+        $headResponse = $this->client->sendRequest($request->withMethod('HEAD'));
+        if ($headResponse->getStatusCode() >= 200 && $headResponse->getStatusCode() < 300) {
+            $this->assertContentLengthWithinLimit($headResponse->getHeaderLine('Content-Length'));
+        }
+
         $response = $this->client->sendRequest($request);
         if ($response->getStatusCode() >= 400) {
             throw new \RuntimeException(\sprintf('HTTP request failed with status code %d.', $response->getStatusCode()));
         }
 
         $responseBody = $response->getBody();
+        $responseSize = $responseBody->getSize();
+        if ($responseSize !== null && $responseSize > $this->maxResponseBytes) {
+            throw HttpResponseSizeLimitException::forSizes((string) $responseSize, $this->maxResponseBytes);
+        }
         if ($responseBody->isSeekable()) {
             $responseBody->rewind();
         }
         $content = $responseBody->getContents();
+        if (\strlen($content) > $this->maxResponseBytes) {
+            throw HttpResponseSizeLimitException::forSizes((string) \strlen($content), $this->maxResponseBytes);
+        }
 
         if ($this->parser === null) {
             $body = \json_decode($content, true, 512, \JSON_THROW_ON_ERROR);
@@ -88,6 +105,23 @@ final class HttpParser implements BlueprintParserInterface
             if (\file_exists($parserPath)) {
                 \unlink($parserPath);
             }
+        }
+    }
+
+    private function assertContentLengthWithinLimit(string $contentLength): void
+    {
+        $contentLength = \trim($contentLength);
+        if (\preg_match('/^\d+$/D', $contentLength) !== 1) {
+            return;
+        }
+
+        $normalizedLength = \ltrim($contentLength, '0');
+        $normalizedLength = $normalizedLength === '' ? '0' : $normalizedLength;
+        $limit = (string) $this->maxResponseBytes;
+
+        if (\strlen($normalizedLength) > \strlen($limit)
+            || (\strlen($normalizedLength) === \strlen($limit) && \strcmp($normalizedLength, $limit) > 0)) {
+            throw HttpResponseSizeLimitException::forSizes($normalizedLength, $this->maxResponseBytes);
         }
     }
 

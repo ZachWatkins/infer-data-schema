@@ -431,16 +431,18 @@ Options:
         return 0;
     }
 
-    public static function help(): string
+    public static function help(?string $filename = null): string
     {
         $runningPhar = \Phar::running(false);
-        $filename = 'index.php';
-        if ($runningPhar !== '') {
-            if ($runningPhar === 'infer-laravel-blueprint') {
-                $filename = basename($runningPhar);
+        if (! $filename) {
+            $filename = 'index.php';
+            if ($runningPhar !== '') {
+                if ($runningPhar === 'infer-laravel-blueprint') {
+                    $filename = basename($runningPhar);
+                }
+            } elseif (isset($_SERVER['argv'][0]) && ! empty($_SERVER['argv'][0]) && basename($_SERVER['argv'][0]) === 'infer-laravel-blueprint') {
+                $filename = basename($_SERVER['argv'][0]);
             }
-        } elseif (isset($_SERVER['argv'][0]) && ! empty($_SERVER['argv'][0]) && basename($_SERVER['argv'][0]) === 'infer-laravel-blueprint') {
-            $filename = basename($_SERVER['argv'][0]);
         }
 
         return str_replace('{filename}', $filename, self::HELP);

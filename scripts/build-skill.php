@@ -1,3 +1,12 @@
+<?php
+
+declare(strict_types=1);
+
+use ZachWatkins\InferLaravelBlueprint\Console;
+
+require __DIR__.'/../vendor/autoload.php';
+
+$template = <<<'SKILL'
 ---
 name: infer-laravel-blueprint
 description: "Use when: generating a Laravel Shift Blueprint YAML file from a data source in JSON, CSV, XLSX, or XML format, turning a plain-language request into a valid `infer-laravel-blueprint` CLI tool command, and asking for missing CLI options before running it for the current project workspace."
@@ -18,39 +27,7 @@ You are operating as a global skill. You must ground all of your responses, logi
 ## CLI Usage
 
 ```shell
-Infer a Laravel Shift Blueprint file from various data sources. By Zach Watkins.
-Usage: infer-laravel-blueprint [--blueprint-controller-methods=index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy,<custom>] [--blueprint-model=<name>] [--blueprint-resource=web,api,index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy] [--blueprint-seeders]  [--blueprint-view=blade|inertia] [--cwd=<current-working-directory>] [--data-selector=<selector>] [--db=mysql|sqlite|sqlserver] [--dry-run] [--format=blueprint,sql] [--http-header=<name>:<value>] [--http-timeout=<seconds>] [--save] [--help] <path-or-url>
-
-Options:
-  [--blueprint-controller-methods=]
-                          Specify the Blueprint controller methods.
-                          Accepts: index, create, store, edit, update, show,
-                          destroy, api.index, api.store, api.store, api.update,
-                          api.show, api.destroy, <custom>. Default: none.
-  [--blueprint-model=]    Specify the Blueprint model name.
-  [--blueprint-resource=] Define the Blueprint model controller resources.
-                          Accepts: web, api, index, create, store, edit, update,
-                          show, destroy, api.index, api.store, api.store,
-                          api.update, api.show, api.destroy. Default: none.
-  [--blueprint-seeders]   Include seeders in Blueprint output.
-  [--blueprint-view=]     Set the Blueprint view type. Accepts: blade, inertia.
-                          Default: blade.
-  [--cwd=]                Set the current working directory.
-  [--data-selector=]      Specify a data selector (e.g., JSONPath, XPath) for
-                          extracting relevant data from the source.
-  [--db=]                 Database type. Accepts: sqlite, mysql, sqlserver.
-                          Default: mysql.
-  [--dry-run]             Perform a trial run without making any changes.
-  [--format=]             Output format. Accepts: sql, blueprint.
-                          Default: blueprint.
-  [--http-header=]        Add a request header for an HTTP Blueprint source.
-                          May be specified more than once. Rejects credential
-                          headers: Authorization, Proxy-Authorization, Cookie.
-  [--http-timeout=]       Set the timeout in seconds for each HTTP request.
-                          Default: 30 seconds. Accepts: 1-3600.
-  [--save]                Save the output to a file.
-  [--help]                Display this help message.
-
+%s
 ```
 
 ## Pre-Execution Steps
@@ -154,3 +131,8 @@ The task is complete only when:
 - the generated Blueprint YAML file or preview is returned to the user,
 - the user has confirmed whether they want to run the Laravel Shift Blueprint scaffolding command `php artisan blueprint:build <model-blueprint.yaml>`.
 - and any errors are explained clearly if the generation fails.
+SKILL;
+
+$skill = sprintf($template, Console::help('infer-laravel-blueprint'));
+
+file_put_contents('SKILL.md', $skill);

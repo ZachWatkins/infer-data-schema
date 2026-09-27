@@ -25,7 +25,9 @@ class BlueprintFileLexer
             }
         }
         if (isset($tree['controllers']) && $tree['controllers']) {
-            $output .= "\n";
+            if ($tree['models']) {
+                $output .= "\n";
+            }
             $output .= "controllers:\n";
             foreach ($tree['controllers'] as $modelName => $methods) {
                 $output .= "  {$modelName}:\n";
@@ -42,8 +44,11 @@ class BlueprintFileLexer
             }
         }
         if ($tree['seeders']) {
+            if (isset($tree['controllers']) && $tree['controllers']) {
+                $output .= "\n";
+            }
+            $output .= 'seeders: '.\implode(', ', $tree['seeders']);
             $output .= "\n";
-            $output .= 'seeders: '.\implode(', ', $tree['seeders'])."\n";
         }
 
         return $output;

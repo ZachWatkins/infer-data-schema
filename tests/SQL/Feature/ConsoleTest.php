@@ -41,7 +41,7 @@ it('prints usage when no source argument is provided', function () use ($runCons
 
     expect($result['exitCode'])->toBe(1)
         ->and($result['stdout'])->toBe('')
-        ->and($result['stderr'])->toContain('Usage: index.php [--cwd=<current-working-directory>] [--db=sqlite|mysql|sqlserver] [--format=sql,blueprint] [--blueprint-model=<name>] [--blueprint-view=blade|inertia] [--blueprint-resource=web,api,index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy] [--blueprint-controller-methods=index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy,<custom>] [--blueprint-seeders] [--save] [--dry-run] [--help] <path-or-url>');
+        ->and($result['stderr'])->toContain(Console::help());
 })->group('sql', 'console');
 
 it('prints usage for an unsupported source extension', function () use ($runConsole) {
@@ -54,13 +54,12 @@ it('prints usage for an unsupported source extension', function () use ($runCons
 })->group('sql', 'console');
 
 it('rejects http and https sources from the cli', function (string $source) use ($runConsole) {
-    $result = $runConsole(['infer-laravel-blueprint', $source, '--cwd='.getcwd()]);
+    $result = $runConsole(['infer-laravel-blueprint', '--format=sql', $source, '--cwd='.getcwd()]);
 
     expect($result['exitCode'])->toBe(1)
         ->and($result['stdout'])->toBe('')
         ->and($result['stderr'])->toContain(
-            'HttpParser requires programmatic PSR-18 client injection and is not '
-                .'supported directly from the CLI in this version.'
+            'HTTP sources are supported only with --format=blueprint.'
         );
 })->with([
     'http source' => 'http://example.com/data.csv',

@@ -13,7 +13,9 @@
         "flow-php/etl-adapter-http": "^0.43.0",
         "flow-php/etl-adapter-json": "^0.43.0",
         "flow-php/etl-adapter-xml": "^0.43.0",
-        "nyholm/psr7": "^1.8"
+        "nyholm/psr7": "^1.8",
+        "php-http/curl-client": "^2.2",
+        "php-http/discovery": "^1.20"
     },
     "autoload": {
         "psr-4": {
@@ -38,6 +40,7 @@
         "lint:fix": "pint --parallel --max-processes=4",
         "build": [
             "composer install --no-dev",
+            "@php scripts/build-skill.php",
             "@php -d phar.readonly=0 scripts/build-phar.php",
             "composer install",
             "phpacker build"
@@ -45,6 +48,7 @@
         "build:readme": "php scripts/build-readme.php",
         "install:skill": [
             "composer install --no-dev",
+            "@php scripts/build-skill.php",
             "@php -d phar.readonly=0 scripts/build-phar.php",
             "composer install",
             "phpacker build",
@@ -54,7 +58,8 @@
     "config": {
         "sort-packages": true,
         "allow-plugins": {
-            "pestphp/pest-plugin": true
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
         }
     },
     "require-dev": {

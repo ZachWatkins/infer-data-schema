@@ -19,7 +19,7 @@ class TestXmlFileGenerator
             }
         }
 
-        $directory = __DIR__.'/../../data/';
+        $directory = __DIR__.'/../data/';
         $xml->asXML($directory.$fileName);
     }
 }

@@ -10,7 +10,7 @@ class TestCsvFileGenerator
 {
     public function generate(string $fileName, array $data): void
     {
-        $directory = __DIR__.'/../../data/';
+        $directory = __DIR__.'/../data/';
         $filePath = $directory.$fileName;
         $fp = fopen($filePath, 'w');
         if ($fp === false) {

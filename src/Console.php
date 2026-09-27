@@ -133,7 +133,7 @@ Options:
     {
         $source = null;
         $databaseType = DatabaseType::MySQL;
-        $currentWorkingDirectory = getcwd();
+        $currentWorkingDirectory = null;
         $dryRun = false;
         $format = 'blueprint';
         $blueprintOptions = [

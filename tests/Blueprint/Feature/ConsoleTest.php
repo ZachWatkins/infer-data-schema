@@ -142,6 +142,36 @@ it('rejects credential HTTP headers', function () use ($runConsole) {
     }
 });
 
+it('rejects URL userinfo before sending an HTTP request', function () use ($runConsole) {
+    $client = new class implements ClientInterface
+    {
+        public int $requestCount = 0;
+
+        public function sendRequest(RequestInterface $request): ResponseInterface
+        {
+            $this->requestCount++;
+
+            return new Response(200, ['Content-Type' => 'application/json'], '[]');
+        }
+    };
+
+    $source = 'https://user:secret@example.com/users.json';
+    $result = $runConsole([
+        'infer-laravel-blueprint',
+        '--blueprint-model=Model',
+        $source,
+    ], httpClient: $client);
+
+    expect($result['exitCode'])->toBe(1)
+        ->and($result['stdout'])->toBe('')
+        ->and($result['stderr'])->toContain('HTTP URLs must not contain userinfo credentials.')
+        ->and($client->requestCount)->toBe(0);
+
+    expect(fn () => (new HttpParser($client))->parse($source))
+        ->toThrow(\InvalidArgumentException::class, 'HTTP URLs must not contain userinfo credentials.');
+    expect($client->requestCount)->toBe(0);
+});
+
 it('rejects an oversized response from HEAD without requesting its body', function () use ($runConsole) {
     $client = new class implements ClientInterface
     {

@@ -12,6 +12,7 @@ use ZachWatkins\InferLaravelBlueprint\SQL\Inferrers\ColumnTypeInferrer;
 use ZachWatkins\InferLaravelBlueprint\SQL\Interfaces\ColumnTypeInferrerInterface;
 use ZachWatkins\InferLaravelBlueprint\SQL\Interfaces\ParserInterface;
 use ZachWatkins\InferLaravelBlueprint\SQL\Interfaces\SQLColumnCollectionInterface;
+use ZachWatkins\InferLaravelBlueprint\Support\HttpUrl;
 
 use function Flow\ETL\Adapter\Http\from_static_http_requests;
 use function Flow\ETL\DSL\data_frame;
@@ -27,6 +28,8 @@ final class HttpParser implements ParserInterface
         string $source,
         string $databaseType = 'sqlite',
     ): SQLColumnCollectionInterface {
+        HttpUrl::assertHasNoUserInfo($source);
+
         if (! in_array($databaseType, array_map(fn ($case) => $case->value, DatabaseType::cases()), true)) {
             throw new \InvalidArgumentException("Invalid database type: $databaseType, accepts: ".implode(', ', array_map(fn ($case) => $case->value, DatabaseType::cases())));
         }

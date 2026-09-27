@@ -20,6 +20,7 @@ use ZachWatkins\InferLaravelBlueprint\SQL\Enums\DatabaseType;
 use ZachWatkins\InferLaravelBlueprint\SQL\Interfaces\ParserInterface as SQLParserInterface;
 use ZachWatkins\InferLaravelBlueprint\SQL\Interfaces\SQLColumnCollectionInterface;
 use ZachWatkins\InferLaravelBlueprint\SQL\Interfaces\SQLColumnInterface;
+use ZachWatkins\InferLaravelBlueprint\Support\HttpUrl;
 
 final class Console
 {
@@ -294,6 +295,14 @@ Options:
         $isHttpSource = $this->isHttpSource($source);
 
         if ($isHttpSource) {
+            try {
+                HttpUrl::assertHasNoUserInfo($source);
+            } catch (\InvalidArgumentException $exception) {
+                $this->writeError($exception->getMessage());
+
+                return 1;
+            }
+
             if ($format !== 'blueprint') {
                 $this->writeError(
                     'HTTP sources are supported only with --format=blueprint.'

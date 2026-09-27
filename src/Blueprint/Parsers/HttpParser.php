@@ -10,6 +10,7 @@ use ZachWatkins\InferLaravelBlueprint\Blueprint\Inferrers\BlueprintColumnTypeInf
 use ZachWatkins\InferLaravelBlueprint\Blueprint\Interfaces\BlueprintColumnCollectionInterface;
 use ZachWatkins\InferLaravelBlueprint\Blueprint\Interfaces\BlueprintColumnTypeInferrerInterface;
 use ZachWatkins\InferLaravelBlueprint\Blueprint\Interfaces\BlueprintParserInterface;
+use ZachWatkins\InferLaravelBlueprint\Support\HttpUrl;
 
 final class HttpParser implements BlueprintParserInterface
 {
@@ -36,6 +37,8 @@ final class HttpParser implements BlueprintParserInterface
 
     public function parse(string $source, string $databaseType = 'sqlite'): BlueprintColumnCollectionInterface
     {
+        HttpUrl::assertHasNoUserInfo($source);
+
         $request = (new Psr17Factory)
             ->createRequest('GET', $source)
             ->withHeader('Accept', $this->accept);

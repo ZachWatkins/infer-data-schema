@@ -96,3 +96,21 @@ it('parses a wrapped json array response', function () {
         );
     }
 })->group('sql');
+
+it('rejects URL userinfo before sending an HTTP request', function () {
+    $client = new class implements ClientInterface
+    {
+        public int $requestCount = 0;
+
+        public function sendRequest(RequestInterface $request): ResponseInterface
+        {
+            $this->requestCount++;
+
+            return new Response(200, ['Content-Type' => 'application/json'], '[]');
+        }
+    };
+
+    expect(fn () => (new HttpParser($client))->parse('https://user:secret@example.com/users', 'mysql'))
+        ->toThrow(InvalidArgumentException::class, 'HTTP URLs must not contain userinfo credentials.');
+    expect($client->requestCount)->toBe(0);
+})->group('sql');

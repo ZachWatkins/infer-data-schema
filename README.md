@@ -87,6 +87,14 @@ This library uses the following dependencies:
 
 ## Development
 
+To enable the pre-commit hook in this checkout, run:
+
+```sh
+git config core.hooksPath .githooks
+```
+
+The hook runs Pint with `--repair --format=txt` on staged PHP files. If Pint changes a file, it exits with a nonzero status; review and stage the formatting changes before retrying the commit.
+
 To build the test fixtures after making changes to the library, run the following command:
 
 ```sh

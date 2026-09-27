@@ -26,7 +26,7 @@ class TestXlsxFileGenerator
             $sheet->fromArray($data, null, 'A2', true);
         }
 
-        $directory = __DIR__.'/../../data/';
+        $directory = __DIR__.'/../data/';
         $writer = new Xlsx($spreadsheet);
         $writer->save($directory.$fileName);
     }

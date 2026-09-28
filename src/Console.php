@@ -21,21 +21,20 @@ use ZachWatkins\InferLaravelBlueprint\Support\HttpUrl;
 final class Console
 {
     private const HELP = 'Infer a Laravel Shift Blueprint file from various data sources. By Zach Watkins.
-Usage: {filename} [--blueprint-controller-methods=index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy,<custom>] [--blueprint-model=<name>] [--blueprint-resource=web,api,index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy] [--blueprint-seeders]  [--blueprint-view=blade|inertia] [--cwd=<current-working-directory>] [--data-selector=<selector>] [--dry-run] [--http-header=<name>:<value>] [--http-timeout=<seconds>] [--save] [--help] <path-or-url>
+Usage: {filename} [--controller-methods=index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy,<custom>] [--model=<name>] [--resource=web,api,index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy] [--seeders]  [--view=blade|inertia] [--cwd=<current-working-directory>] [--data-selector=<selector>] [--dry-run] [--http-header=<name>:<value>] [--http-timeout=<seconds>] [--save] [--help] <path-or-url>
 
 Options:
-  [--blueprint-controller-methods=]
-                          Specify the Blueprint controller methods.
+  [--controller-methods=] Specify the Blueprint controller methods.
                           Accepts: index, create, store, edit, update, show,
                           destroy, api.index, api.store, api.store, api.update,
                           api.show, api.destroy, <custom>. Default: none.
-  [--blueprint-model=]    Specify the Blueprint model name.
-  [--blueprint-resource=] Define the Blueprint model controller resources.
+  [--model=]              Specify the Blueprint model name.
+  [--resource=]           Define the Blueprint model controller resources.
                           Accepts: web, api, index, create, store, edit, update,
                           show, destroy, api.index, api.store, api.store,
                           api.update, api.show, api.destroy. Default: none.
-  [--blueprint-seeders]   Include seeders in Blueprint output.
-  [--blueprint-view=]     Set the Blueprint view type. Accepts: blade, inertia.
+  [--seeders]             Include seeders in Blueprint output.
+  [--view=]               Set the Blueprint view type. Accepts: blade, inertia.
                           Default: blade.
   [--cwd=]                Set the current working directory.
   [--data-selector=]      Specify a data selector (e.g., JSONPath, XPath) for
@@ -145,7 +144,7 @@ Options:
                 continue;
             }
 
-            if (\str_starts_with($argument, '--blueprint-model=')) {
+            if (\str_starts_with($argument, '--model=')) {
                 $blueprintOptions['model'] = \substr($argument, 18);
 
                 continue;
@@ -186,7 +185,7 @@ Options:
 
                 continue;
             }
-            if (\str_starts_with($argument, '--blueprint-seeders')) {
+            if (\str_starts_with($argument, '--seeders')) {
                 $blueprintOptions['seeders'] = true;
 
                 continue;
@@ -198,19 +197,19 @@ Options:
                 continue;
             }
 
-            if (\str_starts_with($argument, '--blueprint-view=')) {
+            if (\str_starts_with($argument, '--view=')) {
                 $blueprintOptions['view'] = \substr($argument, 17);
 
                 continue;
             }
 
-            if (\str_starts_with($argument, '--blueprint-controller-methods=')) {
+            if (\str_starts_with($argument, '--controller-methods=')) {
                 $blueprintOptions['methods'] = \array_map('trim', \explode(',', \substr($argument, 25)));
 
                 continue;
             }
 
-            if (\str_starts_with($argument, '--blueprint-resource=')) {
+            if (\str_starts_with($argument, '--resource=')) {
                 $resourceType = \substr($argument, 27);
                 $split = \array_map('trim', \explode(',', $resourceType));
                 foreach ($split as $resource) {
@@ -299,7 +298,7 @@ Options:
 
         if (\is_a($parserClass, BlueprintParserInterface::class, true)) {
             if (! is_string($blueprintOptions['model']) || empty($blueprintOptions['model'])) {
-                $this->writeError('Error: The --blueprint-model option must be provided and must be a non-empty string.');
+                $this->writeError('Error: The --model option must be provided and must be a non-empty string.');
 
                 return 1;
             }

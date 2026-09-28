@@ -90,7 +90,7 @@ To see all available options, run `php index.php --help`:
 ```sh
 $ php index.php --help
 Infer a Laravel Shift Blueprint file from various data sources. By Zach Watkins.
-Usage: index.php [--blueprint-controller-methods=index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy,<custom>] [--blueprint-model=<name>] [--blueprint-resource=web,api,index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy] [--blueprint-seeders]  [--blueprint-view=blade|inertia] [--cwd=<current-working-directory>] [--data-selector=<selector>] [--db=mysql|sqlite|sqlserver] [--dry-run] [--format=blueprint,sql] [--http-header=<name>:<value>] [--http-timeout=<seconds>] [--save] [--help] <path-or-url>
+Usage: index.php [--blueprint-controller-methods=index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy,<custom>] [--blueprint-model=<name>] [--blueprint-resource=web,api,index,create,store,edit,update,show,destroy,api.index,api.store,api.store,api.update,api.show,api.destroy] [--blueprint-seeders]  [--blueprint-view=blade|inertia] [--cwd=<current-working-directory>] [--data-selector=<selector>] [--dry-run] [--http-header=<name>:<value>] [--http-timeout=<seconds>] [--save] [--help] <path-or-url>
 
 Options:
   [--blueprint-controller-methods=]
@@ -109,11 +109,7 @@ Options:
   [--cwd=]                Set the current working directory.
   [--data-selector=]      Specify a data selector (e.g., JSONPath, XPath) for
                           extracting relevant data from the source.
-  [--db=]                 Database type. Accepts: sqlite, mysql, sqlserver.
-                          Default: mysql.
   [--dry-run]             Perform a trial run without making any changes.
-  [--format=]             Output format. Accepts: sql, blueprint.
-                          Default: blueprint.
   [--http-header=]        Add a request header for an HTTP Blueprint source.
                           May be specified more than once. Rejects credential
                           headers: Authorization, Proxy-Authorization, Cookie.

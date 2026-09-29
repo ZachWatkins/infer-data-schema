@@ -145,7 +145,7 @@ Options:
             }
 
             if (\str_starts_with($argument, '--model=')) {
-                $blueprintOptions['model'] = \substr($argument, 18);
+                $blueprintOptions['model'] = \substr($argument, 8);
 
                 continue;
             }
@@ -198,19 +198,19 @@ Options:
             }
 
             if (\str_starts_with($argument, '--view=')) {
-                $blueprintOptions['view'] = \substr($argument, 17);
+                $blueprintOptions['view'] = \substr($argument, 7);
 
                 continue;
             }
 
             if (\str_starts_with($argument, '--controller-methods=')) {
-                $blueprintOptions['methods'] = \array_map('trim', \explode(',', \substr($argument, 25)));
+                $blueprintOptions['methods'] = \array_map('trim', \explode(',', \substr($argument, 21)));
 
                 continue;
             }
 
             if (\str_starts_with($argument, '--resource=')) {
-                $resourceType = \substr($argument, 27);
+                $resourceType = \substr($argument, 11);
                 $split = \array_map('trim', \explode(',', $resourceType));
                 foreach ($split as $resource) {
                     $resolved = BlueprintConfigResource::tryFrom($resource);
